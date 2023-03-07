@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2023-03-06 23:20:03
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2023-03-06 23:20:40
+ * @Description: Modelo encargado de gestionar la tabla Users de la base de datos.
+ */
+
+
+class User extends Model
+{
+    use HasFactory;
+}
