@@ -13,24 +13,35 @@
     <head>
         <meta charset="UFT-8">
         <meta name="viewport" content="width=device-width, initial-scale-1.0">
-        <title>Home</title>
+
+        <link href = "http://localhost/app_mentorizacion/resources/css/users/index.css" rel="stylesheet">
+        <title>Inicio de sesión</title>
     </head>
     <body>
-        <h1>INICIO DE SESIÓN</h1>
-        <form action="{{route('users.store')}}" method="POST">
+        <div class="container">
+            <div class="login-form">
 
-            @csrf <!-- se utiliza para añadir un token oculto al envío de datos, nos obliga laravel a ponerlo porque si no dará error el envío -->
+                <h1>Iniciar sesión</h1>
 
-            <label for="user">Usuario:</label>
-            <input type="text" id="user" name="user"><br><br>
-            <label for="password">Contraseña</label>
-            <input type="text" id="password" name="password"><br><br>
+                <form action="{{ route('users.store') }}" method="POST">
+                    @csrf <!-- se utiliza para añadir un token oculto al envío de datos, nos obliga laravel a ponerlo porque si no dará error el envío -->
 
-            <button type="submit">Iniciar Sesión</button>
-        </form>
-        <a href="{{route('users.create')}}">
-            <button type="submit">Crear cuenta</button>
-        </a>
+                    <div class="form-group">
+                        <label for="user">Usuario:</label>
+                        <input type="text" id="user" name="user">
+                    </div>
 
+                    <div class="form-group">
+                        <label for="password">Contraseña:</label>
+                        <input type="text" id="password" name="password">
+                    </div>
+
+                    <button type="submit" class="btn-submit">Iniciar Sesión</button>
+                </form>
+                <a href="{{ route('users.create') }}">
+                    <button type="submit" class="btn-submit">Crear cuenta</button>
+                </a>
+            </div>
+        </div>
     </body>
 </html>
