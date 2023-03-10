@@ -50,6 +50,7 @@ class UsersController extends Controller
 
     public function create_store(Request $request){
         $user = new User();
+        $repit_password     = $request->repeat_password;
 
         $user->nombre        = $request->name;
         $user->apellidos     = $request->surname;
@@ -59,8 +60,12 @@ class UsersController extends Controller
         $user->mentor        = $request->mentor;
         $user->campo_estudio = $request->study_area;
 
-        $user->save();
-        return view('users.index');
+        if ($repit_password == $user->clave){
+            $user->save();
+            return view('users.index');
+        }else{
+            return "ERROR";
+        }
     }
 
 

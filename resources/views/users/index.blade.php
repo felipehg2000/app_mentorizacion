@@ -33,14 +33,11 @@
 
                     <div class="form-group">
                         <label for="password">Contraseña:</label>
-                        <input type="text" id="password" name="password">
+                        <input type="password" id="password" name="password">
                     </div>
 
                     <button type="submit" class="btn-submit">Iniciar Sesión</button>
                 </form>
-                <a href="{{ route('users.create') }}">
-                    <button type="submit" class="btn-submit">Crear cuenta</button>
-                </a>
             </div>
         </div>
     </body>
