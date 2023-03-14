@@ -14,51 +14,90 @@
 		<div class="container">
 			<div class="left-field">
 				<label for="name">Nombre:</label>
-				<input type="text" id="name" name="name" required>
+                @error('name')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
+				<input type="text" id="name" name="name" value=" {{old('name')}} ">
 			</div>
 			<div class="right-field">
 				<label for="surname">Apellidos:</label>
-				<input type="text" id="surname" name="surname">
+                @error('surname')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
+				<input type="text" id="surname" name="surname" value=" {{old('surname')}} ">
 			</div>
 		</div>
 		<div class="container">
 			<div class="left-field">
 				<label for="email">Email:</label>
-				<input type="text" id="email" name="email" required>
+                @error('email')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
+				<input type="text" id="email" name="email" value=" {{old('email')}} ">
+
 			</div>
             <div class="right-field">
                 <label for="user">Usuario:</label>
-                <input type="text" id="user" name="user" required>
+                @error('user')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
+                <input type="text" id="user" name="user" value=" {{old('user')}} ">
+
             </div>
 		</div>
 		<div class="container">
 			<div class="left-field">
 				<label for="password">Contraseña:</label>
-				<input type="password" id="password" name="password" required>
+                @error('password')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
+				<input type="password" id="password" name="password">
 			</div>
 			<div class="right-field">
 				<label for="rep_password">Repite contraseña:</label>
-				<input type="password" id="rep_password" name="rep_password" required>
+                @error('rep_password')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
+				<input type="password" id="rep_password" name="rep_password">
 			</div>
 		</div>
 		<div class="container">
 			<div class="left-field">
-				<label for="tipo-usuario">Tipo de usuario:</label>
-				<select id="tipo-usuario" name="tipo-usuario" required>
-					<option value="estudiante">Estudiante</option>
-					<option value="mentor">Mentor</option>
+				<label for="tipo_usuario">Tipo de usuario:</label>
+                @error('tipo_usuario')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
+				<select id="tipo_usuario" name="tipousuario" value=" {{old('tipousuario')}} ">
+					<option value="1">Estudiante</option>
+					<option value="2">Mentor</option>
 				</select>
+
 			</div>
 			<div class="right-field">
-				<label for="campo-estudio">Campo de estudio:</label>
-				<input type="text" id="campo-estudio" name="campo-estudio" required>
+				<label for="campo_estudio">Campo de estudio:</label>
+                @error('campo_estudio')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
+				<input type="text" id="campo_estudio" name="campo_estudio" value=" {{old('campo_estudio')}} ">
 			</div>
 		</div>
 
         <div class="container">
             <div class="all">
                 <label for="description">Descripción:</label>
-                <input type="text" id="description" name="description">
+                @error('record')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
+                <input type="text" id="description" name="description" value=" {{old('description')}} ">
             </div>
         </div>
 

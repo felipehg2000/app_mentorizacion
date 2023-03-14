@@ -1,3 +1,12 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2023-03-14 20:12:25
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2023-03-14 20:13:06
+ * @Description: Damos estilo para los formularios de inicio de sesión y de registro de usuarios para los usuarios no logueados
+ */
+
 body{
     background-color: rgb(184, 184, 184);
 }
