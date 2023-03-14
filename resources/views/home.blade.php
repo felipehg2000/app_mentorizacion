@@ -1,29 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Home</title>
-	<link rel="stylesheet" type="text/css" href="http://localhost/app_mentorizacion/resources/css/HomeStyle.css">
+	<title>Mentoring</title>
+	<link href="{{ asset('css/estiloHome.css') }}" rel="stylesheet">
 </head>
 <body>
-	<header>
-		<nav>
-            <img src="http://localhost/app_mentorizacion/resources/css/logo_blanco.JPG" class = "logo">
-			<ul>
-				<li><a href=" {{ route('users.create') }} ">Crear Cuenta</a></li>
-				<li><a href=" {{ route('users.index') }} ">Iniciar Sesión</a></li>
-			</ul>
-		</nav>
-	</header>
+    <nav>
+        <img src=" {{ asset('photos/logo_blanco.JPG') }}">
+        <ul>
+            <li><a href=" {{ route('users.create') }}">Crear cuenta</a></li>
+            <li><a href=" {{ route('users.index') }} ">Iniciar sesión</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="contenedor">
+            <h1 class="main-left">¿Que es?</h1>
+            <p class="main-left">
+                Mentoring es una red social donde podrás ponerte en contacto con profesionales o estudiantes de tu campo de conocimiento según tu tipo de
+                usuario. Los tipos de usuarios que hay son los siguientes:
+            </p>
+            <img class="main-right" src="">
+        </div>
 
-	<main>
-		<h1>MENTORING</h1>
-		<p>En esta web te podrás encontrar una red social donde según el rol que selecciones podrás mentorizar a alumnos o ser mentorizado:</p>
-		<p>En caso de que seas mentor podrás acceder a una sala en la que enseñar como trabjas a los alumnos que aceptes en esta sala. </p>
-		<p>En caso de que sea un alumno podrás seleccionar un mentor pidiendole ser añadido a su sala para que te enseñe más sobre el mundo laboral </p>
-	</main>
+        <div class="contenedor">
+            <h2 class="main-right">Mentores</h2>
+            <p class="main-right">
+                Los mentores al crear su cuenta e iniciar sesión en esta accederán a una sala sobre la que tendrán el control, en esta sala podrán realizar
+                acciones como subir tareas, contestar dudas de los alumnos o incluso dar tutorías para que estos entiendan mejor el mundo laboral.
+            </p>
+            <img class="main-left" src="">
+        </div>
 
-	<footer>
-		<p>Derechos reservados 2023</p>
-	</footer>
+        <div class="contenedor">
+            <h2 class="main-left">Estudiantes</h2>
+            <p class="main-left">
+                Los estudiantes al iniciar sesión podrán solicitar unirse a las salas de distintos mentores hasta que estén en una, cuando estén en una sala
+                podrán comunicarse con sus mentores y tener acceso a la información que estos tengan publicada.
+            </p>
+            <img class="main-right" src="">
+        </div>
+    </main>
+    <footer>
+        <p class="pie_de_pagina">
+            Trabajo de fin de grado Felipe Hernández González: Red social de mentorización de alumnos
+        </p>
+    </footer>
 </body>
-</html>
+<body>
