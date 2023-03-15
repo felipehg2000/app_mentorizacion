@@ -50,7 +50,7 @@ nav a:hover {
     border-color: white;
 }
 
-img {
+.logo {
     height: 30px;
     width: auto;
     margin-left: 5%;
@@ -59,7 +59,7 @@ img {
 }
 
 main {
-    max-width: 800px;
+    max-width: 85%;
     margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
@@ -72,10 +72,34 @@ h1 {
 
 p {
     font-family: Arial, sans-serif;
+    text-align: justify;
+}
+
+.contenedor {
+    display: flex;
+    margin-bottom: 30px;
+    border-style: solid;
+    border-radius: 20%;
+    border-color: #0099cc;
 }
 
 .main-left {
-    margin-right: 20px;
+    flex-basis: 100%;
+    margin: 5px;
+    padding: 30px;
+}
+
+.main-right {
+    flex-basis: 100%;
+    margin: 5px;
+    padding: 30px;
+}
+
+img {
+    height: 200px;
+    width: auto;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 footer {
@@ -83,10 +107,10 @@ footer {
     color: #fff;
     padding: 10px;
     box-sizing: border-box;
-    text-align: center;
 }
 
 .pie_de_pagina {
-    margin: 0;
     font-size: 14px;
+    text-align: center;
 }
+

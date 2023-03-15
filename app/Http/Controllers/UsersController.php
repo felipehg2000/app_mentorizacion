@@ -51,7 +51,7 @@ class UsersController extends Controller
         $user          = User::where('usuario', $request->usuario)->where('clave', $clave_cifrada)->get();
 
         if (count($user) == 0){
-            return view('users/index');
+            return redirect()->back()->withErrors(['message' => 'El correo electrónico o la contraseña son incorrectos.']);
         }else{
             return "ENTRA";
         }
@@ -85,7 +85,7 @@ class UsersController extends Controller
             $user->save();
             return view('users.index');
         }else{
-            return view('users.create');
+            return redirect()->back()->withErrors(['message' => 'Las contraseñas no coinciden']);
         }
     }
 

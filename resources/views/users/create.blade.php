@@ -107,6 +107,12 @@
             </div>
         </div>
 
+        @foreach ($errors->all() as $error)
+            <small>{{ $error }}</small>
+            <br>
+            <br>
+         @endforeach
+
 		<button type="submit">Crear usuario</button>
 	</form>
 </body>

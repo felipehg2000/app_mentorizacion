@@ -29,7 +29,7 @@
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-				<input type="text" id="usuario" name="usuario">
+				<input type="text" id="usuario" name="usuario" value=" {{old('usuario')}} ">
 			</div>
         </div>
 
@@ -43,6 +43,11 @@
 				<input type="password" id="password" name="password">
 			</div>
         </div>
+        @foreach ($errors->all() as $error)
+            <small>{{ $error }}</small>
+            <br>
+            <br>
+         @endforeach
 
         <button type="submit">Iniciar sesión</button>
     </form>
