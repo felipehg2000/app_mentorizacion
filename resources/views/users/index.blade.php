@@ -24,14 +24,22 @@
 
 		<div class="container">
             <div class="all">
-				<label for="user">Usuario:</label>
-				<input type="text" id="user" name="user">
+				<label for="usuario">Usuario:</label>
+                @error('usuario')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
+				<input type="text" id="usuario" name="usuario">
 			</div>
         </div>
 
         <div class="container">
             <div class="all">
 				<label for="password">Contraseña:</label>
+                @error('password')
+                    <br>
+                    <small>*{{ $message }}</small>
+                @enderror
 				<input type="password" id="password" name="password">
 			</div>
         </div>

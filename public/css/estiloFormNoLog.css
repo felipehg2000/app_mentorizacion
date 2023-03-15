@@ -73,6 +73,10 @@ select {
     box-sizing: border-box;
 }
 
+small {
+    color: red;
+}
+
 button {
     margin-left: auto;
     margin-right: auto;

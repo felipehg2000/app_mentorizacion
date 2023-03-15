@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 
 /*
  * @Author: Felipe Hernández González
@@ -38,45 +39,53 @@ class UsersController extends Controller
      * Apartado para gestión de datos de entrada
      */
     public function store(Request $request){
-        $user = new User();
-        $user = User::where('usuario', $request->user)->where('clave', $request->password)->get();
+
+        $validacion = $request->validate([
+            'usuario'  => ['max:30', 'required'],
+            'password' => [          'required']
+        ]);
+
+        $key           = 'clave_de_cifrado_de_32_caracteres';
+        $clave_cifrada = openssl_encrypt($request->password, 'aes-256-ecb', $key);
+        $user          = new User();
+        $user          = User::where('usuario', $request->usuario)->where('clave', $clave_cifrada)->get();
 
         if (count($user) == 0){
-            return view('users/accesError');
+            return view('users/index');
         }else{
             return "ENTRA";
         }
+
     }
 
     public function create_store(Request $request){
-
+        /*https://styde.net/laravel-6-doc-validacion/ */
         $validacion = $request->validate([
-            'name'          => 'required|max:30',
-            'surname'       => 'max:90',
-            'email'         => 'required',
-            'user'          => 'required|max:30',
-            'password'      => 'required',
-            'rep_password'  => 'required',
-            'campo_estudio' => 'required'
-          /*'description'   => 'require'*/
+            'name'          => ['max:30' , 'required'                ],
+            'surname'       => ['max:90'                             ],
+            'email'         => ['max:255', 'required', 'unique:users'],
+            'usuario'       => ['max:30' , 'required', 'unique:users'],
+            'password'      => [           'required'                ],
+            'rep_password'  => [           'required'                ]
         ]);
 
         $user = new User();
+        $key  = 'clave_de_cifrado_de_32_caracteres';
 
         $user->nombre        = $request->name;
         $user->apellidos     = $request->surname;
         $user->email         = $request->email;
-        $user->usuario       = $request->user;
-        $user->clave         = $request->password;
+        $user->usuario       = $request->usuario;
+        $user->clave         = openssl_encrypt($request->password, 'aes-256-ecb', $key);
         $user->tipo_usuario  = $_POST["tipousuario"];
-        $user->campo_estudio = $request->campo_estudio;
+        $user->campo_estudio = $_POST["campoestudio"];
         $user->descripcion   = $request->description;
 
-        if ($request->rep_password == $user->clave){
+        if (openssl_encrypt($request->rep_password, 'aes-256-ecb', $key) == $user->clave){
             $user->save();
             return view('users.index');
         }else{
-            return "ERROR";
+            return view('users.create');
         }
     }
 

@@ -40,12 +40,12 @@
 
 			</div>
             <div class="right-field">
-                <label for="user">Usuario:</label>
-                @error('user')
+                <label for="usuario">Usuario:</label>
+                @error('usuario')
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-                <input type="text" id="user" name="user" value=" {{old('user')}} ">
+                <input type="text" id="usuario" name="usuario" value=" {{old('usuario')}} ">
 
             </div>
 		</div>
@@ -86,7 +86,13 @@
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-				<input type="text" id="campo_estudio" name="campo_estudio" value=" {{old('campo_estudio')}} ">
+                <select id="campo_estudio" name="campoestudio" value=" {{old('campoestudio')}} ">
+                    <option value="1">Rama tecnológica</option>
+                    <option value="2">Rama biosanitaria</option>
+                    <option value="3">Rama de arte</option>
+                    <option value="4">Rama jurista</option>
+                    <option value="5">Rama lingüistica</option>
+                </select>
 			</div>
 		</div>
 
