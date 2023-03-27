@@ -24,12 +24,12 @@
 
 		<div class="container">
             <div class="all">
-				<label for="usuario">Usuario:</label>
-                @error('usuario')
+				<label for="user">Usuario:</label>
+                @error('user')
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-				<input type="text" id="usuario" name="usuario" value=" {{old('usuario')}} ">
+				<input type="text" id="user" name="user" value=" {{old('user')}} ">
 			</div>
         </div>
 

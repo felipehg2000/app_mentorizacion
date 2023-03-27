@@ -4,6 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\MentorsController;
 
 /*
  * @Author: Felipe Hernández González
@@ -21,7 +22,7 @@ use App\Http\Controllers\UsersController;
  */
 
 
-Route::get('/', HomeController::class);
+Route::get('/', HomeController::class)->name('home');
 
 //(*)
 Route::controller(UserController::class)->group(function(){
@@ -29,8 +30,17 @@ Route::controller(UserController::class)->group(function(){
     Route::post('users'              , [UsersController::class, 'store'       ])->name('users.store'       );
     Route::get ('users/create'       , [UsersController::class, 'create'      ])->name('users.create'      );
     Route::post('users/create'       , [UsersController::class, 'create_store'])->name('users.create.store');
-    Route::get ('users/edit'         , [UsersController::class, 'edit'        ])->name('users.edit'        );
-    Route::post('users/edit'         , [UsersController::class, 'edit_store'  ])->name('users.edit.store'  );
-    Route::get ('users/{loginResult}', [UsersController::class, 'show'        ])->name('users.show'        );
+    Route::get ('users/modify'       , [UsersController::class, 'modify'      ])->name('users.modify'      );
+    Route::post('users/modify'       , [UsersController::class, 'modify_store'])->name('users.modify.store');
+    Route::get ('users/delete'       , [UsersController::class, 'delete'      ])->name('users.delete'      );
+    Route::post('users/delete'       , [UsersController::class, 'delete_store'])->name('users.delete.store');
+    Route::get ('users/close'        , [UsersController::class, 'close'       ])->name('users.close'       );
 });
 
+Route::controller(MentorsController::class)->group(function(){
+    Route::get ('mentors', [MentorsController::class, 'index'])->name('mentors.index');
+});
+
+Route::controller(StudentsController::class)->group(function(){
+    Route::get('students', [StudentsController::class, 'index'])->name('students.index');
+});
