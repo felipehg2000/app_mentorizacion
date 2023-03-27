@@ -21,17 +21,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id           (                   );
-            $table->string       ('nombre'       , 30);
-            $table->string       ('apellidos'    , 90)->nullable();
-            $table->string       ('email'            )->unique  ();
-            $table->string       ('usuario'      , 30)->unique  ();
-            $table->text         ('clave'            );
-            $table->boolean      ('tipo_usuario'     );
-            $table->integer      ('campo_estudio'    );
-            $table->text         ('descripcion'      )->nullable();
-            $table->rememberToken(                   );//en caso de que el usuario decida tener la sesión abierta se guardará un token
-            $table->timestamps   (                   );
+            $table->id           (                 );
+            $table->string       ('name'       , 30);
+            $table->string       ('surname'    , 90)->nullable();
+            $table->string       ('email'          )->unique  ();
+            $table->string       ('user'       , 30)->unique  ();
+            $table->text         ('password'       );
+            $table->boolean      ('user_type'      );
+            $table->integer      ('study_area'     );
+            $table->text         ('description'    )->nullable();
+            $table->rememberToken(                 );//en caso de que el usuario decida tener la sesión abierta se guardará un token
+            $table->timestamps   (                 );
         });
     }
 
