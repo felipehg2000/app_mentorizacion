@@ -106,21 +106,25 @@
             max-width: 85%;
             margin: 0 auto;
             padding: 20px;
+            margin-bottom: 50px;
             box-sizing: border-box;
         }
 
         /*Estilo para el pie de página*/
-        /*footer {
+        footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
             background-color: #0099cc;
             color: #fff;
-            padding: 10px;
-            box-sizing: border-box;
+            padding: 0px;
         }
 
         .pie_de_pagina {
             font-size: 14px;
             text-align: center;
-        }*/
+        }
     </style>
 
     @yield('style')
@@ -147,15 +151,13 @@
         </ul>
     </nav>
     <!--main-->
-    <main>
         @yield('main')
-    </main>
 
-    <!--FOOTER--
+    <!--FOOTER-->
     <footer>
         <p class="pie_de_pagina">
             Trabajo de fin de grado Felipe Hernández González: Red social de mentorización de alumnos
         </p>
-    </footer>-->
+    </footer>
 </body>
 </html>
