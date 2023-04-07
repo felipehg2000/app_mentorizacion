@@ -94,7 +94,10 @@ class UsersController extends Controller
     /**
      * Modificar datos usuario
      * =======================
+<<<<<<< HEAD
 
+=======
+>>>>>>> 79abd68237831c9eaac9f08426294c1ec89c4fba
      * Función modify carga los datos en una variable y muestra la vista correspondiente con los datos introducidos para que el usuario pueda verlos
      * y modificarlos.
      * En la función store se cargan los datos en la tupla adecuada y se hace el update de estos para modificarlo
@@ -144,7 +147,11 @@ class UsersController extends Controller
      * no pueda modificar los datos.
      * Función delete_store se borran los datos y se redirige a la ventana de home.
      *
+<<<<<<< HEAD
      * TO DO:
+=======
+     * To Do:
+>>>>>>> 79abd68237831c9eaac9f08426294c1ec89c4fba
      * ======
      * Pedir la contraseña antes de borrar los datos, para asegurarnos de que realmente quieren borrar los datos.
      * Borrar la caché de la pagina web para que al darle atrás no vaya a ninguna página.
