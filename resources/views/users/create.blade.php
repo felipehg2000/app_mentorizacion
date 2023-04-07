@@ -18,7 +18,7 @@
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-				<input type="text" id="name" name="name" value=" {{old('name')}} ">
+				<input type="text" id="name" name="name" value=" {{ old('name') }} ">
 			</div>
 			<div class="right-field">
 				<label for="surname">Apellidos:</label>
@@ -26,7 +26,7 @@
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-				<input type="text" id="surname" name="surname" value=" {{old('surname')}} ">
+				<input type="text" id="surname" name="surname" value=" {{ old('surname') }} ">
 			</div>
 		</div>
 		<div class="container">
@@ -36,7 +36,7 @@
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-				<input type="text" id="email" name="email" value=" {{old('email')}} ">
+				<input type="text" id="email" name="email" value=" {{ old('email') }} ">
 
 			</div>
             <div class="right-field">
@@ -45,7 +45,7 @@
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-                <input type="text" id="user" name="user" value=" {{old('user')}} ">
+                <input type="text" id="user" name="user" value=" {{ old('user') }} ">
 
             </div>
 		</div>
@@ -74,7 +74,7 @@
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-				<select id="tipo_usuario" name="tipousuario" value=" {{old('tipousuario')}} ">
+				<select id="tipo_usuario" name="tipousuario" value=" {{ old('tipousuario') }} ">
 					<option value="1">Estudiante</option>
 					<option value="2">Mentor</option>
 				</select>
@@ -86,7 +86,7 @@
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-                <select id="campo_estudio" name="campoestudio" value=" {{old('campoestudio')}} ">
+                <select id="campo_estudio" name="campoestudio" value=" {{ old('campoestudio') }} ">
                     <option value="1">Rama tecnológica</option>
                     <option value="2">Rama biosanitaria</option>
                     <option value="3">Rama de arte</option>
@@ -103,7 +103,7 @@
                     <br>
                     <small>*{{ $message }}</small>
                 @enderror
-                <input type="text" id="description" name="description" value=" {{old('description')}} ">
+                <input type="text" id="description" name="description" value=" {{ old('description') }} ">
             </div>
         </div>
 
