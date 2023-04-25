@@ -11,7 +11,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration{
@@ -48,7 +47,10 @@ return new class extends Migration{
          * Datos específicos de los usuarios de tipo estudiante. Herenciada de la tabla usuarios, tienen la misma clave.
          */
         Schema::create('students', function (Blueprint $table){
-            $table->integer('user_id')->primary();
+            $table->integer('user_id')   ->primary ();
+            $table->string ('career')    ->nullable();
+            $table->year   ('first_year')->nullable();
+            $table->integer('duration')  ->nullable();
         });
 
         /**
@@ -58,7 +60,9 @@ return new class extends Migration{
          * Datos específicos de los usuarios de tipo mentor. Herencia de la tabla usuarios, tienen la misma clave.
          */
         Schema::create('mentors', function (Blueprint $table){
-            $table->integer('user_id')->primary();
+            $table->integer('user_id')->primary ();
+            $table->string ('company')->nullable();
+            $table->string ('job')    ->nullable();
         });
 
         /**
