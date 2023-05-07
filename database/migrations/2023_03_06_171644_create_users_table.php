@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration{
     /**
      * Run the migrations.
+     *
+     * Cración y modificación de las distintas tablas de la base de datos
      */
     public function up(): void{
         /**
@@ -24,20 +26,20 @@ return new class extends Migration{
          *
          * Tabla que guarda los datos más genéricos de los usuarios
          */
-        Schema::create('users', function (Blueprint $table) {
-            $table->id           (                 );
-            $table->string       ('name'       , 30);
-            $table->string       ('surname'    , 90)->nullable();
-            $table->string       ('email'          )->unique  ();
-            $table->timestamp    ('email_verified_at')->nullable();
-            $table->string       ('user'       , 30)->unique  ();
-            $table->text         ('password'       );
-            $table->boolean      ('user_type'      );
-            $table->integer      ('study_area'     );
-            $table->text         ('description'    )->nullable();
-            $table->binary       ('image'          )->default($this->imageToBinary('photos/default_user_image.png'));
-            $table->rememberToken(                 );//en caso de que el usuario decida tener la sesión abierta se guardará un token
-            $table->timestamps   (                 );
+        Schema::create('USERS', function (Blueprint $table) {
+            $table->id           (                      );
+            $table->string       ('NAME'       , 30     );
+            $table->string       ('SUTNAME'    , 90     )->nullable();
+            $table->string       ('EMAIL'               )->unique  ();
+            $table->timestamp    ('EMAIL_VERIFICATE_AT' )->nullable();
+            $table->string       ('USER'       , 30     )->unique  ();
+            $table->text         ('PASSWORD'            );
+            $table->boolean      ('USER_TYPE'           );
+            $table->integer      ('STUDY_AREA'          );
+            $table->text         ('DESCRIPTION'         )->nullable();
+            $table->binary       ('IMAGE'               )->default($this->imageToBinary('photos/default_user_image.png'));
+            $table->rememberToken(                      );//en caso de que el usuario decida tener la sesión abierta se guardará un token
+            $table->timestamps   (                      );
         });
 
         /**
@@ -46,11 +48,14 @@ return new class extends Migration{
          *
          * Datos específicos de los usuarios de tipo estudiante. Herenciada de la tabla usuarios, tienen la misma clave.
          */
-        Schema::create('students', function (Blueprint $table){
-            $table->integer('user_id')   ->primary ();
-            $table->string ('career')    ->nullable();
-            $table->year   ('first_year')->nullable();
-            $table->integer('duration')  ->nullable();
+        Schema::create('STUDENTS', function (Blueprint $table){
+            $table->unsignedBigInteger  ('USER_ID'   )->primary ();
+            $table->string              ('CAREER'    )->nullable();
+            $table->year                ('FIRST_YEAR')->nullable();
+            $table->integer             ('DURATION'  )->nullable();
+            $table->timestamps          ();
+
+            $table->foreign('USER_ID')->references('ID')->on('USERS')->onDelete('CASCADE');
         });
 
         /**
@@ -59,10 +64,13 @@ return new class extends Migration{
          *
          * Datos específicos de los usuarios de tipo mentor. Herencia de la tabla usuarios, tienen la misma clave.
          */
-        Schema::create('mentors', function (Blueprint $table){
-            $table->integer('user_id')->primary ();
-            $table->string ('company')->nullable();
-            $table->string ('job')    ->nullable();
+        Schema::create('MENTORS', function (Blueprint $table){
+            $table->unsignedBigInteger  ('USER_ID')->primary ();
+            $table->string              ('COMPANY')->nullable();
+            $table->string              ('JOB'    )->nullable();
+            $table->timestamps          ();
+
+            $table->foreign('USER_ID')->references('ID')->on('USERS')->onDelete('CASCADE');
         });
 
         /**
@@ -71,20 +79,108 @@ return new class extends Migration{
          *
          * Herencia de los usuarios almacenará la clave del usuario y el nombre de la tabla a la que habrá que acceder para ver el resto de datos.
          */
-        Schema::create('inheritance_users', function (Blueprint $table){
-            $table->integer('user_id')   ->primary();
-            $table->string ('table_name');
+        Schema::create('INHERITANCE_USERS', function (Blueprint $table){
+            $table->unsignedBigInteger  ('USER_ID'   )->primary();
+            $table->string              ('TABLE_NAME');
+            $table->timestamps          ();
+
+            $table->foreign('USER_ID')->references('ID')->on('USERS')->onDelete('CASCADE');
+        });
+
+        /**
+         * TABLA STUDY_ROOMS
+         * =================
+         * Tabla asociada al mentor que contiene las características especiales de su sala.
+         */
+        Schema::create('STUDY_ROOMS', function(Blueprint $table){
+            $table->id                  ();
+            $table->unsignedBigInteger  ('MENTOR_ID');
+            $table->string              ('COLOR'    )->nullable();
+            $table->timestamps          ();
+
+            $table->foreign('MENTOR_ID')->references('USER_ID')->on('MENTORS')->onDelete('CASCADE');
+        });
+
+        /**
+         * TABLA STUDY_ROOM_ACCES:
+         * =======================
+         * Se almacena la información de a que sala tiene acceso cada estudiante.
+         */
+        Schema::create('STUDY_ROOM_ACCES', function(Blueprint $table){
+            $table->id                  ();
+            $table->unsignedBigInteger  ('STUDENT_ID'   );
+            $table->unsignedBigInteger  ("STUDY_ROOM_ID");
+            $table->timestamps          ();
+
+            $table->foreign('STUDENT_ID'   )->references('USER_ID')->on('STUDENTS'   )->onDelete('CASCADE');
+            $table->foreign('STUDY_ROOM_ID')->references('ID'     )->on('STUDY_ROOMS')->onDelete('CASCADE');
+        });
+
+        /**
+         * TABLA FRIEND_REQUEST:
+         * =====================
+         * Almacena la información de las solicitudes de amistad enviadas por los estudiantes a los mentores. Y si estas han sido aceptadas, rechazadas o no tienen
+         * respuesta aún.
+         */
+        Schema::create('FRIEND_REQUESTS', function(Blueprint $table){
+            $table->id                  ();
+            $table->unsignedBigInteger  ('MENTOR_ID' );
+            $table->unsignedBigInteger  ('STUDENT_ID');
+            $table->integer             ('STATUS'    )->nullable();
+            $table->timestamps          ();
+
+            $table->foreign('MENTOR_ID' )->references('USER_ID')->on('MENTORS' )->onDelete('CASCADE');
+            $table->foreign('STUDENT_ID')->references('USER_ID')->on('STUDENTS')->onDelete('CASCADE');
+        });
+
+        /**
+         * TABLA SYNCHRONOUS_MESSAGES:
+         * ===========================
+         * Almacena los mensajes de los chats privados entre usuarios.
+         */
+        Schema::create('SYNCHRONOUS_MESSAGES', function(Blueprint $table){
+            $table->id                  ();
+            $table->unsignedBigInteger  ('STUDY_ROOM_ID');
+            $table->integer             ('SENDER'       ); /*1.- Mensaje del mentor, 2.- Mensaje del estudiante*/
+            $table->text                ('MESSAGE'      );
+            $table->timestamps          ();
+
+            $table->foreign('STUDY_ROOM_ID')->references('ID')->on('STUDY_ROOMS')->onDelete('CASCADE');
+        });
+
+        /**
+         * TABLA ASYNCHRONOUS_MESSAGES:
+         * ============================
+         * Almacena toda la información del tablón de anuncos de la aplicación, con las tareas subidas por los estudiantes y las respuestas dadas por los mentores.
+         */
+        Schema::create('ASYNCHRONOUS_MESSAGES', function(Blueprint $table){
+            $table->id                  ();
+            $table->unsignedBigInteger  ('STUDY_ROOM_ID'    );
+            $table->integer             ('SENDER'           );/*Tengo que ver como hacerlo pero creo que tengo que poner una referencia al id del estudiante que lo sube para poder identificarlo*/
+            $table->text                ('MESSAGE'          )->nullable();
+            $table->binary              ('DOCUMENT'         )->nullable();
+            $table->integer             ('TYPE_OF_DOCUMENT' )->nullable();
+            $table->timestamps          ();
+
+            $table->foreign('STUDY_ROOM_ID')->references('ID')->on('STUDY_ROOMS')->onDelete('CASCADE');
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * Borra la migración a la base de datos completamente.
      */
     public function down(): void{
-        Schema::dropIfExists('users'            );
-        Schema::dropIfExists('students'         );
-        Schema::dropIfExists('mentors'          );
-        Schema::dropIfExists('inheritance_users');
+        Schema::dropIfExists('USERS');
+        Schema::dropIfExists('STUDENTS');
+        Schema::dropIfExists('MENTORS'              );
+        Schema::dropIfExists('INHERITANCE_USERS'    );
+        Schema::dropIfExists('STUDY_ROOMS'          );
+        Schema::dropIfExists('STUDY_ROOM_ACCES'     );
+        Schema::dropIfExists('FRIEND_REQUESTS'      );
+        Schema::dropIfExists('SYNCHRONOUS_MESSAGES' );
+        Schema::dropIfExists('ASYNCHRONOUS_MESSAGES');
     }
 
     /**
