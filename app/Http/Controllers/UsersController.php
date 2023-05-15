@@ -15,10 +15,12 @@ use App\Http\Controllers\MentorsController;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2023-03-14 20:47:35
+ * @Last Modified time: 2023-05-14 20:43:05
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
+ * @Problems: los modelos tienen una diferenciación entre mayusculas y minusculas, al estar los atributos de la base de datos en mayusculas tengo que hacer las comprobaciones en mayusculas
+ *            porque si no no estoy cogiendo los datos correctamente
  */
 
 
@@ -36,7 +38,6 @@ class UsersController extends Controller
     }
 //--------------------------------------------------------------------------------------------------
     public function store(Request $request){
-
         $validacion = $request->validate([
             'user'     => ['max:30', 'required'],
             'password' => [          'required']
@@ -47,11 +48,11 @@ class UsersController extends Controller
 
         if ($user != NULL) {
             Auth::login($user);
-            if ($user->user_type == 1){
+            if ($user->USER_TYPE == 1){
                 $controlador_estudiante = new StudentsController();
                 $vista_estudiante = $controlador_estudiante->index();
-                return $vista_estudiante;
 
+                return $vista_estudiante;
             }
             else{
                 $controlador_mentores = new MentorsController();
@@ -81,11 +82,14 @@ class UsersController extends Controller
     }
 //--------------------------------------------------------------------------------------------------
     public function create_store(Request $request){
+        echo 'UsersController.php create_store line 86 change implementation';
+        echo $request;
         /*https://styde.net/laravel-6-doc-validacion/ */
-        $validation = self::validate_user_data($request);
-        $user       = self::complet_users_model($request);
 
-        if (self::cifrate_private_key($request->rep_password) == $user->password)
+        /*self::validate_user_data($request);
+
+
+        if (self::cifrate_private_key($request->REP_PASSWORD) == $user->PASSWORD)
             {
             $user->save();
             return view('users.index');
@@ -93,7 +97,7 @@ class UsersController extends Controller
         else
             {
             return redirect()->back()->withErrors(['message' => 'Las contraseñas no coinciden']);
-            }
+            }*/
     }
     /**
      * Modificar datos usuario
@@ -110,13 +114,13 @@ class UsersController extends Controller
      */
     public function modify(){
        $data = [
-            'name'        => Auth::user()->name        ,
-            'surname'     => Auth::user()->surname     ,
-            'email'       => Auth::user()->email       ,
-            'user'        => Auth::user()->user        ,
-            'tipousuario' => Auth::user()->usertype    ,
-            'campoestudio' =>Auth::user()->studyarea   ,
-            'description' => Auth::user()->description
+            'name'        => Auth::user()->NAME        ,
+            'surname'     => Auth::user()->SURNAME     ,
+            'email'       => Auth::user()->EMAIL       ,
+            'user'        => Auth::user()->USER        ,
+            'tipousuario' => Auth::user()->USER_TYPE   ,
+            'campoestudio' =>Auth::user()->STUDY_AREA  ,
+            'description' => Auth::user()->DESCRIPTION
        ];
 
         return (view('users.modify', ['data' => $data]));
@@ -129,13 +133,13 @@ class UsersController extends Controller
 
         $actual_data = User::find(Auth::user()->id);
 
-        $actual_data->name        = $user->name        ;
-        $actual_data->surname     = $user->surname     ;
-        $actual_data->email       = $user->email       ;
-        $actual_data->user        = $user->user        ;
-        $actual_data->user_type    = $user->user_type  ;
-        $actual_data->study_area   = $user->study_area ;
-        $actual_data->description = $user->description ;
+        $actual_data->NAME        = $user->NAME        ;
+        $actual_data->SURNAME     = $user->SURNAME     ;
+        $actual_data->EMAIL       = $user->EMAIL       ;
+        $actual_data->USER        = $user->USER        ;
+        $actual_data->USER_TYPE   = $user->USER_TYPE   ;
+        $actual_data->STUDY_AREA  = $user->STUDY_AREA  ;
+        $actual_data->DESCRIPTION = $user->DESCRIPTION ;
 
         $actual_data->update();
     }
@@ -154,13 +158,13 @@ class UsersController extends Controller
      */
     public function delete(){
         $data = [
-            'name'      => Auth::user()->name   ,
-            'surname'   => Auth::user()->surname,
-            'email'     => Auth::user()->email  ,
-            'user'      => Auth::user()->user   ,
-            'tipousuario' => Auth::user()->usertype,
-            'campoestudio' =>Auth::user()->studyarea,
-            'description' => Auth::user()->description
+            'name'          => Auth::user()->NAME       ,
+            'surname'       => Auth::user()->SURNAME    ,
+            'email'         => Auth::user()->EMAIL      ,
+            'user'          => Auth::user()->USER       ,
+            'tipousuario'   => Auth::user()->USER_TYPE  ,
+            'campoestudio'  => Auth::user()->STUDY_AREA  ,
+            'description'   => Auth::user()->DESCRIPTION
         ];
 
         return view('users.delete', ['data' => $data]);
@@ -197,12 +201,12 @@ class UsersController extends Controller
      */
     private function validate_user_data(Request $request){
         $validacion = $request->validate([
-            'name'          => ['max:30' , 'min:5', 'required'                ],
-            'surname'       => ['max:90'                                      ],
-            'email'         => ['max:255',          'required', 'unique:users'],
-            'user'          => ['max:30' ,          'required', 'unique:users'],
-            'password'      => [           'min:5', 'required'                ],
-            'rep_password'  => [           'min:5', 'required'                ]
+            'NAME'          => ['max:30' , 'min:5', 'required'                ],
+            'SURNAME'       => ['max:90'                                      ],
+            'EMAIL'         => ['max:255',          'required', 'unique:users'],
+            'USER'          => ['max:30' ,          'required', 'unique:users'],
+            'PASSWORD'      => [           'min:5', 'required'                ],
+            'REP_PASSWORD'  => [           'min:5', 'required'                ]
         ]);
 
         return $validacion;
@@ -210,14 +214,14 @@ class UsersController extends Controller
 //--------------------------------------------------------------------------------------------------
     private function complet_users_model(Request $request){
         $user              = new User();
-        $user->name        = $request->name;
-        $user->surname     = $request->surname;
-        $user->email       = $request->email;
-        $user->user        = $request->user;
-        $user->password    = self::cifrate_private_key ($request->password);
-        $user->user_type   = $_POST["tipousuario"];
-        $user->study_area  = $_POST["campoestudio"];
-        $user->description = $request->description;
+        $user->NAME        = $request->NAME;
+        $user->SURNAME     = $request->SURNAME;
+        $user->EMAIL       = $request->EMAIL;
+        $user->USER        = $request->USER;
+        $user->PASSWORD    = self::cifrate_private_key ($request->PASSWORD);
+        /*$user->USER_TYPE   = $_POST["tipousuario"];
+        $user->STUDY_AREA  = $_POST["campoestudio"];
+        $user->DESCRIPTION = $request->DESCRIPTION;*/
 
         return $user;
     }

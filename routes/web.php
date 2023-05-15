@@ -5,13 +5,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\MentorsController;
-
+use App\Http\Controllers\StudentsController;
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:03:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2023-03-06 23:09:31
+ * @Last Modified time: 2023-05-12 19:11:25
  * @Description: De este archivo se leerán las rutas a las que el usuario pueda acceder, es decir, el usuario solo puede acceder a las rutas que especifiquemos aquí.
  *               Como buena práctica hay que darle nombre a cada una de las rutas, para que si una de estas cambie no haya que cambiar todos los lugares donde las referenciemos,
  *               para esto usaremos la función name.
@@ -35,6 +35,7 @@ Route::controller(UserController::class)->group(function(){
     Route::get ('users/delete'       , [UsersController::class, 'delete'      ])->name('users.delete'      );
     Route::post('users/delete'       , [UsersController::class, 'delete_store'])->name('users.delete.store');
     Route::get ('users/close'        , [UsersController::class, 'close'       ])->name('users.close'       );
+
 });
 
 Route::controller(MentorsController::class)->group(function(){
@@ -42,5 +43,7 @@ Route::controller(MentorsController::class)->group(function(){
 });
 
 Route::controller(StudentsController::class)->group(function(){
-    Route::get('students', [StudentsController::class, 'index'])->name('students.index');
+    Route::get('students'           , [StudentsController::class, 'index'])                 ->name('students.index');
+    Route::get('students/friendship', [StudentsController::class, 'friendship_redirection'])->name('students.friendship_redirection');
 });
+

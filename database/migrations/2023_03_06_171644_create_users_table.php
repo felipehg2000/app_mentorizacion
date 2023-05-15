@@ -29,7 +29,7 @@ return new class extends Migration{
         Schema::create('USERS', function (Blueprint $table) {
             $table->id           (                      );
             $table->string       ('NAME'       , 30     );
-            $table->string       ('SUTNAME'    , 90     )->nullable();
+            $table->string       ('SURNAME'    , 90     )->nullable();
             $table->string       ('EMAIL'               )->unique  ();
             $table->timestamp    ('EMAIL_VERIFICATE_AT' )->nullable();
             $table->string       ('USER'       , 30     )->unique  ();

@@ -1,119 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Registro de usuarios</title>
-	<link href="{{ asset('css/estiloFormNoLog.css') }}" rel="stylesheet">
+    <title>Registro de usuarios</title>
+	<link href="{{ asset('css/createUserStyle.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/User/createUserScript.js') }}"></script>
 </head>
 <body>
-	<form action="{{route('users.create.store')}}" method="POST">
-
-        @csrf
-
-        <h1>Registro de usuarios</h1>
-
-		<div class="container">
-			<div class="left-field">
-				<label for="name">Nombre:</label>
-                @error('name')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-				<input type="text" id="name" name="name" value=" {{ old('name') }} ">
-			</div>
-			<div class="right-field">
-				<label for="surname">Apellidos:</label>
-                @error('surname')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-				<input type="text" id="surname" name="surname" value=" {{ old('surname') }} ">
-			</div>
-		</div>
-		<div class="container">
-			<div class="left-field">
-				<label for="email">Email:</label>
-                @error('email')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-				<input type="text" id="email" name="email" value=" {{ old('email') }} ">
-
-			</div>
-            <div class="right-field">
-                <label for="user">Usuario:</label>
-                @error('user')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-                <input type="text" id="user" name="user" value=" {{ old('user') }} ">
-
-            </div>
-		</div>
-		<div class="container">
-			<div class="left-field">
-				<label for="password">Contraseña:</label>
-                @error('password')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-				<input type="password" id="password" name="password">
-			</div>
-			<div class="right-field">
-				<label for="rep_password">Repite contraseña:</label>
-                @error('rep_password')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-				<input type="password" id="rep_password" name="rep_password">
-			</div>
-		</div>
-		<div class="container">
-			<div class="left-field">
-				<label for="tipo_usuario">Tipo de usuario:</label>
-                @error('tipo_usuario')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-				<select id="tipo_usuario" name="tipousuario" value=" {{ old('tipousuario') }} ">
-					<option value="1">Estudiante</option>
-					<option value="2">Mentor</option>
-				</select>
-
-			</div>
-			<div class="right-field">
-				<label for="campo_estudio">Campo de estudio:</label>
-                @error('campo_estudio')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-                <select id="campo_estudio" name="campoestudio" value=" {{ old('campoestudio') }} ">
-                    <option value="1">Rama tecnológica</option>
-                    <option value="2">Rama biosanitaria</option>
-                    <option value="3">Rama de arte</option>
-                    <option value="4">Rama jurista</option>
-                    <option value="5">Rama lingüistica</option>
-                </select>
-			</div>
-		</div>
-
-        <div class="container">
-            <div class="all">
-                <label for="description">Descripción:</label>
-                @error('record')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-                <input type="text" id="description" name="description" value=" {{ old('description') }} ">
-            </div>
+    <div class="pnlPrincipal">
+        <div class="pnlSuperior">
+            <h3>Registro de usuarios</h3>
         </div>
+        <form action="{{route('users.create.store')}}" method="POST">
+            @csrf
+            <div class="pnlClient">
+                <div class="pnlRight" id="pnlRight">
+                    <label for="input_name" id="lbl_name" class="right"></label>                                                                                    <br>
+                    <input class="right" type="text" id="input_name" name="name"  placeholder="Nombre" onfocus="createLabel(1)" onblur="deleteLabel(1)">          <br>
 
-        @foreach ($errors->all() as $error)
-            <small>{{ $error }}</small>
-            <br>
-            <br>
-         @endforeach
+                    <label for="input_surname" id="lbl_surname" class="right"></label>                                                                              <br>
+                    <input class="right" type="text" id="input_surname" name="surname" placeholder="Apellidos" onfocus="createLabel(2)" onblur="deleteLabel(2)">                   <br>
 
-		<button type="submit">Crear usuario</button>
-	</form>
+                    <label for="input_email" id="lbl_email" class="right"></label>                                                                                  <br>
+                    <input class="right" type="text" id="input_email"  name="email" placeholder="Email" onfocus="createLabel(3)" onblur="deleteLabel(3)">                         <br>
+
+                    <label for="input_password" id="lbl_password" class="right"></label>                                                                            <br>
+                    <input class="right" type="password" id="input_password" name="password" placeholder="Contraseña" onfocus="createLabel(4)" onblur="deleteLabel(4)">             <br>
+
+                    <label for="input_rep_password" id="lbl_rep_password" class="right"></label>                                                                    <br>
+                    <input class="right" type="password" id="input_rep_password" name="rep_password" placeholder="Repetir contraseña" onfocus="createLabel(5)" onblur="deleteLabel(5)"> <br>
+
+                    <label for="input_study_area" id="lbl_study_area" class="right" name="campoestudio"></label>                                                                        <br>
+                    <select class="right" id="input_study_area" onfocus="createLabel(12)" onblur="deleteLabel(12)">
+                        <option value="0">Seleccione su area de estudio</option>
+                        <option value="1">Rama tecnológica</option>
+                        <option value="2">Rama biosanitaria</option>
+                        <option value="3">Rama de arte</option>
+                        <option value="4">Rama jurista</option>
+                        <option value="5">Rama lingüistica</option>
+                    </select>                                                                                                                                       <br><br>
+                </div>
+
+                <div class="pnlLeft" id="pnlLeft">
+                    <label for="input_user_type" id="lbl_user_type" name="tipousuario"></label><br>
+                    <select class="left" id="input_user_type" onfocus="createLabel(6)" onblur="deleteLabel(6)" onchange="userTypeChange(this.value)">
+                        <option value="0">Seleccione el tipo de usuario</option>
+                        <option value="1">Estudiante</option>
+                        <option value="2">Mentor</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="pnlInferior">
+                <button class="btn_create" type="submit">Crear usuario</button><br>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

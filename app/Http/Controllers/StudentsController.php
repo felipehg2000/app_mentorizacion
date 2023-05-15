@@ -15,17 +15,32 @@ class StudentsController extends Controller{
      * con la condición de que estos mentores pertenezcan a su mismo area de estudios
      */
     public function index(){
-        $user_type = 2;
-        $users = User::where('study_area', Auth::user()->study_area)
-                     ->where('user_type' , $user_type)
-                     ->get();
+        $this->BinaryToPhoto(Auth::user()->IMAGE);
+        return view('students.index');
+    }
 
-        $image_binary     = Auth::user()->image;
-        $image_data       = base64_decode($image_binary);
+
+    public function friendship_redirection(){
+        $user_type = 2;
+        $users     = User::where('STUDY_AREA', Auth::user()->STUDY_AREA)
+                         ->where('USER_TYPE' , $user_type              )
+                         ->get();
+
+        return view ('students.friendship', compact('users'));
+    }
+    /**
+     * FUNCIONES AUXILIARES:
+     * =====================
+     * Distintas funcionalidades para simplificar el código
+     */
+    private function BinaryToPhoto(String $image_db){
+        $image_binary = $image_db;
+        $image_data   = base64_decode($image_binary);
         $destination_path = public_path('photos\my_image.png');
         file_put_contents($destination_path, $image_data);
-
-        return view('students.index', compact('users'));
     }
 }
 
+
+//EVENTS Y LISTENERS BUSCAR INTERNET.
+//BOOSTRAP.STUDIO O ALGO ASÍN

@@ -1,4 +1,4 @@
-@extends('layouts.plantillaUsuLogeado')
+@extends('layouts.plantillaMain')
 
 @section('title', 'Mentor')
 
