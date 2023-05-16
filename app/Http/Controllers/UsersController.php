@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Student;
+use App\Models\Mentor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\StudentsController;
+use App\Http\Controllers\MentorsController;
 
 
 
@@ -13,10 +17,12 @@ use Illuminate\Support\Facades\Auth;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2023-03-14 20:47:35
+ * @Last Modified time: 2023-05-15 23:30:31
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
+ * @Problems: los modelos tienen una diferenciación entre mayusculas y minusculas, al estar los atributos de la base de datos en mayusculas tengo que hacer las comprobaciones en mayusculas
+ *            porque si no no estoy cogiendo los datos correctamente
  */
 
 
@@ -34,7 +40,6 @@ class UsersController extends Controller
     }
 //--------------------------------------------------------------------------------------------------
     public function store(Request $request){
-
         $validacion = $request->validate([
             'user'     => ['max:30', 'required'],
             'password' => [          'required']
@@ -43,20 +48,22 @@ class UsersController extends Controller
         $clave_cifrada = self::cifrate_private_key($request->password);
         $user          = User::where('user', $request->user)->where('password', $clave_cifrada)->first();
 
-        if ($user != NULL)
-            {
+        if ($user != NULL) {
             Auth::login($user);
-            if ($user->user_type == 1)
-                {
-                return view('students.index');
-                }
-            else
-                {
-                return view('mentors.index');
-                }
+            if ($user->USER_TYPE == 1){
+                $controlador_estudiante = new StudentsController();
+                $vista_estudiante = $controlador_estudiante->index();
+
+                return $vista_estudiante;
             }
-        else
-        {
+            else{
+                $controlador_mentores = new MentorsController();
+                $vista_mentor = $controlador_mentores->index();
+
+                return $vista_mentor;
+            }
+        }
+        else{
         return redirect()->back()->withErrors(['message' => 'El correo electrónico o la contraseña son incorrectos.']);
         }
     }
@@ -77,27 +84,22 @@ class UsersController extends Controller
     }
 //--------------------------------------------------------------------------------------------------
     public function create_store(Request $request){
-        /*https://styde.net/laravel-6-doc-validacion/ */
-        $validation = self::validate_user_data($request);
-        $user       = self::complet_users_model($request);
+        $this->validate_user_data($request);
 
-        if (self::cifrate_private_key($request->rep_password) == $user->password)
-            {
-            $user->save();
-            return view('users.index');
-            }
-        else
-            {
-            return redirect()->back()->withErrors(['message' => 'Las contraseñas no coinciden']);
-            }
+        $user = self::complet_users_model($request);
+        $user->save();
+
+        if ($request->tipousuario == 1){
+            $student = self::complet_students_model($user, $request);
+            $student->save();
+        } else if ($request->tipousuario == 2){
+            $mentor = self::complet_mentors_model($user, $request);
+            $mentor->save();
+        }
     }
     /**
      * Modificar datos usuario
      * =======================
-<<<<<<< HEAD
-
-=======
->>>>>>> 79abd68237831c9eaac9f08426294c1ec89c4fba
      * Función modify carga los datos en una variable y muestra la vista correspondiente con los datos introducidos para que el usuario pueda verlos
      * y modificarlos.
      * En la función store se cargan los datos en la tupla adecuada y se hace el update de estos para modificarlo
@@ -110,13 +112,13 @@ class UsersController extends Controller
      */
     public function modify(){
        $data = [
-            'name'        => Auth::user()->name        ,
-            'surname'     => Auth::user()->surname     ,
-            'email'       => Auth::user()->email       ,
-            'user'        => Auth::user()->user        ,
-            'tipousuario' => Auth::user()->usertype    ,
-            'campoestudio' =>Auth::user()->studyarea   ,
-            'description' => Auth::user()->description
+            'name'        => Auth::user()->NAME        ,
+            'surname'     => Auth::user()->SURNAME     ,
+            'email'       => Auth::user()->EMAIL       ,
+            'user'        => Auth::user()->USER        ,
+            'tipousuario' => Auth::user()->USER_TYPE   ,
+            'campoestudio' =>Auth::user()->STUDY_AREA  ,
+            'description' => Auth::user()->DESCRIPTION
        ];
 
         return (view('users.modify', ['data' => $data]));
@@ -129,13 +131,13 @@ class UsersController extends Controller
 
         $actual_data = User::find(Auth::user()->id);
 
-        $actual_data->name        = $user->name        ;
-        $actual_data->surname     = $user->surname     ;
-        $actual_data->email       = $user->email       ;
-        $actual_data->user        = $user->user        ;
-        $actual_data->user_type    = $user->user_type  ;
-        $actual_data->study_area   = $user->study_area ;
-        $actual_data->description = $user->description ;
+        $actual_data->NAME        = $user->NAME        ;
+        $actual_data->SURNAME     = $user->SURNAME     ;
+        $actual_data->EMAIL       = $user->EMAIL       ;
+        $actual_data->USER        = $user->USER        ;
+        $actual_data->USER_TYPE   = $user->USER_TYPE   ;
+        $actual_data->STUDY_AREA  = $user->STUDY_AREA  ;
+        $actual_data->DESCRIPTION = $user->DESCRIPTION ;
 
         $actual_data->update();
     }
@@ -147,24 +149,20 @@ class UsersController extends Controller
      * no pueda modificar los datos.
      * Función delete_store se borran los datos y se redirige a la ventana de home.
      *
-<<<<<<< HEAD
      * TO DO:
-=======
-     * To Do:
->>>>>>> 79abd68237831c9eaac9f08426294c1ec89c4fba
      * ======
      * Pedir la contraseña antes de borrar los datos, para asegurarnos de que realmente quieren borrar los datos.
      * Borrar la caché de la pagina web para que al darle atrás no vaya a ninguna página.
      */
     public function delete(){
         $data = [
-            'name'      => Auth::user()->name   ,
-            'surname'   => Auth::user()->surname,
-            'email'     => Auth::user()->email  ,
-            'user'      => Auth::user()->user   ,
-            'tipousuario' => Auth::user()->usertype,
-            'campoestudio' =>Auth::user()->studyarea,
-            'description' => Auth::user()->description
+            'name'          => Auth::user()->NAME       ,
+            'surname'       => Auth::user()->SURNAME    ,
+            'email'         => Auth::user()->EMAIL      ,
+            'user'          => Auth::user()->USER       ,
+            'tipousuario'   => Auth::user()->USER_TYPE  ,
+            'campoestudio'  => Auth::user()->STUDY_AREA  ,
+            'description'   => Auth::user()->DESCRIPTION
         ];
 
         return view('users.delete', ['data' => $data]);
@@ -206,10 +204,12 @@ class UsersController extends Controller
             'email'         => ['max:255',          'required', 'unique:users'],
             'user'          => ['max:30' ,          'required', 'unique:users'],
             'password'      => [           'min:5', 'required'                ],
-            'rep_password'  => [           'min:5', 'required'                ]
-        ]);
+            'rep_password'  => [           'min:5', 'required'                ],
 
-        return $validacion;
+            'campoestudio'  => ['not_in:0'],
+            'tipousuario'   => ['not_in:0']
+
+        ]);
     }
 //--------------------------------------------------------------------------------------------------
     private function complet_users_model(Request $request){
@@ -224,6 +224,33 @@ class UsersController extends Controller
         $user->description = $request->description;
 
         return $user;
+    }
+//--------------------------------------------------------------------------------------------------
+    private function complet_students_model(User $user, Request $request){
+
+        $student             = new Student();
+        $student->user_id    = User::where('USER' , $user->user)
+                                   ->where('EMAIL', $user->email)
+                                   ->pluck('ID')
+                                   ->first();
+        $student->career     = $request->career;
+        $student->first_year = $request->first_year;
+        $student->duration   = $request->duration;
+
+
+        return $student;
+    }
+//--------------------------------------------------------------------------------------------------
+    private function complet_mentors_model(User $user, Request $request){
+        $mentor          = new Mentor();
+        $mentor->user_id = User::where('USER' , $user->user)
+                               ->where('EMAIL', $user->email)
+                               ->pluck('ID')
+                               ->first();
+        $mentor->company = $request->company;
+        $mentor->job     = $request->job;
+
+        return $mentor;
     }
 //--------------------------------------------------------------------------------------------------
     private function cifrate_private_key ($clave){

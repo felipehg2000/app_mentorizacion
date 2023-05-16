@@ -73,7 +73,7 @@
         }
 
         /*Estilo del botón que despliega el menú de opciones*/
-        .perfil {
+        /*.perfil {
             border-style: solid;
             border-radius: 100%;
             border-color: black;
@@ -82,6 +82,14 @@
             padding: 10px;
             text-decoration: none;
             font-weight: bold;
+        }*/
+
+        img.perfil_image{
+            height: 40px;
+            width : auto;
+            border-style: solid;
+            border-radius: 100%;
+            border-color: black;
         }
 
         /*Estilo de las opciones del menú de desplegable de opciones*/
@@ -109,26 +117,12 @@
             margin-bottom: 50px;
             box-sizing: border-box;
         }
-
-        /*Estilo para el pie de página*/
-        footer {
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            background-color: #0099cc;
-            color: #fff;
-            padding: 0px;
-        }
-
-        .pie_de_pagina {
-            font-size: 14px;
-            text-align: center;
-        }
     </style>
 
     @yield('style')
+
     <!--JAVA SCRIPTS-->
+    @yield('js')
 
 </head>
 <body>
@@ -139,7 +133,7 @@
         <img src=" {{ asset('photos/logo_blanco.JPG') }}" class="logo">
         <ul>
             <li class="menuDesplegable">
-                <a class="perfil">U</a><!--USUARIO-->
+                <a class="perfil"><img src = " {{ asset('photos/my_image.png') }} " class="perfil_image"></a>
                     <ul>
                         <li class="opcion"><a href=" {{ route('users.modify') }} " class="botonOpcion">Modificar Usuario</a></li>
                         <li class="opcion"><a href=" {{ route('users.delete') }} " class="botonOpcion">Borrar Usuario</a></li>
@@ -152,12 +146,5 @@
     </nav>
     <!--main-->
         @yield('main')
-
-    <!--FOOTER-->
-    <footer>
-        <p class="pie_de_pagina">
-            Trabajo de fin de grado Felipe Hernández González: Red social de mentorización de alumnos
-        </p>
-    </footer>
 </body>
 </html>
