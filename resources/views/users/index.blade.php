@@ -14,42 +14,32 @@
 <html>
 <head>
 	<title>Inicio de sesión</title>
-	<link href="{{ asset('css/estiloFormNoLog.css') }}" rel="stylesheet">
+	<link href="{{ asset('css/loginUserStyle.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/User/loginUserScript.js') }}"></script>
 </head>
 <body>
-	<form action="{{ route('users.store') }}" method="POST">
-		<h1>Inicio de sesión</h1>
-
-        @csrf <!-- se utiliza para añadir un token oculto al envío de datos, nos obliga laravel a ponerlo porque si no dará error el envío -->
-
-		<div class="container">
-            <div class="all">
-				<label for="user">Usuario:</label>
-                @error('user')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-				<input type="text" id="user" name="user" value=" {{old('user')}} ">
-			</div>
+    <div class ="pnlPrincipal">
+        <div class = "pnlSuperior">
+            <h3>Inicio de sesión</h3>
         </div>
+        <form action="{{ route('users.store') }}" method="POST">
+            @csrf
+            <div class="pnlClient">
+                <div class = "pnlRight">
+                    <label for="user" id="lbl_user" class="center"></label><br>
+                    <input type="text" id="user" name="user" class="center" placeholder="Usuario" onfocus="createLabel(1)" onblur="deleteLabel(1)"><br>
+                    <label for="password" id="lbl_password" class="center"></label><br>
+                    <input type="password" id="password" name="password" class="center" placeholder="Contraseña" onfocus="createLabel(2)" onblur="deleteLabel(2)"><br><br>
+                </div>
+            </div>
 
-        <div class="container">
-            <div class="all">
-				<label for="password">Contraseña:</label>
-                @error('password')
-                    <br>
-                    <small>*{{ $message }}</small>
-                @enderror
-				<input type="password" id="password" name="password">
-			</div>
-        </div>
-        @foreach ($errors->all() as $error)
-            <small>{{ $error }}</small>
-            <br>
-            <br>
-         @endforeach
-
-        <button type="submit">Iniciar sesión</button>
-    </form>
+            <div class="pnlInferior">
+                @foreach ($errors->all() as $error)
+                    <small class="error">{{ $error }}</small>
+                @endforeach
+                <button type="submit" class="btn_create">Iniciar sesión</button><br>
+            <div>
+        </form>
+    </div>
 </body>
 </html>
