@@ -23,14 +23,17 @@
                     <label for="input_email" id="lbl_email" class="right"></label>                                                                                  <br>
                     <input class="right" type="text" id="input_email"  name="email" placeholder="Email" onfocus="createLabel(3)" onblur="deleteLabel(3)">                         <br>
 
+                    <label for="input_user" id="lbl_user" class="right"></label>                                                                                  <br>
+                    <input class="right" type="text" id="input_user"  name="user" placeholder="Usuario" onfocus="createLabel(13)" onblur="deleteLabel(13)">                         <br>
+
                     <label for="input_password" id="lbl_password" class="right"></label>                                                                            <br>
                     <input class="right" type="password" id="input_password" name="password" placeholder="Contraseña" onfocus="createLabel(4)" onblur="deleteLabel(4)">             <br>
 
                     <label for="input_rep_password" id="lbl_rep_password" class="right"></label>                                                                    <br>
                     <input class="right" type="password" id="input_rep_password" name="rep_password" placeholder="Repetir contraseña" onfocus="createLabel(5)" onblur="deleteLabel(5)"> <br>
 
-                    <label for="input_study_area" id="lbl_study_area" class="right" name="campoestudio"></label>                                                                        <br>
-                    <select class="right" id="input_study_area" onfocus="createLabel(12)" onblur="deleteLabel(12)">
+                    <label for="input_study_area" id="lbl_study_area" class="right"></label>                                                                        <br>
+                    <select class="right" id="input_study_area" name="campoestudio" onfocus="createLabel(12)" onblur="deleteLabel(12)">
                         <option value="0">Seleccione su area de estudio</option>
                         <option value="1">Rama tecnológica</option>
                         <option value="2">Rama biosanitaria</option>
@@ -41,8 +44,8 @@
                 </div>
 
                 <div class="pnlLeft" id="pnlLeft">
-                    <label for="input_user_type" id="lbl_user_type" name="tipousuario"></label><br>
-                    <select class="left" id="input_user_type" onfocus="createLabel(6)" onblur="deleteLabel(6)" onchange="userTypeChange(this.value)">
+                    <label for="input_user_type" id="lbl_user_type"></label><br>
+                    <select class="left" id="input_user_type" name="tipousuario" onfocus="createLabel(6)" onblur="deleteLabel(6)" onchange="userTypeChange(this.value)">
                         <option value="0">Seleccione el tipo de usuario</option>
                         <option value="1">Estudiante</option>
                         <option value="2">Mentor</option>
@@ -51,6 +54,9 @@
             </div>
 
             <div class="pnlInferior">
+                @foreach ($errors->all() as $error)
+                    <small class="error">{{ $error }}</small>
+                @endforeach
                 <button class="btn_create" type="submit">Crear usuario</button><br>
             </div>
         </form>

@@ -42,6 +42,9 @@ function createLabel(index){
         case 12:
             document.getElementById('lbl_study_area')   .innerHTML = "Area de estudio";
             break;
+        case 13:
+            document.getElementById('lbl_user')         .innerHTML = "Usuario";
+            break;
     }
 }
 
@@ -88,6 +91,9 @@ function deleteLabel(index){
             break;
         case 12:
             document.getElementById('lbl_study_area')   .innerHTML = "";
+            break;
+        case 13:
+            document.getElementById('lbl_user')         .innerHTML = "";
             break;
 
     }
@@ -138,6 +144,7 @@ function userTypeChange(value){
         input_career.className       = 'left';
         input_career.type            = 'text';
         input_career.id              = 'input_career';
+        input_career.name            = 'career';
         input_career.placeholder     = 'Estudios que cursa';
         input_career.onfocus         = createLabel.bind(null, 7);
         input_career.onblur          = deleteLabel.bind(null, 7);
@@ -145,6 +152,7 @@ function userTypeChange(value){
         input_first_year.className   = 'left';
         input_first_year.type        = 'number';
         input_first_year.id          = 'input_first_year';
+        input_first_year.name        = 'first_year';
         input_first_year.placeholder = 'Primer año';
         input_first_year.onfocus     = createLabel.bind(null, 8);
         input_first_year.onblur      = deleteLabel.bind(null, 8);
@@ -152,6 +160,7 @@ function userTypeChange(value){
         input_duration.className     = 'left';
         input_duration.type          = 'number';
         input_duration.id            = 'input_duration';
+        input_duration.name          = 'duration';
         input_duration.placeholder   = 'Duración';
         input_duration.onfocus       = createLabel.bind(null, 9);
         input_duration.onblur        = deleteLabel.bind(null, 9);
@@ -201,6 +210,7 @@ function userTypeChange(value){
         input_company.className   = 'left';
         input_company.type        = 'text';
         input_company.id          = 'input_company';
+        input_company.name        = 'company';
         input_company.placeholder = 'Empresa';
         input_company.onfocus     = createLabel.bind(null, 10);
         input_company.onblur      = deleteLabel.bind(null, 10);
@@ -208,6 +218,7 @@ function userTypeChange(value){
         input_job.className     = 'left';
         input_job.type          = 'text';
         input_job.id            = 'input_job';
+        input_job.name          = 'job';
         input_job.placeholder   = 'Puesto de trabajo';
         input_job.onfocus       = createLabel.bind(null, 11);
         input_job.onblur        = deleteLabel.bind(null, 11);

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Student;
+use App\Models\Mentor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\StudentsController;
@@ -15,7 +17,7 @@ use App\Http\Controllers\MentorsController;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2023-05-14 20:43:05
+ * @Last Modified time: 2023-05-15 23:30:31
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -82,22 +84,18 @@ class UsersController extends Controller
     }
 //--------------------------------------------------------------------------------------------------
     public function create_store(Request $request){
-        echo 'UsersController.php create_store line 86 change implementation';
-        echo $request;
-        /*https://styde.net/laravel-6-doc-validacion/ */
+        $this->validate_user_data($request);
 
-        /*self::validate_user_data($request);
+        $user = self::complet_users_model($request);
+        $user->save();
 
-
-        if (self::cifrate_private_key($request->REP_PASSWORD) == $user->PASSWORD)
-            {
-            $user->save();
-            return view('users.index');
-            }
-        else
-            {
-            return redirect()->back()->withErrors(['message' => 'Las contraseñas no coinciden']);
-            }*/
+        if ($request->tipousuario == 1){
+            $student = self::complet_students_model($user, $request);
+            $student->save();
+        } else if ($request->tipousuario == 2){
+            $mentor = self::complet_mentors_model($user, $request);
+            $mentor->save();
+        }
     }
     /**
      * Modificar datos usuario
@@ -201,29 +199,58 @@ class UsersController extends Controller
      */
     private function validate_user_data(Request $request){
         $validacion = $request->validate([
-            'NAME'          => ['max:30' , 'min:5', 'required'                ],
-            'SURNAME'       => ['max:90'                                      ],
-            'EMAIL'         => ['max:255',          'required', 'unique:users'],
-            'USER'          => ['max:30' ,          'required', 'unique:users'],
-            'PASSWORD'      => [           'min:5', 'required'                ],
-            'REP_PASSWORD'  => [           'min:5', 'required'                ]
-        ]);
+            'name'          => ['max:30' , 'min:5', 'required'                ],
+            'surname'       => ['max:90'                                      ],
+            'email'         => ['max:255',          'required', 'unique:users'],
+            'user'          => ['max:30' ,          'required', 'unique:users'],
+            'password'      => [           'min:5', 'required'                ],
+            'rep_password'  => [           'min:5', 'required'                ],
 
-        return $validacion;
+            'campoestudio'  => ['not_in:0'],
+            'tipousuario'   => ['not_in:0']
+
+        ]);
     }
 //--------------------------------------------------------------------------------------------------
     private function complet_users_model(Request $request){
         $user              = new User();
-        $user->NAME        = $request->NAME;
-        $user->SURNAME     = $request->SURNAME;
-        $user->EMAIL       = $request->EMAIL;
-        $user->USER        = $request->USER;
-        $user->PASSWORD    = self::cifrate_private_key ($request->PASSWORD);
-        /*$user->USER_TYPE   = $_POST["tipousuario"];
-        $user->STUDY_AREA  = $_POST["campoestudio"];
-        $user->DESCRIPTION = $request->DESCRIPTION;*/
+        $user->name        = $request->name;
+        $user->surname     = $request->surname;
+        $user->email       = $request->email;
+        $user->user        = $request->user;
+        $user->password    = self::cifrate_private_key ($request->password);
+        $user->user_type   = $_POST["tipousuario"];
+        $user->study_area  = $_POST["campoestudio"];
+        $user->description = $request->description;
 
         return $user;
+    }
+//--------------------------------------------------------------------------------------------------
+    private function complet_students_model(User $user, Request $request){
+
+        $student             = new Student();
+        $student->user_id    = User::where('USER' , $user->user)
+                                   ->where('EMAIL', $user->email)
+                                   ->pluck('ID')
+                                   ->first();
+        $student->career     = $request->career;
+        $student->first_year = $request->first_year;
+        $student->duration   = $request->duration;
+
+
+        return $student;
+    }
+//--------------------------------------------------------------------------------------------------
+    private function complet_mentors_model(User $user, Request $request){
+        $mentor          = new Mentor();
+        $mentor->user_id = User::where('USER' , $user->user)
+                               ->where('EMAIL', $user->email)
+                               ->pluck('ID')
+                               ->first();
+        $mentor->company = $request->company;
+        $mentor->job     = $request->job;
+
+        return $mentor;
     }
 //--------------------------------------------------------------------------------------------------
     private function cifrate_private_key ($clave){

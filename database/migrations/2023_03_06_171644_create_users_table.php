@@ -4,7 +4,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-14 20:19:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2023-03-14 20:32:06
+ * @Last Modified time: 2023-05-15 20:40:04
  * @Description: Migración completa para la base de datos de la primera versión de la aplicación mentoring, en la primera modificación añadiremos
  *               los datos respectivos al usuario.
  */
@@ -172,15 +172,15 @@ return new class extends Migration{
      * Borra la migración a la base de datos completamente.
      */
     public function down(): void{
-        Schema::dropIfExists('USERS');
-        Schema::dropIfExists('STUDENTS');
-        Schema::dropIfExists('MENTORS'              );
         Schema::dropIfExists('INHERITANCE_USERS'    );
-        Schema::dropIfExists('STUDY_ROOMS'          );
         Schema::dropIfExists('STUDY_ROOM_ACCES'     );
+        Schema::dropIfExists('STUDY_ROOMS'          );
         Schema::dropIfExists('FRIEND_REQUESTS'      );
         Schema::dropIfExists('SYNCHRONOUS_MESSAGES' );
         Schema::dropIfExists('ASYNCHRONOUS_MESSAGES');
+        Schema::dropIfExists('MENTORS'              );
+        Schema::dropIfExists('STUDENTS');
+        Schema::dropIfExists('USERS');
     }
 
     /**
