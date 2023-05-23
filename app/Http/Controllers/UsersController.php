@@ -9,8 +9,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\MentorsController;
+use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\File;
 
-
+use function PHPUnit\Framework\fileExists;
 
 /*
  * @Author: Felipe Hernández González
@@ -258,5 +260,4 @@ class UsersController extends Controller
 
         return openssl_encrypt($clave, 'aes-256-ecb', $key);
     }
-//--------------------------------------------------------------------------------------------------
 }

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-
 
 class StudentsController extends Controller{
     /**
@@ -26,6 +24,10 @@ class StudentsController extends Controller{
                          ->where('USER_TYPE' , $user_type              )
                          ->get();
 
+        foreach ($users as $user){
+            $this->convertToPhoto($user->IMAGE, $user->USER);
+        }
+
         return view ('students.friendship', compact('users'));
     }
     /**
@@ -38,6 +40,23 @@ class StudentsController extends Controller{
         $image_data   = base64_decode($image_binary);
         $destination_path = public_path('photos\my_image.png');
         file_put_contents($destination_path, $image_data);
+    }
+//--------------------------------------------------------------------------------------------------
+    private function convertToPhoto($blopPhoto, $user){
+        //Creamos la ruta y el archivo
+        $path             = "photos/users/User" . $user. ".png";
+        $destination_path = public_path($path);
+
+        touch($destination_path);
+
+        //Convertimos el campo blop en una imagen
+        $image_binary = $blopPhoto;
+        $image_data   = base64_decode($image_binary);
+
+        //Guardamos los datos de la imagen en el file creado
+        if (file_exists($destination_path)){
+            file_put_contents($destination_path, $image_data);
+        }
     }
 }
 

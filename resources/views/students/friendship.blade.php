@@ -7,67 +7,110 @@
         body {
             background-color: rgb(184, 184, 184);
         }
-        table, tr, th{
+
+        div.pnlPrincipalFriendship {
+            display  : flex;
+            flex-wrap: wrap;
+        }
+
+        div.pnlCard {
+            width: 25%;
+
+            margin : 2.5%;
+            padding: 2.5%;
+
+            background-color: rgb(184, 184, 184);
+
+            border: 1px solid blue;
+        }
+
+        div.pnlCard img {
             width: 100%;
-            border: 1px solid black;
+            height: auto;
+
+            border      : solid;
+            border-color: blue;
+            border-width: 1px;
+
         }
-        table{
-            border-collapse: collapse;
-            background-color: white;
+
+        div.name {
+            width: 100%;
+
+            font-weight: bold;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            text-align : center;
+
+            margin-top: 10px;
+
+            border             : solid;
+            border-color       : blue;
+            border-bottom-width: 1px;
+            border-top-width   : 0px;
+            border-left-width  : 0px;
+            border-right-width : 0px;
         }
-        tr.title{
+
+        .pnlCard .details {
+        margin-top: 5px;
+        }
+
+        div.btnFollow{
+            display: flex;
+            justify-content: center;
+        }
+
+        button.btnFollow{
+            width   : auto;
+            padding: 10px;
+
+            border       : none;
+            border-radius: 5px;
+
             background-color: #0099cc;
+            color           : #fff;
+            font-size       : 16px;
+
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
         }
-        th{
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 15px;
-        }
-        th.photo{
-            width: 10%;
-        }
-        th.name{
-            width: 20%;
-        }
-        th.description{
-            width:30%
-        }
-        th.empresa{
-            width: 20%;
-        }
-        th.puesto{
-            width: 20%;
+
+        button.btnFollow:hover {
+            background-color: #0077b3;
         }
     </style>
 @endsection
 
 @section ('main')
-    <main>
-        <table>
-        <tr class="title">
-            <th class="photo">FOTO</th>
-            <th class="name">NOMBRE</th>
-            <th class="description">DESCRIPCION</th>
-            <th class="empresa">EMPRESA</th>
-            <th class="puesto">PUESTO DE TRABAJO</th>
-            <th class="peticion">PETICION</th>
-        </tr>
-            @foreach ($users as $user)
-                <a href="#" class="lista_usuarios">
-                    <tr class="mentors">
-                        <th class="photo"       >             FOTO                                       </th>
-                        <th class="name"        >             {{ $user->NAME }} {{ $user->SURNAME}}      </th>
-                        <th class="description" >             {{ $user->DESCRIPTION }}                   </th>
-                        <th class="empresa"     >             EMPRESA                                    </th>
-                        <th class="puesto"      >             PUESTO                                     </th>
-                        <th class="peticion"    ><a onclick=""> Unirse                                 </a></th>
-                    </tr>
-                </a>
-            @endforeach
-        </table>
-    </main>
 
+    <div class="pnlPrincipalFriendship">
+        @foreach ($users as $user)
+            <div class="pnlCard">
+                <div class="pnlSuperiorCard">
+                    <img src=" {{ asset('photos/users/User' . $user->USER . '.png')}}">
+                </div>
+
+                <div class="pnlInferiorCard">
+                    <div class="name">{{ $user->NAME }} {{ $user->SURNAME}}</div><br>
+                    <label>{{ $user->DESCRIPTION }}</label><br>
+
+                    <div class="btnFollow">
+                    <button type="submit" class="btnFollow" onclick="followClick('<?php echo strval($user->USER); ?>')">Unirme</button>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    </main>
+@endsection
+
+@section ('js')
     <script>
-        unirseClick(){
+        function followClick(user){
+            console.log(user);
 
         }
     </script>
