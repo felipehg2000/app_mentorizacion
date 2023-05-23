@@ -6,6 +6,8 @@ html, body {
 body {
     margin : 0;
     padding: 0;
+
+    overflow: hidden;
 }
 
 /*Estilo genérico para la barra de navegación*/
@@ -57,6 +59,9 @@ div.pnlLeft{
     border-color: black;
 
     background-color: rgba(0, 0, 0, 0.853);
+
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 div.pnlRight{
@@ -64,6 +69,9 @@ div.pnlRight{
 
     width : 80%;
     height: auto;
+
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 div.menu{
