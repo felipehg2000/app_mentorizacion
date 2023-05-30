@@ -84,7 +84,6 @@
 @endsection
 
 @section ('main')
-
     <div class="pnlPrincipalFriendship">
         @foreach ($users as $user)
             <div class="pnlCard">
@@ -95,10 +94,13 @@
                 <div class="pnlInferiorCard">
                     <div class="name">{{ $user->NAME }} {{ $user->SURNAME}}</div><br>
                     <label>{{ $user->DESCRIPTION }}</label><br>
-
-                    <div class="btnFollow">
-                    <button type="submit" class="btnFollow" onclick="followClick('<?php echo strval($user->USER); ?>')">Unirme</button>
-                    </div>
+                    <form action="{{ route('students.friendship.store')}}"  method="POST">
+                        @csrf
+                        <input class="ocultar", id="user_user" name="user_user" value = {{$user->USER}} type="hidden">
+                        <div class="btnFollow">
+                            <button type="submit" class="btnFollow">Unirme</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         @endforeach
@@ -106,7 +108,7 @@
 
     </main>
 @endsection
-
+<!--
 @section ('js')
     <script>
         function followClick(user){
@@ -114,4 +116,4 @@
 
         }
     </script>
-@endsection
+@endsection-->

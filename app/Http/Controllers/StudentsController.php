@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class StudentsController extends Controller{
     /**
@@ -29,6 +30,18 @@ class StudentsController extends Controller{
         }
 
         return view ('students.friendship', compact('users'));
+    }
+
+    /**
+     * FRIENDSHIP_STORE:
+     * =================
+     *
+     * Recibe el nombre del usaurio con el que quiere contactar y se encarga de dar de alta en la base de datos la solicitud de amisrtad.
+     */
+    public function friendship_store(Request $request){
+        /**Dar de alta la entrada para que los usuarios y los mentroes queden conectados. */
+        echo Auth::user()->id;
+        echo $request->user_user;
     }
     /**
      * FUNCIONES AUXILIARES:
@@ -63,3 +76,4 @@ class StudentsController extends Controller{
 
 //EVENTS Y LISTENERS BUSCAR INTERNET.
 //BOOSTRAP.STUDIO O ALGO ASÍN
+
