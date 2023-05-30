@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Friend_request;
 
 class StudentsController extends Controller{
+    //--------------------------------------------------------------------------------------------------
     /**
      * INDEX
      * =====
@@ -17,8 +20,15 @@ class StudentsController extends Controller{
         $this->BinaryToPhoto(Auth::user()->IMAGE);
         return view('students.index');
     }
-
-
+    //--------------------------------------------------------------------------------------------------
+    /**
+     * FRIENDSHIP REDIRECTION
+     * ======================
+     * Guarda en una variable todos los mentores que sean del mismo campo de estudio que el estudiante y muestran la vista del estudiante de búsqueda de amigos mostrando
+     * esos usuarios.
+     *
+     * TO DO: Tengo que quitar de esta vista los que ya aparezcan en la tabla de solicitudes de amistad.
+     */
     public function friendship_redirection(){
         $user_type = 2;
         $users     = User::where('STUDY_AREA', Auth::user()->STUDY_AREA)
@@ -40,8 +50,27 @@ class StudentsController extends Controller{
      */
     public function friendship_store(Request $request){
         /**Dar de alta la entrada para que los usuarios y los mentroes queden conectados. */
-        echo Auth::user()->id;
-        echo $request->user_user;
+        $student_id = Auth::user()->id;
+        $mentor_id  = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
+
+        $resultado = Friend_request::where('MENTOR_ID' , $mentor_id)
+                                   ->where('STUDENT_ID', $student_id)
+                                   ->first();
+
+        if ($resultado == NULL)
+            {
+            $friendRequest = new Friend_request();
+            $friendRequest->mentor_id  = $mentor_id ;
+            $friendRequest->student_id = $student_id;
+            $friendRequest->status     = 1          ;
+
+            $friendRequest->save();
+            }
+        else
+            {
+            return redirect()->back()->withErrors(['error' => $request->user_user]);
+            }
+        return back();
     }
     /**
      * FUNCIONES AUXILIARES:
