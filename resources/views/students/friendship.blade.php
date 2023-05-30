@@ -56,12 +56,13 @@
         }
 
         div.btnFollow{
-            display: flex;
-            justify-content: center;
+            display         : flex;
+            justify-content : center;
+            align-items     : center;
         }
 
         button.btnFollow{
-            width   : auto;
+            width   : 30%;
             padding: 10px;
 
             border       : none;
@@ -80,6 +81,11 @@
         button.btnFollow:hover {
             background-color: #0077b3;
         }
+
+        small{
+            color: red;
+            text-align:center;
+        }
     </style>
 @endsection
 
@@ -97,8 +103,12 @@
                     <form action="{{ route('students.friendship.store')}}"  method="POST">
                         @csrf
                         <input class="ocultar", id="user_user" name="user_user" value = {{$user->USER}} type="hidden">
+
+                        @if ($errors->first('error') == $user->USER)
+                            <br><small>Solicitud de amsitad enviada anteriormente.</small><br>
+                        @endif
                         <div class="btnFollow">
-                            <button type="submit" class="btnFollow">Unirme</button>
+                            <button type="submit" class="btnFollow" id="btnFollow" onclick="followClick()">Unirme</button>
                         </div>
                     </form>
                 </div>
@@ -108,12 +118,16 @@
 
     </main>
 @endsection
-<!--
+
 @section ('js')
     <script>
-        function followClick(user){
-            console.log(user);
+        function followClick(){
+            console.log(1);
+            document.getElementById("btnFollow").value                 = "Solicitud enviada";
+            document.getElementById("btnFollow").style.Color           = "#0099cc";
+            document.getElementById("btnFollow").style.backgroundColor = "white";
+            document.getElementById("btnFollow").borderColor           = "blue";
 
         }
     </script>
-@endsection-->
+@endsection
