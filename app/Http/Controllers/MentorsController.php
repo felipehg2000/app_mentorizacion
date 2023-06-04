@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Models\User;
 
 class MentorsController extends Controller{
+    //--------------------------------------------------------------------------------------------------
     /**
      * INDEX:
      * ======
@@ -18,9 +20,20 @@ class MentorsController extends Controller{
         $this->BinaryToPhoto(Auth::user()->IMAGE);
         return view('mentors.index');
     }
+    //--------------------------------------------------------------------------------------------------
+    /**
+     *  FRIENDSHIP
+     *  ==========
+     * Función get : devuelve la ruta de la vista que querramos mostrar
+     * Función post: Se guarda en la base de datos que el estado es aceptado o se borra el registro en caso de que sea denegada la solicitud
+     */
+    public function friendship(){
+        return view('mentors.friendship');
+    }
+    public function friendship_store (Request $request){
 
-
-
+    }
+    //--------------------------------------------------------------------------------------------------
     /**
      * FUNCIONES AUXILIARES:
      * =====================
@@ -32,4 +45,5 @@ class MentorsController extends Controller{
         $destination_path = public_path('photos\my_image.png');
         file_put_contents($destination_path, $image_data);
     }
+    //--------------------------------------------------------------------------------------------------
 }
