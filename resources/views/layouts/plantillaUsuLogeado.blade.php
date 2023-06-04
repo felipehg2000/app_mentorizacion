@@ -79,7 +79,7 @@
                 window.location.href = "#";
                 break;
             case 9:
-                window.location.href = "{{route('students.friendship_redirection')}}";
+                window.location.href = "{{route('students.friendship')}}";
                 break;
             case 10:
                 window.location.href = "{{route('users.modify')}}";

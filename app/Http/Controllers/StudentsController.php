@@ -29,7 +29,7 @@ class StudentsController extends Controller{
      *
      * TO DO: Tengo que quitar de esta vista los que ya aparezcan en la tabla de solicitudes de amistad.
      */
-    public function friendship_redirection(){
+    public function friendship(){
         $user_type = 2;
         $users     = User::where('STUDY_AREA', Auth::user()->STUDY_AREA)
                          ->where('USER_TYPE' , $user_type              )
@@ -101,7 +101,6 @@ class StudentsController extends Controller{
         }
     }
 }
-
 
 //EVENTS Y LISTENERS BUSCAR INTERNET.
 //BOOSTRAP.STUDIO O ALGO ASÍN

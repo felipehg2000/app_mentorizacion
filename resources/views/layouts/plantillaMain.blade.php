@@ -60,7 +60,7 @@ function tutorialsClick(){
 }
 
 function friendshipClick() {
-    window.location.href = "{{ route('students.friendship_redirection') }}";
+    window.location.href = "{{ route('students.friendship') }}";
 }
     </script>
 @endsection
