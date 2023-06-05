@@ -28,6 +28,8 @@ class MentorsController extends Controller{
      * Función post: Se guarda en la base de datos que el estado es aceptado o se borra el registro en caso de que sea denegada la solicitud
      */
     public function friendship(){
+        //TO DO: tengo que hacer la consulta select para pasarle la variable users con los datos de los usuarios que hayan seguido al mentor y en la vista modificar el botón actual por dos botones.
+        //Pasar para probar los datos del estudiante también, osea los datos del usuario y el estudiante
         return view('mentors.friendship');
     }
     public function friendship_store (Request $request){
