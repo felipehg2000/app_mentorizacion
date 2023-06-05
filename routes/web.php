@@ -45,8 +45,8 @@ Route::controller(MentorsController::class)->group(function(){
 });
 
 Route::controller(StudentsController::class)->group(function(){
-    Route::get ('students'           , [StudentsController::class, 'index'])            ->name('students.index');
-    Route::get ('students/friendship', [StudentsController::class, 'friendship'])       ->name('students.friendship');
-    Route::post('students/friendship', [StudentsController::class, 'friendship_store']) ->name('students.friendship.store');
+    Route::get ('students'           , [StudentsController::class, 'index'           ])->name('students.index'           );
+    Route::get ('students/friendship', [StudentsController::class, 'friendship'      ])->name('students.friendship'      );
+    Route::post('students/friendship', [StudentsController::class, 'friendship_store'])->name('students.friendship.store');
 });
 
