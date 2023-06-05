@@ -46,21 +46,5 @@
         </table>
     </main>
 
-    <script>
-function chtClick(){
-
-}
-
-function study_roomClick(){
-
-}
-
-function tutorialsClick(){
-
-}
-
-function friendshipClick() {
-    window.location.href = "{{ route('students.friendship') }}";
-}
-    </script>
+    @yield('script')
 @endsection
