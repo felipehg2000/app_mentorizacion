@@ -3,7 +3,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-14 20:12:25
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2023-05-16 20:25:17
+ * @Last Modified time: 2023-06-05 18:43:38
  * @Description: Damos estilo para los formularios de inicio de sesión y de registro de usuarios para los usuarios no logueados
  */
 
@@ -108,6 +108,9 @@ body {
     background-image: url("img_fondo.jpg");
     background-repeat: no-repeat;
     background-size  : cover;
+
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 .pnlPrincipal {
     width: 35%;
