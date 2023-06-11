@@ -1,0 +1,116 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2023-03-14 20:13:36
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2023-03-14 20:14:01
+ * @Description: Damos el estilo al html principal
+ */
+
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+}
+
+nav {
+    background-color: #0099cc;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    margin: 0 10px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5%;
+    border-style: solid;
+    border-color: white;
+}
+
+.logo {
+    height: 30px;
+    width: auto;
+    margin-left: 5%;
+    border-style: solid;
+    border-color: black;
+}
+
+main {
+    max-width: 85%;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+p {
+    font-family: Arial, sans-serif;
+    text-align: justify;
+}
+
+.contenedor {
+    display: flex;
+    margin-bottom: 30px;
+    border-style: solid;
+    border-radius: 20%;
+    border-color: #0099cc;
+}
+
+.main-left {
+    flex-basis: 100%;
+    margin: 5px;
+    padding: 30px;
+}
+
+.main-right {
+    flex-basis: 100%;
+    margin: 5px;
+    padding: 30px;
+}
+
+img {
+    height: 200px;
+    width: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+footer {
+    background-color: #0099cc;
+    color: #fff;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.pie_de_pagina {
+    font-size: 14px;
+    text-align: center;
+}
+

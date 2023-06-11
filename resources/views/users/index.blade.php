@@ -8,29 +8,38 @@
                     1.- Al pulsar el botón de inicio de sesión llamaremos a la fucnión users.store donde se comprobarán los datos introducidos para redireccionar.
                     2.- Al pulsar el botón de creación de cuenta se redirigirá a la vista de la ruta user.create.
  -->
-<!DOCTYPE html>
-<html lang = "en">
-    <head>
-        <meta charset="UFT-8">
-        <meta name="viewport" content="width=device-width, initial-scale-1.0">
-        <title>Home</title>
-    </head>
-    <body>
-        <h1>INICIO DE SESIÓN</h1>
-        <form action="{{route('users.store')}}" method="POST">
 
-            @csrf <!-- se utiliza para añadir un token oculto al envío de datos, nos obliga laravel a ponerlo porque si no dará error el envío -->
 
-            <label for="user">Usuario:</label>
-            <input type="text" id="user" name="user"><br><br>
-            <label for="password">Contraseña</label>
-            <input type="text" id="password" name="password"><br><br>
+ <!DOCTYPE html>
+<html>
+<head>
+	<title>Inicio de sesión</title>
+	<link href="{{ asset('css/loginUserStyle.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/User/loginUserScript.js') }}"></script>
+</head>
+<body>
+    <div class ="pnlPrincipal">
+        <div class = "pnlSuperior">
+            <h3>Inicio de sesión</h3>
+        </div>
+        <form action="{{ route('users.store') }}" method="POST">
+            @csrf
+            <div class="pnlClient">
+                <div class = "pnlRight">
+                    <label for="user" id="lbl_user" class="center"></label><br>
+                    <input type="text" id="user" name="user" class="center" placeholder="Usuario" onfocus="createLabel(1)" onblur="deleteLabel(1)"><br>
+                    <label for="password" id="lbl_password" class="center"></label><br>
+                    <input type="password" id="password" name="password" class="center" placeholder="Contraseña" onfocus="createLabel(2)" onblur="deleteLabel(2)"><br><br>
+                </div>
+            </div>
 
-            <button type="submit">Iniciar Sesión</button>
+            <div class="pnlInferior">
+                @foreach ($errors->all() as $error)
+                    <small class="error">{{ $error }}</small>
+                @endforeach
+                <button type="submit" class="btn_create">Iniciar sesión</button><br>
+            <div>
         </form>
-        <a href="{{route('users.create')}}">
-            <button type="submit">Crear cuenta</button>
-        </a>
-
-    </body>
+    </div>
+</body>
 </html>
