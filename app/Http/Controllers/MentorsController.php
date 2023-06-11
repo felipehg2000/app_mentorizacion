@@ -30,12 +30,16 @@ class MentorsController extends Controller{
      * Función post: Se guarda en la base de datos que el estado es aceptado o se borra el registro en caso de que sea denegada la solicitud
      */
     public function friendship(){
-        $result_user = User::join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.STUDENT_ID', '=', 'USERS.id')
-                           ->select('users.*')
-                           ->get();
+        $result_user = DB::table('USERS')
+                         ->join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.STUDENT_ID', '=', 'USERS.ID')
+                         ->where('FRIEND_REQUESTS.MENTOR_ID', '=', Auth::user()->id)
+                         ->where('FRIEND_REQUESTS.STATUS', '=', 1)
+                         ->select('USERS.*')
+                         ->get();
+
         /*$result_student = Student::where('id', $result_user->id)
                                  ->get();
-*/
+        */
         foreach($result_user as $user){
             $this->convertToPhoto($user->IMAGE, $user->USER);
         }
@@ -46,21 +50,48 @@ class MentorsController extends Controller{
         $mentor_id  = Auth::user()->id;
         $student_id = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
         if ($request->respuesta == "ACEPTAR"){
-            //Modificar el estado de la solicitud de amistad
-            echo 'ACEPTADA';
+            //Aceptar petición
             DB::table('FRIEND_REQUESTS')
               ->where('STUDENT_ID', $student_id)
               ->where('MENTOR_ID', $mentor_id)
               ->update(['STATUS' => 2]);
 
         }else if ($request->respuesta == "DENEGAR"){
-            //Borrar la solicitud de amistad
-            echo 'DENEGADA';
+            //Borrar petición
             DB::table('FRIEND_REQUESTS')
               ->where('STUDENT_ID', '=', $student_id)
               ->where('MENTOR_ID', $mentor_id)
               ->delete();
         }
+
+        return back();
+    }
+    //--------------------------------------------------------------------------------------------------
+    /**
+     *  ACTUAL FREIENDS
+     *  ===============
+     * Función get : devuelve la vista que queremos ver (vista con todos los usuarios que se encuentran relacionados con el auth en la tabla FRIENDSHIP_REQUEST)
+     * Función post: ¿No estoy seguro de si se necesita, para dejar de seguir a la gente por ejemplo?
+     */
+    public function actual_friends(){
+        //Buscar los usuarios relacionados con nosotros
+        $result_users = DB::table('USERS')
+                          ->join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.STUDENT_ID', '=', 'USERS.ID')
+                          ->where('FRIEND_REQUESTS.MENTOR_ID', '=', Auth::user()->id)
+                          ->where('FRIEND_REQUESTS.STATUS', '=', 2)
+                          ->select('USERS.*')
+                          ->get();
+        return view('mentors.actual_friends', compact('result_users'));
+    }
+    public function actual_friends_store(Request $request){
+        $student_id = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
+        $mentor_id  = Auth::user()->id;
+        DB::table('FRIEND_REQUESTS')
+          ->where('STUDENT_ID', '=', $student_id)
+          ->where('MENTOR_ID' , '=', $mentor_id)
+          ->delete();
+
+        return back();
     }
     //--------------------------------------------------------------------------------------------------
     /**

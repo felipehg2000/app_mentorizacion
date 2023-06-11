@@ -58,7 +58,7 @@ function redirection(index) {
                 window.location.href = "#";
                 break;
             case 8:
-                window.location.href = "#";
+                window.location.href = "{{route('mentors.actual_fruends')}}";
                 break;
             case 9:
                 window.location.href = "{{route('mentors.friendship')}}";
