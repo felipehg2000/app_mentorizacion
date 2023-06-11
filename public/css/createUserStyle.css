@@ -10,6 +10,9 @@ body {
     background-image: url("img_fondo.jpg");
     background-repeat: no-repeat;
     background-size  : cover;
+
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 .pnlPrincipal {
     width: 50%;
