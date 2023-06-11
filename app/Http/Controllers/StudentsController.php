@@ -41,7 +41,7 @@ class StudentsController extends Controller{
 
         return view ('students.friendship', compact('users'));
     }
-
+//----------------------------------------- ---------------------------------------------------------
     /**
      * FRIENDSHIP_STORE:
      * =================
@@ -71,7 +71,37 @@ class StudentsController extends Controller{
             return redirect()->back()->withErrors(['error' => $request->user_user]);
             }
         return back();
+
     }
+//--------------------------------------------------------------------------------------------------
+    /**
+     *  ACTUAL FREIENDS
+     *  ===============
+     * Función get : devuelve la vista que queremos ver (vista con todos los usuarios que se encuentran relacionados con el auth en la tabla FRIENDSHIP_REQUEST)
+     * Función post: ¿No estoy seguro de si se necesita, para dejar de seguir a la gente por ejemplo?
+     */
+    public function actual_friends(){
+        //Buscar los usuarios relacionados con nosotros
+        $result_users = DB::table('USERS')
+                          ->join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.MENTOR_ID', '=', 'USERS.ID')
+                          ->where('FRIEND_REQUESTS.STUDENT_ID', '=', Auth::user()->id)
+                          ->where('FRIEND_REQUESTS.STATUS', '=', 2)
+                          ->select('USERS.*')
+                          ->get();
+        return view('students.actual_friends', compact('result_users'));
+    }
+    public function actual_friends_store(Request $request){
+        $student_id = Auth::user()->id;
+        $mentor_id  = DB::table('USERS')->select('ID')->where('USER', $request->user_user)->get()->first()->ID;
+
+        DB::table('FRIEND_REQUESTS')
+          ->where('STUDENT_ID', '=', $student_id)
+          ->where('MENTOR_ID' , '=', $mentor_id )
+          ->delete();
+
+        return back();
+    }
+//--------------------------------------------------------------------------------------------------
     /**
      * FUNCIONES AUXILIARES:
      * =====================
