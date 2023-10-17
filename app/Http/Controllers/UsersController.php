@@ -16,7 +16,7 @@ use Exception;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2023-10-17 09:52:30
+ * @Last Modified time: 2023-10-17 22:22:09
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -212,7 +212,7 @@ class UsersController extends Controller
             try{
                 $actual_data->save();
             } catch(Exception $e) {
-                return response()->json("false en el usuario"." ".$e);
+                return response()->json(['success' => false]);
             }
 
             //Actualizamos los datos específicos de los uaurios
@@ -227,7 +227,7 @@ class UsersController extends Controller
                 try{
                     $actual_student_data->save();
                 } catch(Exception $e){
-                    return response()->json("false del estudiante" . " " . $e);
+                    return response()->json(['success' => false]);
                 }
 
 
@@ -240,14 +240,14 @@ class UsersController extends Controller
                 try{
                     $actual_mentor_data->save();
                 } catch(Exception $e){
-                    return response()->json("false del mentor"." ".$e);
+                    return response()->json(['success' => false]);
                 }
             }
 
-            return response()->json("true");
+            return response()->json(['success' => true]);
 
         } else {
-            return response()->json("false");
+            return response()->json(['success' => false]);
         }
     }
 //--------------------------------------------------------------------------------------------------

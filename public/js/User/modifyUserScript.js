@@ -10,22 +10,27 @@ function aceptarEmergente(){
         description  : document.getElementById("description"  ).value
     };
 
-    if (document.getElementById("tipo_usuario").value == 1) { //Estudiante
+    if (document.getElementById("tipo_usuario").value === "1") { //Estudiante
         datos.career     = document.getElementById("career"    ).value;
         datos.first_year = document.getElementById("first_year").value;
         datos.duration   = document.getElementById("duration"  ).value;
-    } else if (document.getElementById("tipo_usuario").value == 2) { //Mentor
+    } else if (document.getElementById("tipo_usuario").value === "2") { //Mentor
         datos.company = document.getElementById("company").value;
         datos.job     = document.getElementById("job"    ).value;
     }
 
     $.ajax({
-        url   : url,
+        url   : url_modify_store,
         method: 'POST',
         data  : datos
     }).done(function(respuesta){
-        var jsonString = JSON.stringify(respuesta);
-        alert(jsonString);
+        if (respuesta.success){
+            document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
+            document.getElementById('textoEmergenteRespuesta').innerText        = "Los datos han sido modificados correctamente";
+        } else {
+            document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
+            document.getElementById('textoEmergenteRespuesta').innerText        = "Ha ocurrido un error y no se han podido actualizar los datos, pruebe mas tarde por favor";
+        }
     });
 
     document.getElementById("btnEmergenteCancelar").click();
@@ -33,20 +38,19 @@ function aceptarEmergente(){
 
 function abrirPnlEmergente(){
     var mostrar_panel = true;
-    console.log("Entra");
+
     if (
-        document.getElementById("name"        ).value.trim() === "" ||
-        document.getElementById("email"       ).value.trim() === "" ||
-        document.getElementById("user"        ).value.trim() === "" ||
-        document.getElementById("tipousuario" ).value.trim() === "" ||
-        document.getElementById("campoestudio").value.trim() === ""
+        document.getElementById("name" ).value.trim() === "" ||
+        document.getElementById("email").value.trim() === "" ||
+        document.getElementById("user" ).value.trim() === ""
        )
         {
             alert("Es obligatorio rellenar los camppos que contengan un asterisco");
             mostrar_panel = false;
         }
 
-    if (document.getElementById("tipousuario").value === "1"){
+    console.log(document.getElementById("tipo_usuario").value);
+    if (document.getElementById("tipo_usuario").value === "1"){
         var valFirstYear  = document.getElementById("first_year").value;
         var valorEntero = parseInt(valFirstYear, 10);
 

@@ -38,7 +38,8 @@ function aceptarEmergenteEspecifico(){
             alert("Su cuenta ha sido borrada correctamente");
             window.location.href = url_home;
         } else {
-            alert("Ha ocurrido algún tipo de error y no se ha podido borrar el usuario, intentelo más tarde");
+            document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
+            document.getElementById('textoEmergenteRespuesta').innerText        = "Ha ocurrido algún tipo de error y no se ha podido borrar el usuario, intentelo más tarde";
         }
     })
 }

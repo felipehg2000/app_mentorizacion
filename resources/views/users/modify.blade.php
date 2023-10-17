@@ -6,7 +6,7 @@
 
 @section('js')
     <script>
-        var url = "{{route('users.modify.store')}}";
+        var url_modify_store = "{{route('users.modify.store')}}";
     </script>
     <script src="{{ asset('js/User/modifyUserScript.js') }}"></script>
 @endsection

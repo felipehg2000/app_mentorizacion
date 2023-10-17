@@ -66,6 +66,11 @@
             document.getElementById("pnlEmergente"   ).style.visibility = "hidden";
             document.getElementById("edtPnlEmergente").style.visibility = "hidden";
         }
+
+        function aceptarPnlRespuestaEmergente(){
+            document.getElementById("pnlOscurecer"            ).style.visibility = "hidden";
+            document.getElementById("pnlRespuestaEmergente"   ).style.visibility = "hidden";
+        }
     </script>
 
 </head>
@@ -131,6 +136,21 @@
                 </button>
                 <button class="btnEmergente" id="btnEmergenteCancelar" type="submit" onclick="cerrarEmergetne()">
                     Cancelar
+                </button>
+            </div>
+        </div>
+
+        <div class='pnlRespuestaEmergente' id='pnlRespuestaEmergente'>
+            <div class='pnlEmergenteTitulo'>
+                <i class="fa fa-exclamation-triangle" style="font-size:24px;color:white"></i>
+                <p class="tituloEmergente"> Aviso </p>
+            </div>
+            <div class='pnlEmergentePrincipal'>
+                <p class='textoEmergente' id='textoEmergenteRespuesta'>Texto respuesta emergente</p>
+            </div>
+            <div class='pnlEmergenteBotones'>
+                <button class="btnEmergente" id="btnEmergenteAceptar" type="submit" onclick="aceptarPnlRespuestaEmergente()">
+                    Aceptar
                 </button>
             </div>
         </div>

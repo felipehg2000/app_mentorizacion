@@ -153,6 +153,23 @@ div.pnlEmergente{
     visibility: hidden;
 }
 
+div.pnlRespuestaEmergente{
+    width : 30%;
+    height: 30%;
+
+    position: absolute;
+
+    background-color: white;
+
+    border-radius: 20%;
+    border: solid;
+    border-width: 1px;
+    border-color: red;
+
+    visibility: hidden;
+}
+
+
 div.pnlEmergenteTitulo{
     width : 25%;
     height: 20%;
@@ -260,3 +277,5 @@ button.btnEmergente{
 button.btnEmergente:hover {
     background-color: #0077b3;
 }
+
+
