@@ -18,6 +18,7 @@ function study_roomClick(){
 function tutorialsClick(){
 
 }
+/*
 function redirection(index) {
         switch(index){
             case 1:
@@ -57,7 +58,7 @@ function redirection(index) {
                 window.location.href = "{{route('users.close')}}";
                 break;
         }
-    }
+    }*/
     </script>
 @endsection
 

@@ -1,0 +1,120 @@
+div.pnlChat{
+    height: 100%;
+    width : 100%;
+
+    overflow: hidden  ;
+    position: relative;
+
+    margin : 0px;
+    padding: 0px;
+
+    display: flex;
+    flex-direction: vertical-align;
+}
+
+div.pnlChatIzq{
+    width :20% ;
+    height:100%;
+
+    border-right: 1px solid black;
+
+    background-color: gray;
+}
+
+div.pnlBusquedaChatIzq{
+    display        : flex;
+    align-items    : center;
+    justify-content: left;
+    border             : solid     ;
+    border-top-width   : 0         ;
+    border-left-width  : 0         ;
+    border-right-width : 0         ;
+    border-bottom-width: 0         ;
+    border-color       : darkgray;
+    border-radius      : 20px      ;
+
+    background-color: darkgray;
+
+    padding-top   : 5px;
+    padding-bottom: 5px;
+    margin-top: 3px;
+}
+
+i{
+    margin-right: 1%;
+}
+
+input.edtBusquedaChat{
+    background-color: darkgray;
+
+    border:solid;
+    border-color: darkgray;
+}
+
+input.edtBusquedaChat:focus{
+    outline   : none;
+    box-shadow: none;
+
+    border             :solid      ;
+    border-bottom-width:1px        ;
+    border-top-width   : 0         ;
+    border-left-width  : 0         ;
+    border-right-width : 0         ;
+    border-bottom-color:blue;
+}
+
+div.pnlChatDcha{
+    width : 80% ;
+    height: 100%;
+
+    position: relative;
+
+    background-color: whitesmoke;
+}
+
+div.pnlMensajes{
+    width : 100%;
+    height: 80% ;
+
+    border      : solid;
+    border-width: 1px  ;
+    border-color: red;
+}
+
+div.pnlEscritura{
+    width : 100%;
+    height: 20% ;
+
+    border      : solid ;
+    border-width: 1px   ;
+    border-color: blue;
+
+    display        : flex  ;
+    align-items    : center;
+    justify-content: center;
+}
+
+div.pnlEscrituraMensajes{
+    height: 50%;
+    width : 90%;
+
+    display        : flex  ;
+    align-items    : center;
+    justify-content: center;
+
+    border: solid;
+    border-width: 1px;
+
+    border-color: green;
+}
+
+input.edtMensajeCaht{
+    height: auto;
+    width : 80%;
+}
+
+button.btnEnviarMensaje{
+    background-color: white;
+    border: none;
+}
+

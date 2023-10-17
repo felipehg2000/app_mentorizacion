@@ -9,17 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\MentorsController;
-use Intervention\Image\ImageManagerStatic as Image;
-use Illuminate\Support\Facades\File;
-
-use function PHPUnit\Framework\fileExists;
+use Exception;
 
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2023-05-16 20:28:38
+ * @Last Modified time: 2023-10-17 09:52:30
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -30,6 +27,7 @@ use function PHPUnit\Framework\fileExists;
 
 class UsersController extends Controller
 {
+//--------------------------------------------------------------------------------------------------
     /**
      * Iniciar sesión
      * ==============
@@ -70,6 +68,54 @@ class UsersController extends Controller
         }
     }
 //--------------------------------------------------------------------------------------------------
+    public function sync_chat(){
+        return view('users.sync_chat');
+    }
+//--------------------------------------------------------------------------------------------------
+    /**
+     * Manejar solicitudes de amistad
+     * ==============================
+     * Función que comprueba los datos de login del usuario logueado y redirige según el rol del usuario
+     */
+    public function friendship(){
+        if (Auth::check()){
+            $user_type = Auth::user()->USER_TYPE;
+            if ($user_type == 1) {
+                $controlador = new StudentsController();
+                return($controlador->friendship());
+            } else if($user_type == 2) {
+                $controlador = new MentorsController();
+                return($controlador->friendship());
+            }
+        }else {
+            return view('users.close');
+        }
+
+    }
+//--------------------------------------------------------------------------------------------------
+    /**
+     * Manejar amistades actuales
+     * ==========================
+     * Función que comprueba los datos de login del usuario logueado y redirige según el rol del usuario
+     */
+    public function actual_friends(){
+        if (Auth::check()){
+            log(0);
+            $user_type = Auth::user()->USER_TYPE;
+            if($user_type == 1){
+                $controlador = new StudentsController();
+                return ($controlador->actual_friends());
+            }else if ($user_type == 2){
+                $controlador = new MentorsController();
+                return($controlador->actual_friends());
+            }
+        } else {
+            log(1);
+            return view('users.close');
+        }
+    }
+
+//--------------------------------------------------------------------------------------------------
     /**
      * Crear usuario
      * =============
@@ -82,6 +128,7 @@ class UsersController extends Controller
      * Confirmación de la creación de la cuenta por correo electrónico.
      */
     public function create(){
+        log(Auth::check());
         return view('users.create');
     }
 //--------------------------------------------------------------------------------------------------
@@ -98,6 +145,8 @@ class UsersController extends Controller
             $mentor = self::complet_mentors_model($user, $request);
             $mentor->save();
         }
+
+        return view('home');
     }
     /**
      * Modificar datos usuario
@@ -113,35 +162,112 @@ class UsersController extends Controller
      * Pedir la contraseña cuando se pulse el botón para asegurarnos de que es el usuario quien quiere modificar la contraseña.
      */
     public function modify(){
-       $data = [
-            'name'        => Auth::user()->NAME        ,
-            'surname'     => Auth::user()->SURNAME     ,
-            'email'       => Auth::user()->EMAIL       ,
-            'user'        => Auth::user()->USER        ,
-            'tipousuario' => Auth::user()->USER_TYPE   ,
-            'campoestudio' =>Auth::user()->STUDY_AREA  ,
-            'description' => Auth::user()->DESCRIPTION
-       ];
+        if (Auth::check()){
+            $data = [
+                    'name'        => Auth::user()->NAME        ,
+                    'surname'     => Auth::user()->SURNAME     ,
+                    'email'       => Auth::user()->EMAIL       ,
+                    'user'        => Auth::user()->USER        ,
+                    'tipousuario' => Auth::user()->USER_TYPE   ,
+                    'campoestudio' =>Auth::user()->STUDY_AREA  ,
+                    'description' => Auth::user()->DESCRIPTION
+                    ];
 
-        return (view('users.modify', ['data' => $data]));
+            if (Auth::user()->USER_TYPE == 1) { //Estudiante
+                $student_data = Student::find(Auth::user()->id);
+
+                $data['career'    ] = $student_data->CAREER    ;
+                $data['first_year'] = $student_data->FIRST_YEAR;
+                $data['duration'  ] = $student_data->DURATION  ;
+
+            } else if (Auth::user()->USER_TYPE == 2) { //Mentor
+                $mentor_data = Mentor::find(Auth::user()->id);
+
+                $data['company'] = $mentor_data->COMPANY;
+                $data['job'    ] = $mentor_data->JOB    ;
+            }
+
+            return (view('users.modify', ['data' => $data]));
+        }else {
+            return (view('users.close'));
+        }
 
     }
 //--------------------------------------------------------------------------------------------------
     public function modify_store(Request $request){
-        //self::validate_user_data($request);
-        $user = self::complet_users_model($request);
+        if (Auth::check()){
+            $id = Auth::user()->id;
 
-        $actual_data = User::find(Auth::user()->id);
+            //Actualizamos los datos generales de usuarios
+            $actual_data = User::find($id);
 
-        $actual_data->NAME        = $user->NAME        ;
-        $actual_data->SURNAME     = $user->SURNAME     ;
-        $actual_data->EMAIL       = $user->EMAIL       ;
-        $actual_data->USER        = $user->USER        ;
-        $actual_data->USER_TYPE   = $user->USER_TYPE   ;
-        $actual_data->STUDY_AREA  = $user->STUDY_AREA  ;
-        $actual_data->DESCRIPTION = $user->DESCRIPTION ;
+            $actual_data->NAME        = $request->name        ;
+            $actual_data->SURNAME     = $request->surname     ;
+            $actual_data->EMAIL       = $request->email       ;
+            $actual_data->USER        = $request->user        ;
+          //$actual_data->USER_TYPE   = $request->tipousuario ;
+            $actual_data->STUDY_AREA  = $request->campoestudio;
+            $actual_data->DESCRIPTION = $request->description ;
 
-        $actual_data->update();
+            try{
+                $actual_data->save();
+            } catch(Exception $e) {
+                return response()->json("false en el usuario"." ".$e);
+            }
+
+            //Actualizamos los datos específicos de los uaurios
+            if ($actual_data->USER_TYPE == 1){ //estudiante
+
+                $actual_student_data = Student::find($id);
+
+                $actual_student_data->CAREER     = $request->career    ;
+                $actual_student_data->FIRST_YEAR = $request->first_year;
+                $actual_student_data->DURATION   = $request->duration  ;
+
+                try{
+                    $actual_student_data->save();
+                } catch(Exception $e){
+                    return response()->json("false del estudiante" . " " . $e);
+                }
+
+
+            } else if ($actual_data->USER_TYPE == 2) { //mentor
+                $actual_mentor_data = Mentor::find($id);
+
+                $actual_mentor_data->COMPANY = $request->company;
+                $actual_mentor_data->JOB     = $request->job    ;
+
+                try{
+                    $actual_mentor_data->save();
+                } catch(Exception $e){
+                    return response()->json("false del mentor"." ".$e);
+                }
+            }
+
+            return response()->json("true");
+
+        } else {
+            return response()->json("false");
+        }
+    }
+//--------------------------------------------------------------------------------------------------
+    public function check_password_store(Request $request){
+        $ret_resultado = false;
+        if (Auth::check()){
+            $id = Auth::user()->id;
+
+            $usuario_autenticado = User::find($id);
+
+            $clave_cifrada = self::cifrate_private_key($request->password);
+            if ($clave_cifrada == $usuario_autenticado->PASSWORD){
+                $ret_resultado = true;
+                return response()->json(['success' => $ret_resultado]);
+            } else {
+                return response()->json(['success' => $ret_resultado]);
+            }
+        } else {
+            return response()->json(['success' => $ret_resultado]);
+        }
     }
 //--------------------------------------------------------------------------------------------------
     /**
@@ -157,23 +283,45 @@ class UsersController extends Controller
      * Borrar la caché de la pagina web para que al darle atrás no vaya a ninguna página.
      */
     public function delete(){
-        $data = [
-            'name'          => Auth::user()->NAME       ,
-            'surname'       => Auth::user()->SURNAME    ,
-            'email'         => Auth::user()->EMAIL      ,
-            'user'          => Auth::user()->USER       ,
-            'tipousuario'   => Auth::user()->USER_TYPE  ,
-            'campoestudio'  => Auth::user()->STUDY_AREA  ,
-            'description'   => Auth::user()->DESCRIPTION
-        ];
+        if (Auth::check()) {
+            $data = [
+                'name'          => Auth::user()->NAME       ,
+                'surname'       => Auth::user()->SURNAME    ,
+                'email'         => Auth::user()->EMAIL      ,
+                'user'          => Auth::user()->USER       ,
+                'tipousuario'   => Auth::user()->USER_TYPE  ,
+                'campoestudio'  => Auth::user()->STUDY_AREA  ,
+                'description'   => Auth::user()->DESCRIPTION
+            ];
 
-        return view('users.delete', ['data' => $data]);
+            if (Auth::user()->USER_TYPE == 1) { //Estudiante
+                $student_data = Student::find(Auth::user()->id);
+
+                $data['career'    ] = $student_data->CAREER    ;
+                $data['first_year'] = $student_data->FIRST_YEAR;
+                $data['duration'  ] = $student_data->DURATION  ;
+
+            } else if (Auth::user()->USER_TYPE == 2) { //Mentor
+                $mentor_data = Mentor::find(Auth::user()->id);
+
+                $data['company'] = $mentor_data->COMPANY;
+                $data['job'    ] = $mentor_data->JOB    ;
+            }
+
+            return view('users.delete', ['data' => $data]);
+        }else {
+            return view('users.close');
+        }
     }
 //--------------------------------------------------------------------------------------------------
     public function delete_store(Request $request){
-        $user = User::findOrFail(Auth::user()->id);
-        $user->delete();
-        return view('home');
+        if (Auth::check()){
+            $user = User::findOrFail(Auth::user()->id);
+            $user->delete();
+            return response()->json(['success' => true]);
+        }else {
+            return response()->json(['success' => false]);
+        }
     }
 //--------------------------------------------------------------------------------------------------
     /**
@@ -260,4 +408,5 @@ class UsersController extends Controller
 
         return openssl_encrypt($clave, 'aes-256-ecb', $key);
     }
+//--------------------------------------------------------------------------------------------------
 }
