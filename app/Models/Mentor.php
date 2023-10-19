@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Mentor extends Model
 {
     use HasFactory;
-
+    protected $primaryKey = "USER_ID";
     protected $fillable = ['user_id', 'company', 'job'];
 }

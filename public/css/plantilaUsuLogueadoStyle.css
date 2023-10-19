@@ -9,7 +9,6 @@ body {
 
     overflow: hidden;
 }
-
 /*Estilo genérico para la barra de navegación*/
 nav {
     margin : 0;
@@ -36,8 +35,15 @@ img.perfil_image{
     width : 5vh;
     margin-right: 2%;
 }
-
+/*Panel para la pantalla sin la navegación*/
+div.pnlMain{
+    display        : flex;
+    justify-content: center;
+    align-items: center;;
+}
+/*Estilo para el panel principal*/
 div.pnlPrincipal{
+    position: relative;
     display: flex;
     flex-direction: row;
 
@@ -47,7 +53,7 @@ div.pnlPrincipal{
     width : 100vw;
     height: 93vh;
 }
-
+    /*Estilo para el menú del panel principal*/
 div.pnlLeft{
     float: left;
 
@@ -59,16 +65,6 @@ div.pnlLeft{
     border-color: black;
 
     background-color: rgba(0, 0, 0, 0.853);
-
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-div.pnlRight{
-    float: right;
-
-    width : 80%;
-    height: auto;
 
     overflow-y: auto;
     overflow-x: hidden;
@@ -118,3 +114,168 @@ div.submenu:hover{
     font-weight: bold;
     cursor: pointer;
 }
+    /*Estilo para el resto de la ventana del panel principal*/
+div.pnlRight{
+    float: right;
+
+    width : 80%;
+    height: auto;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+/*Estilo para oscurecer la pantalla excepto la navegación*/
+div.pnlOscurecer{
+    width : 100vw;
+    height: 93vh;
+
+    position: absolute;
+
+    background-color: black;
+    opacity         : 0.2;
+
+    visibility: hidden;
+}
+/*Estilo para la ventana emergente*/
+div.pnlEmergente{
+    width : 40%;
+    height: 40%;
+
+    position: absolute;
+
+    background-color: white;
+
+    border-radius: 20%;
+    border: solid;
+    border-width: 1px;
+    border-color: #0099cc;
+
+    visibility: hidden;
+}
+
+div.pnlRespuestaEmergente{
+    width : 30%;
+    height: 30%;
+
+    position: absolute;
+
+    background-color: white;
+
+    border-radius: 20%;
+    border: solid;
+    border-width: 1px;
+    border-color: red;
+
+    visibility: hidden;
+}
+
+
+div.pnlEmergenteTitulo{
+    width : 25%;
+    height: 20%;
+
+    background-color: #0099cc;
+
+    margin-left : 10%;
+    margin-top  : -5%;
+
+    border       : solid;
+    border-width : 1px;
+    border-color : black;
+    border-radius: 10%;
+
+    display    : flex;
+    align-items: center;
+}
+
+i {
+    margin-left: 15px;
+}
+
+p.tituloEmergente{
+    margin-left: 15px;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size  : 20px;
+    font-weight: bold;
+    color      : white;
+}
+
+div.pnlEmergentePrincipal{
+    width : 90%;
+    height: 50%;
+
+    background-color: white;
+
+    margin-top : 2%;
+    margin-left: 5%;
+
+    display        : flex  ;
+    align-items    : center;
+    justify-content: center;
+    flex-direction : column;
+}
+
+p.textoEmergente{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size  : 16px;
+    color      : black;
+}
+
+input.edtPnlEmergente {
+    width: 90%;
+
+    border-top-width   : 0     ;
+    border-left-width  : 0     ;
+    border-right-width : 0     ;
+    border-bottom-width: 1px   ;
+    border-color       : blue;
+
+    visibility: hidden;
+}
+
+input.edtPnlEmergente:focus::placeholder{
+    color: white;
+}
+
+div.pnlEmergenteBotones{
+    width : 90%;
+    height: 20%;
+
+    background-color: white;
+
+    margin-top : 2%;
+    margin-left: 5%;
+
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+
+}
+
+button.btnEmergente{
+    width  : 25%;
+    height : 70%;
+    padding: 10px;
+
+    margin-left: 5%;
+    margin-right: 5%;
+
+    border       : none;
+    border-radius: 5px;
+
+    background-color: #0099cc;
+    color           : #fff;
+    font-size       : 16px;
+
+    cursor    : pointer;
+    transition: background-color 0.3s ease;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+button.btnEmergente:hover {
+    background-color: #0077b3;
+}
+
+

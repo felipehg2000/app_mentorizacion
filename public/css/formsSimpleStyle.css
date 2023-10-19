@@ -68,3 +68,26 @@ button.btn_create{
 button.btn_create:hover {
     background-color: #0077b3;
 }
+
+button.btnEmergenteAceptarDelete{
+    width  : 25%;
+    height : 70%;
+    padding: 10px;
+
+    margin-left: 5%;
+    margin-right: 5%;
+
+    border       : none;
+    border-radius: 5px;
+
+    background-color: red;
+    color           : #fff;
+    font-size       : 16px;
+
+    cursor    : pointer;
+    transition: background-color 0.3s ease;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+
