@@ -37,7 +37,7 @@ function aceptarEmergente(){
 }
 
 function abrirPnlEmergente(){
-    var mostrar_panel = true;
+    var error_encontrado = false;
 
     if (
         document.getElementById("name" ).value.trim() === "" ||
@@ -45,31 +45,31 @@ function abrirPnlEmergente(){
         document.getElementById("user" ).value.trim() === ""
        )
         {
-            alert("Es obligatorio rellenar los camppos que contengan un asterisco");
-            mostrar_panel = false;
+            mostrar_emergente_aceptar("Es obligatorio rellenar los campos que contengan un asterisco.");
+            error_encontrado = true;
         }
 
-    console.log(document.getElementById("tipo_usuario").value);
     if (document.getElementById("tipo_usuario").value === "1"){
         var valFirstYear  = document.getElementById("first_year").value;
         var valorEntero = parseInt(valFirstYear, 10);
 
-        if (valorEntero < 1800 || valorEntero > 2024){
-            alert("El año de comienzo de la carrera debe estar entre 1800 y 2024");
-            mostrar_panel = false;
+        if (valorEntero < 1800 || valorEntero > 2024 && !error_encontrado){
+            mostrar_emergente_aceptar("El año de comienzo de la carrera debe estar entre 1800 y 2024");
         }
 
         var valDuracion = document.getElementById("duration").value;
         valorEntero     = parseInt(valDuracion, 10);
 
-        if (valorEntero < 1 || valorEntero > 10) {
-            alert("La duración tiene que estar entre los valores 1 y 10");
+        if (valorEntero < 1 || valorEntero > 10 && !error_encontrado) {
+            mostrar_emergente_aceptar("La duración tiene que estar entre los valores 1 y 10");
         }
     }
+}
 
-    if (mostrar_panel){
-        document.getElementById("pnlOscurecer"  ).style.visibility = "visible";
-        document.getElementById("pnlEmergente"  ).style.visibility = "visible";
-        document.getElementById("textoEmergente").innerText = "¿Está seguro de que quiere modificar los datos de su usuario?";
-    }
+function mostrar_emergente_aceptar(paramTexto){
+    document.getElementById('btnEmergenteCancelar'   ).click();
+
+    document.getElementById("pnlOscurecer"           ).style.visibility = "visible";
+    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
+    document.getElementById('textoEmergenteRespuesta').innerText        = paramTexto;
 }

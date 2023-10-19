@@ -21,7 +21,12 @@ function aceptarEmergente() {
             document.getElementById("pnlOscurecer"                ).style.visibility = "visible";
             document.getElementById("pnlEmergenteEspecificoDelete").style.visibility = "visible";
         } else{
-            alert("La contraseña es incorrecta por lo que no puede borrar la cuenta");
+            document.getElementById('btnEmergenteCancelar'   ).click();
+
+            document.getElementById("pnlOscurecer"           ).style.visibility = "visible";
+            document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
+            document.getElementById('textoEmergenteRespuesta').innerText        = "La contraseña es incorrecta por lo que no puede borrar la cuenta";
+
             document.getElementById("edtPnlEmergente").value = "";
         }
     });
@@ -35,8 +40,13 @@ function aceptarEmergenteEspecifico(){
         data  : datos
     }).done(function(respuesta){
         if (respuesta.success){
-            alert("Su cuenta ha sido borrada correctamente");
+            document.getElementById('btnEmergenteCancelar'   ).click();
+
             window.location.href = url_home;
+
+            document.getElementById("pnlOscurecer"           ).style.visibility = "visible";
+            document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
+            document.getElementById('textoEmergenteRespuesta').innerText        = "Su cuenta ha sido borrada correctamente";
         } else {
             document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
             document.getElementById('textoEmergenteRespuesta').innerText        = "Ha ocurrido algún tipo de error y no se ha podido borrar el usuario, intentelo más tarde";
