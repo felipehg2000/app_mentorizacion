@@ -3,7 +3,6 @@
 @section('title', 'Estudiantes')
 
 @section ('style')
-    <!-- <link href="{{ asset('css/friendshipStyle.css') }}" rel="stylesheet"><-->
     <link href="{{ asset('css/sync_chatUserStyle.css') }}" rel="stylesheet">
 @endsection
 
@@ -20,15 +19,21 @@
     </div>
 
     <div class='pnlChatDcha'>
-        <div class='pnlMensajes'>
+        <div class='pnlMensajes' style="background-image: url('{{ asset('photos/sync_chat/background_photo.jpeg') }}'); background-size: cover; ">
+            <div class='pnlMensajeUsuario'>
+                <p class='mensajeUsuario'>patata patata patatapatatapatatapatatapatatapatata</p>
+            </div>
 
+            <div class='pnlMensajeContacto'>
+                <p class='mensajeContacto'>patatapatatapatatapatatapatatapatatapatatapatatapatata</p>
+            </div>
         </div>
 
         <div class='pnlEscritura'>
             <div class='pnlEscrituraMensajes'>
                 <input class='edtMensajeCaht' id='edtMensajeChat' placeholder="Escriba aquí su mensaje">
                 <button class='btnEnviarMensaje' type="submit">
-                    <i class="fa fa-send-o" style="font-size:24px;color:blue"></i>
+                    <i class="fa fa-paper-plane" style="font-size:24px;color:blue"></i>
                 </button>
             </div>
         </div>
