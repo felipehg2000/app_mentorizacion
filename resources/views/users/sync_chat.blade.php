@@ -6,6 +6,14 @@
     <link href="{{ asset('css/sync_chatUserStyle.css') }}" rel="stylesheet">
 @endsection
 
+@section('js')
+    <script>
+        var url_open_chat = "{{ route('sync_chat.store')}}";
+        var url_close     = "{{ route('users.close') }}";
+    </script>
+    <script src="{{ asset('js/SyncChat/sync_chatScript.js') }}"></script>
+@endsection
+
 @section ('main')
 <div class='pnlChat'>
     <div class='pnlChatIzq'>
@@ -14,7 +22,11 @@
             <input class='edtBusquedaChat' id='edtBusquedaChat' placeholder="Busque un chat">
         </div>
         <div class='pnlContactosChatIzq'>
-
+            @foreach ($mis_amigos as $friend)
+                <div class='friend_card' onclick="chat_selected({{ $friend->id }})">
+                    {{ $friend->NAME }}
+                </div>
+            @endforeach
         </div>
     </div>
 
