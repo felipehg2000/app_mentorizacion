@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\Study_room_acces;
 use App\Models\User;
 
 class MentorsController extends Controller{
@@ -56,6 +57,8 @@ class MentorsController extends Controller{
               ->where('MENTOR_ID', $mentor_id)
               ->update(['STATUS' => 2]);
 
+              $this->CreateStudyRoomAcces($student_id, $mentor_id);
+
         }else if ($request->respuesta == "DENEGAR"){
             //Borrar petición
             DB::table('FRIEND_REQUESTS')
@@ -105,7 +108,7 @@ class MentorsController extends Controller{
         $destination_path = public_path('photos\my_image.png');
         file_put_contents($destination_path, $image_data);
     }
-    //--------------------------------------------------------------------------------------------------
+
     private function convertToPhoto($blopPhoto, $user){
         //Creamos la ruta y el archivo
         $path             = "photos/users/User" . $user. ".png";
@@ -121,5 +124,18 @@ class MentorsController extends Controller{
         if (file_exists($destination_path)){
             file_put_contents($destination_path, $image_data);
         }
+    }
+
+    private function CreateStudyRoomAcces($param_student_id, $param_mentor_id) {
+        $study_room_id = DB::table ('STUDY_ROOMS')
+                           ->where ('MENTOR_ID', '=', $param_mentor_id)
+                           ->select('id')
+                           ->first ();
+
+        $new_node = new Study_room_acces();
+        $new_node->student_id    = $param_student_id;
+        $new_node->study_room_id = $study_room_id;
+
+        $new_node->save();
     }
 }
