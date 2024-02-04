@@ -99,6 +99,10 @@ class StudentsController extends Controller{
           ->where('MENTOR_ID' , '=', $mentor_id )
           ->delete();
 
+        DB::table('STUDY_ROOM_ACCESS')
+          ->where('student_id', $student_id)
+          ->update(['logic_cancel' => '1']);
+
         return back();
     }
 //--------------------------------------------------------------------------------------------------

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\MentorsController;
+use App\Models\Study_room;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -156,7 +157,7 @@ class UsersController extends Controller
         log(Auth::check());
         return view('users.create');
     }
-//--------------------------------------------------------------------------------------------------
+
     public function create_store(Request $request){
         $this->validate_user_data($request);
 
@@ -169,10 +170,13 @@ class UsersController extends Controller
         } else if ($request->tipousuario == 2){
             $mentor = self::complet_mentors_model($user, $request);
             $mentor->save();
+
+            $this->CreateStudyRoom($mentor->user_id);
         }
 
         return view('home');
     }
+//--------------------------------------------------------------------------------------------------
     /**
      * Modificar datos usuario
      * =======================
@@ -426,6 +430,15 @@ class UsersController extends Controller
         $mentor->job     = $request->job;
 
         return $mentor;
+    }
+//--------------------------------------------------------------------------------------------------
+    private function CreateStudyRoom($param_mentor_id) {
+        $study_room = new Study_room();
+
+        $study_room->mentor_id = $param_mentor_id;
+        $study_room->color     = 'Blue';
+
+        $study_room->save();
     }
 //--------------------------------------------------------------------------------------------------
     private function cifrate_private_key ($clave){
