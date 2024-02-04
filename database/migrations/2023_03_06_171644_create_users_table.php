@@ -106,10 +106,11 @@ return new class extends Migration{
          * =======================
          * Se almacena la información de a que sala tiene acceso cada estudiante.
          */
-        Schema::create('STUDY_ROOM_ACCES', function(Blueprint $table){
+        Schema::create('STUDY_ROOM_ACCESS', function(Blueprint $table){
             $table->id                  ();
             $table->unsignedBigInteger  ('STUDENT_ID'   );
-            $table->unsignedBigInteger  ("STUDY_ROOM_ID");
+            $table->unsignedBigInteger  ('STUDY_ROOM_ID');
+            $table->boolean             ('LOGIC_CANCEL' );
             $table->timestamps          ();
 
             $table->foreign('STUDENT_ID'   )->references('USER_ID')->on('STUDENTS'   )->onDelete('CASCADE');
@@ -172,15 +173,15 @@ return new class extends Migration{
      * Borra la migración a la base de datos completamente.
      */
     public function down(): void{
-        Schema::dropIfExists('INHERITANCE_USERS'    );
         Schema::dropIfExists('STUDY_ROOM_ACCES'     );
         Schema::dropIfExists('STUDY_ROOMS'          );
         Schema::dropIfExists('FRIEND_REQUESTS'      );
         Schema::dropIfExists('SYNCHRONOUS_MESSAGES' );
         Schema::dropIfExists('ASYNCHRONOUS_MESSAGES');
+        Schema::dropIfExists('INHERITANCE_USERS'    );
         Schema::dropIfExists('MENTORS'              );
-        Schema::dropIfExists('STUDENTS');
-        Schema::dropIfExists('USERS');
+        Schema::dropIfExists('STUDENTS'             );
+        Schema::dropIfExists('USERS'                );
     }
 
     /**
