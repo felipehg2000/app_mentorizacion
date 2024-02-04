@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Study_room_acces extends Model {
     use HasFactory;
 
-    protected $fillable = ['id'        ,
-                           'student_id',
-                           'study_room_id'];
+    protected $table = 'STUDY_ROOM_ACCESS';
+
+    protected $fillable = ['id'           ,
+                           'student_id'   ,
+                           'study_room_id',
+                           'logic_cancel'];
 }
