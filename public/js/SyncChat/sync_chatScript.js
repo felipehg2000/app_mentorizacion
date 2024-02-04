@@ -11,7 +11,24 @@ function chat_selected(id_chat){
         data  : data
     }).done(function(respuesta){
         if (respuesta.success){
-            window.log(2);
+            respuesta.data.forEach(function (mensaje) {
+                if (mensaje.SENDER == id_chat){
+                    var nuevoDiv = $('<div>', {
+                        class: 'pnlMensajeUsuario',
+                        text : mensaje.MESSAGE
+                    });
+                } else {
+                    var nuevoDiv = $('<div>', {
+                        class: 'pnlMensajeContacto',
+                        text : mensaje.MESSAGE
+                    });
+                }
+
+                console.log(3)
+                // Agregar el nuevo div al cuerpo del documento (o al elemento contenedor que desees)
+                $('pnlChatDcha').append(nuevoDiv);
+
+            });
         }else {
             window.location.href = url_close;
         }

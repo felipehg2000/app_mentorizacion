@@ -17,7 +17,7 @@ use Exception;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-03 14:50:52
+ * @Last Modified time: 2024-02-03 17:12:06
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -101,26 +101,21 @@ class UsersController extends Controller
                 $id_mentor     = $request    ->id_chat;
                 $id_estudiante = Auth::user()->id;
             } else if (Auth::user()->USER_TYPE == 2){ //Mentor
-                //Buscar el código del estudiante al que vayamos a hablar
                 $id_mentor     = Auth::user()->id;
                 $id_estudiante = $request    ->id_chat;
 
             }
 
-            return 'patata';
-
             $resultado = DB::table('synchronous_messages')
                 ->join   ('study_room_acces', 'study_room_acces.STUDY_ROOM_ID', '=', 'synchronous_messages.STUDY_ROOM_ID')
                 ->where  ('study_room_acces.STUDY_ROOM_ID' , '=', $id_mentor)
                 ->where  ('study_room_acces.STUDENT_ID'    , '=', $id_estudiante)
-                ->select ('synchronous_messages.SENDER'    , 'synchronous_messages.MESSAGE_TEXT')
+                ->select ('synchronous_messages.SENDER'    , 'synchronous_messages.MESSAGE')
                 ->orderBy('synchronous_messages.created_at', 'ASC')
                 ->get();
 
-            return 'patata';
-
-            //return response()->json(['success' => true,
-            //                         'data'    => $resultado]);
+            return response()->json(['success' => true,
+                                     'data'    => $resultado]);
         }else{
             return response()->json(['success' => false]);
         }
