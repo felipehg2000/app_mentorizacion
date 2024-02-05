@@ -11,6 +11,7 @@ use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\MentorsController;
 use App\Models\Study_room;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
 /*
@@ -18,7 +19,7 @@ use Exception;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-05 11:28:22
+ * @Last Modified time: 2024-02-05 14:09:31
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -99,21 +100,22 @@ class UsersController extends Controller
         $id_estudiante = 0;
         if (Auth::check()){
             if (Auth::user()->USER_TYPE == 1){ //Estudiante
-                $id_mentor     = $request    ->id_chat;
+                $id_mentor     = $request    ->contact_id;
                 $id_estudiante = Auth::user()->id;
             } else if (Auth::user()->USER_TYPE == 2){ //Mentor
                 $id_mentor     = Auth::user()->id;
-                $id_estudiante = $request    ->id_chat;
-
+                $id_estudiante = $request    ->contact_id;
             }
 
-            $resultado = DB::table('synchronous_messages')
-                ->join   ('study_room_access', 'study_room_access.STUDY_ROOM_ID', '=', 'synchronous_messages.STUDY_ROOM_ID')
-                ->where  ('study_room_access.STUDY_ROOM_ID' , '=', $id_mentor                                              )
-                ->where  ('study_room_access.STUDENT_ID'    , '=', $id_estudiante                                          )
-                ->select ('synchronous_messages,ID', 'synchronous_messages.SENDER', 'synchronous_messages.MESSAGE'         )
-                ->orderBy('synchronous_messages.created_at' , 'ASC'                                                        )
-                ->get();
+            $resultado = DB::table  ('synchronous_messages')
+                           ->join   ('study_rooms'      , 'synchronous_messages.STUDY_ROOM_ID', '=', 'study_rooms.id'                 )
+                           ->join   ('study_room_access', 'study_rooms.id'                    , '=', 'study_room_access.STUDY_ROOM_ID')
+                           ->where  ('study_rooms.MENTOR_ID'       , '=', $id_mentor    )
+                           ->where  ('study_room_access.STUDENT_ID', '=', $id_estudiante)
+                           ->select ('synchronous_messages.id', 'synchronous_messages.SENDER', 'synchronous_messages.MESSAGE')
+                           ->orderBy('synchronous_messages.created_at', 'ASC')
+                           ->limit(30)
+                           ->get();
 
             return response()->json(['success' => true,
                                      'data'    => $resultado]);
