@@ -18,7 +18,7 @@ use Exception;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-05 00:17:14
+ * @Last Modified time: 2024-02-05 11:28:22
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -111,7 +111,7 @@ class UsersController extends Controller
                 ->join   ('study_room_access', 'study_room_access.STUDY_ROOM_ID', '=', 'synchronous_messages.STUDY_ROOM_ID')
                 ->where  ('study_room_access.STUDY_ROOM_ID' , '=', $id_mentor                                              )
                 ->where  ('study_room_access.STUDENT_ID'    , '=', $id_estudiante                                          )
-                ->select ('synchronous_messages.SENDER'     , 'synchronous_messages.MESSAGE'                               )
+                ->select ('synchronous_messages,ID', 'synchronous_messages.SENDER', 'synchronous_messages.MESSAGE'         )
                 ->orderBy('synchronous_messages.created_at' , 'ASC'                                                        )
                 ->get();
 

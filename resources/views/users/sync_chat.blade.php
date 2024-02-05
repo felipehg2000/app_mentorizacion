@@ -8,7 +8,7 @@
 
 @section('js')
     <script>
-        var url_open_chat = "{{ route('sync_chat.store')}}";
+        var url_open_chat = "{{ route('users.sync_chat.store') }}";
         var url_close     = "{{ route('users.close') }}";
     </script>
     <script src="{{ asset('js/SyncChat/sync_chatScript.js') }}"></script>
@@ -31,14 +31,14 @@
     </div>
 
     <div class='pnlChatDcha'>
-        <div class='pnlMensajes' style="background-image: url('{{ asset('photos/sync_chat/background_photo.jpeg') }}'); background-size: cover; ">
-            <div class='pnlMensajeUsuario'>
+        <div class='pnlMensajes' id='pnlMensajes' style="background-image: url('{{ asset('photos/sync_chat/background_photo.jpeg') }}'); background-size: cover; ">
+            <!--<div class='pnlMensajeUsuario'>
                 <p class='mensajeUsuario'>patata patata patatapatatapatatapatatapatatapatata</p>
             </div>
 
             <div class='pnlMensajeContacto'>
                 <p class='mensajeContacto'>patatapatatapatatapatatapatatapatatapatatapatatapatata</p>
-            </div>
+            </div>-->
         </div>
 
         <div class='pnlEscritura'>
