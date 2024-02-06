@@ -18,28 +18,32 @@
 @section ('main')
 <div class='pnlChat'>
     <div class='pnlChatIzq'>
+        <h2 class='lblTituloChats'> Chats <h3>
+
         <div class='pnlBusquedaChatIzq'>
             <i class='fa fa-search' style="font-size:20px;color:black"></i>
             <input class='edtBusquedaChat' id='edtBusquedaChat' placeholder="Busque un chat">
         </div>
+
         <div class='pnlContactosChatIzq'>
             @foreach ($mis_amigos as $friend)
                 <div class='friend_card' onclick="chat_selected({{ $friend->id }})">
-                    {{ $friend->NAME }} {{ $friend->id }}
+                    <p class='lblFriendCard'>{{ $friend->NAME }} {{ $friend->id }}</p>
                 </div>
             @endforeach
         </div>
     </div>
 
-    <div class='pnlChatDcha'>
-        <div class='pnlMensajes' id='pnlMensajes' style="background-image: url('{{ asset('photos/sync_chat/background_photo.jpeg') }}'); background-size: cover; ">
+    <div class='pnlChatDcha' id='pnlChatDcha'>
+        <div class='pnlSuperiorChatDcha' id='pnlSuperiorChatDcha'>
+            <p class='lblUsuSeleccionado' id='lblUsuSeleccionado'>PRUEBA</p>
+        </div>
+
+        <div class='pnlMensajes' id='pnlMensajes'> <!--style="background-image: url('{{ asset('photos/sync_chat/background_photo.jpeg') }}'); background-size: cover; ">-->
         <!--Se generan los divs de los mensajes de forma dinámica en la clase sync_chatScript.js función PushMessage-->
         </div>
 
-        <!--
-            PANEL CON EL EDIT PARA MANDAR EL MENSAJE
-        -->
-        <div class='pnlEscritura'>
+        <div class='pnlEscritura'> <!--style="background-image: url('{{ asset('photos/sync_chat/background_photo.jpeg') }}'); background-size: cover; ">-->
             <div class='pnlEscrituraMensajes'>
                 <input class='edtMensajeCaht' id='edtMensajeChat' placeholder="Escriba aquí su mensaje" onkeydown="if(event.key === 'Enter') SendMessage()">
                 <button class='btnEnviarMensaje' type="submit" onclick="SendMessage()">
@@ -47,6 +51,8 @@
                 </button>
             </div>
         </div>
+
+        <div class='pnlSobreponerChatDcha' id='pnlSobreponerChatDcha'></div>
     </div>
 
 </div>

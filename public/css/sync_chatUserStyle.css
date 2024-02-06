@@ -16,6 +16,13 @@ div.pnlChatIzq{
     width :20% ;
     height:100%;
 
+    border: solid;
+    border-color: rgba(107, 107, 107, 0.726);
+    border-top-width   : 0px;
+    border-left-width  : 0px;
+    border-right-width : 1px;
+    border-bottom-width: 0px;
+
     background-color: gray;
 }
 
@@ -36,6 +43,32 @@ div.pnlBusquedaChatIzq{
     padding-top   : 5px;
     padding-bottom: 5px;
     margin-top: 3px;
+}
+
+div.pnlContactosChatIzq{
+    padding-top: 5px;
+}
+
+div.friend_card{
+    height: 40px;
+    width : 100% ;
+
+    display        : flex  ;
+    align-items    : center;
+    justify-content: center;
+
+}
+
+div.friend_card:hover{
+    background-color: lightgray;
+
+    cursor: pointer;
+}
+
+p.lblFriendCard{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: bold;
+    color: black;
 }
 
 i{
@@ -68,13 +101,45 @@ div.pnlChatDcha{
     position: relative;
 
     background-color: whitesmoke;
+
+    visibility: hidden;
+}
+
+div.pnlSuperiorChatDcha{
+    width: 100%;
+    height: 10%;
+
+    background-color: gray;
+
+    display        : flex  ;
+    align-items    : center;
+    justify-content: center;
+
+    border: solid;
+    border-color: rgba(107, 107, 107, 0.726);;
+    border-top-width   : 0px;
+    border-left-width  : 0px;
+    border-right-width : 0px;
+    border-bottom-width: 1px;
+
+}
+
+p.lblUsuSeleccionado{
+    color: black;
+
+    align-self: center;
 }
 
 div.pnlMensajes{
     width : 100%;
-    height: 90% ;
+    height: 80% ;
 
     display: block;
+
+    overflow-y: auto;
+    scroll-snap-align: end;
+
+        background-image: linear-gradient(lightgray , white);
 }
 
 div.pnlMensajeUsuario{
@@ -105,11 +170,18 @@ div.pnlEscritura{
     width : 100%;
     height: 10% ;
 
-    background-color: darkgray;
+    background-color: gray;
 
     display        : flex  ;
     align-items    : center;
     justify-content: center;
+
+    border: solid;
+    border-color: rgba(107, 107, 107, 0.726);;
+    border-top-width   : 1px;
+    border-left-width  : 0px;
+    border-right-width : 0px;
+    border-bottom-width: 0px;
 }
 
 p.mensajeContacto{
@@ -125,16 +197,15 @@ div.pnlEscrituraMensajes{
     display        : flex  ;
     align-items    : center;
     justify-content: center;
-
-    border: solid;
-    border-width: 1px;
+/*   border: solid;
+    border-width: 1px;*/
 }
 
 input.edtMensajeCaht{
     height: 24px;
     width : 90%;
 
-    background-color: darkgray;
+    background-color: gray;
 
     border             : solid;
     border-left-width  : 0px  ;
@@ -144,20 +215,31 @@ input.edtMensajeCaht{
     border-color       :blue;
 }
 
-input.edtMensajeChat:focus{
-    outline   : none;
+input.edtMensajeCaht:focus{
+    outline: none;
     box-shadow: none;
-
     border             :solid      ;
     border-bottom-width:1px        ;
     border-top-width   : 0         ;
     border-left-width  : 0         ;
     border-right-width : 0         ;
-    border-color       :#0099cc;
+    border-color       :#0099cc  ;
+
 }
 
 button.btnEnviarMensaje{
-    background-color: white;
+    background-color: gray;
     border: none;
+}
+
+div.pnlSobreponerChatDcha {
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black/* Fondo semi-transparente */
+    /* Puedes personalizar el estilo según tus necesidades */
 }
 

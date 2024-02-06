@@ -3,8 +3,6 @@
  * @param {Id del usuario del que vamos a abrir el chat} id_chat
  */
 function chat_selected(id_chat){
-    console.log('Chat_selected 1')
-
     var data = {
         _token    : csrfToken,
         contact_id: id_chat
@@ -17,19 +15,18 @@ function chat_selected(id_chat){
     }).done(function(respuesta){
         if (respuesta.success){
             respuesta.data.forEach(function (mensaje) {
-
-                console.log(mensaje.SENDER)
-                console.log(id_chat)
-
                 if (mensaje.SENDER != id_chat){
-                    console.log('Entra en if')
-                    //Crear el div del mensaje a la derecha
                     PushMessage(mensaje.id, mensaje.MESSAGE, 'pnlMensajeUsuario', 'mensajeUsuario');
                 } else {
-                    console.log('Entra en else')
                     PushMessage(mensaje.id, mensaje.MESSAGE, 'pnlMensajeContacto', 'mensajeContacto');
                 }
             });
+
+
+
+            document.getElementById('pnlSobreponerChatDcha').style.visibility = 'hidden' ;
+            document.getElementById('pnlChatDcha'          ).style.visibility = 'visible';
+
         }else {
             window.location.href = url_close;
         }
