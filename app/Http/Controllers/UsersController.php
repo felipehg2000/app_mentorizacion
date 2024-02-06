@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\MentorsController;
 use App\Models\Study_room;
+use App\Models\Synchronous_message;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Exception;
 
 /*
@@ -19,7 +19,7 @@ use Exception;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-05 14:09:31
+ * @Last Modified time: 2024-02-06 12:59:43
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -119,6 +119,35 @@ class UsersController extends Controller
 
             return response()->json(['success' => true,
                                      'data'    => $resultado]);
+        }else{
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function send_message_store(Request $request){
+        if (Auth::check()){
+            $mi_id = Auth::user()->id;
+
+            if (Auth::user()->USER_TYPE == 1){ //Estudiante
+                $study_room_id = DB::table('study_room_access')
+                                   ->select('STUDY_ROOM_ID')
+                                   ->where('STUDENT_ID', $mi_id)
+                                   ->where('LOGIC_CANCEL', 0)
+                                   ->first();
+
+                $this->CreateSynchronousMessage($study_room_id->STUDY_ROOM_ID, $request->message);
+            }else if(Auth::user()->USER_TYPE == 2){ //Mentor
+                $study_room_id = DB::table('study_rooms')
+                                   ->select('id')
+                                   ->where('MENTOR_ID', $mi_id)
+                                   ->first();
+
+                $this->CreateSynchronousMessage($study_room_id->id, $request->message);
+            }
+
+            return response()->json(['success' => true,
+                                     'mi_id'   => $mi_id]);
+
         }else{
             return response()->json(['success' => false]);
         }
@@ -465,6 +494,16 @@ class UsersController extends Controller
         $study_room->color     = 'Blue';
 
         $study_room->save();
+    }
+//--------------------------------------------------------------------------------------------------
+    private function CreateSynchronousMessage($param_study_room_id, $param_message){
+        $sync_message = new Synchronous_message();
+
+        $sync_message->study_room_id = $param_study_room_id;
+        $sync_message->sender        = Auth::user()->id    ;
+        $sync_message->message       = $param_message      ;
+
+        $sync_message->save();
     }
 //--------------------------------------------------------------------------------------------------
     private function cifrate_private_key ($clave){

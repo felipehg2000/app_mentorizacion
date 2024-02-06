@@ -8,8 +8,9 @@
 
 @section('js')
     <script>
-        var url_open_chat = "{{ route('users.sync_chat.store') }}";
-        var url_close     = "{{ route('users.close') }}";
+        var url_open_chat    = "{{ route('users.sync_chat.store') }}";
+        var url_send_message = "{{ route('users.send_message.store') }}";
+        var url_close        = "{{ route('users.close') }}";
     </script>
     <script src="{{ asset('js/SyncChat/sync_chatScript.js') }}"></script>
 @endsection
@@ -32,19 +33,16 @@
 
     <div class='pnlChatDcha'>
         <div class='pnlMensajes' id='pnlMensajes' style="background-image: url('{{ asset('photos/sync_chat/background_photo.jpeg') }}'); background-size: cover; ">
-            <!--<div class='pnlMensajeUsuario'>
-                <p class='mensajeUsuario'>patata patata patatapatatapatatapatatapatatapatata</p>
-            </div>
-
-            <div class='pnlMensajeContacto'>
-                <p class='mensajeContacto'>patatapatatapatatapatatapatatapatatapatatapatatapatata</p>
-            </div>-->
+        <!--Se generan los divs de los mensajes de forma dinámica en la clase sync_chatScript.js función PushMessage-->
         </div>
 
+        <!--
+            PANEL CON EL EDIT PARA MANDAR EL MENSAJE
+        -->
         <div class='pnlEscritura'>
             <div class='pnlEscrituraMensajes'>
-                <input class='edtMensajeCaht' id='edtMensajeChat' placeholder="Escriba aquí su mensaje">
-                <button class='btnEnviarMensaje' type="submit">
+                <input class='edtMensajeCaht' id='edtMensajeChat' placeholder="Escriba aquí su mensaje" onkeydown="if(event.key === 'Enter') SendMessage()">
+                <button class='btnEnviarMensaje' type="submit" onclick="SendMessage()">
                     <i class="fa fa-paper-plane" style="font-size:24px;color:blue"></i>
                 </button>
             </div>
