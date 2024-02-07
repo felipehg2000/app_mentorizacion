@@ -19,7 +19,7 @@ use Exception;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-06 12:59:43
+ * @Last Modified time: 2024-02-07 10:57:53
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -117,8 +117,15 @@ class UsersController extends Controller
                            ->limit(30)
                            ->get();
 
-            return response()->json(['success' => true,
-                                     'data'    => $resultado]);
+            $selected_user = DB::table ('users')
+                               ->where ('users.id', '=', $request->contact_id)
+                               ->select('NAME', 'SURNAME')
+                               ->first();
+
+            return response()->json(['success'    => true      ,
+                                     'data'       => $resultado,
+                                     'selec_user' => $selected_user]);
+
         }else{
             return response()->json(['success' => false]);
         }

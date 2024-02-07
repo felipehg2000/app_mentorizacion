@@ -14,6 +14,7 @@ function chat_selected(id_chat){
         data  : data
     }).done(function(respuesta){
         if (respuesta.success){
+            EmptyPnael('pnlMensajes');
             respuesta.data.forEach(function (mensaje) {
                 if (mensaje.SENDER != id_chat){
                     PushMessage(mensaje.id, mensaje.MESSAGE, 'pnlMensajeUsuario', 'mensajeUsuario');
@@ -22,7 +23,9 @@ function chat_selected(id_chat){
                 }
             });
 
+            ModifyBackgroundColorUserSelected(id_chat);
 
+            document.getElementById('lblUsuSeleccionado').textContent = respuesta.selec_user.NAME + ' ' + respuesta.selec_user.SURNAME;
 
             document.getElementById('pnlSobreponerChatDcha').style.visibility = 'hidden' ;
             document.getElementById('pnlChatDcha'          ).style.visibility = 'visible';
@@ -78,4 +81,30 @@ function PushMessage(param_id_chat, param_message, param_name_pnl, param_name_lb
 
     pnlMensajes.appendChild(pnl);
     pnl        .appendChild(txt);
+}
+
+/**
+ * @param {Nombre del panel del que queremos borrar todo su contenido} param_div_name
+ */
+function EmptyPnael(param_div_name){
+    var panel = document.getElementById(param_div_name);
+    while (panel.firstChild){
+        panel.removeChild(panel.firstChild);
+    }
+}
+
+/**
+ * @param {id del usuario que hemos seleccionado, habrá un componente oculto con esta informaicón para acceder al div que hayamos seleccionado} param_id_selected
+ */
+function ModifyBackgroundColorUserSelected(param_id_selected){
+    var friendCards = document.querySelectorAll('.friend_card');
+
+    friendCards.forEach(function(card) {
+        var hiddenIdElement = card.querySelector('.friend_card_hidden_id');
+        var friendId        = parseInt(hiddenIdElement.textContent);
+
+        if (friendId === param_id_selected) {
+            card.style.backgroundColor = 'white';
+        }
+    });
 }
