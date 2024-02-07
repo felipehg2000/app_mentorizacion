@@ -12,70 +12,24 @@
 
     <!--JAVA SCRIPTS-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <script src="{{ asset('js/Layouts/PlantillausuLogueadoScript.js') }}"></script>
     <script>
-        var csrfToken = '{{ csrf_token() }}';
+        var csrfToken                  = '{{ csrf_token() }}';
+        var url_tablon_completo        = "#";
+        var url_tareas_completadas     = "#";
+        var url_tareas_a_completar     = "#";
+        var url_chats_privados         = "{{route('users.sync_chat')}}";
+        var url_informacion            = "#";
+        var url_solicitudes            = "#";
+        var url_acceso_a_tutoria       = "#";
+        var url_amigos_actuales        = "{{route('users.actual_friends')}}";
+        var url_solicitudes_de_amistad = "{{route('users.friendship')}}";
+        var url_modificar_mis_datos    = "{{route('users.modify')}}";
+        var url_eliminar_mi_cuenta     = "{{route('users.delete')}}";
+        var url_cerrar_sesion          = "{{route('users.close')}}";
     </script>
-
 
     @yield('js')
-    <script>
-        function redirection(index) {
-            switch(index){
-                case 1:
-                    window.location.href = "#";
-                    break;
-                case 2:
-                    window.location.href = "#";
-                    break;
-                case 3:
-                    window.location.href = "#";
-                    break;
-                case 4:
-                    window.location.href = "{{route('users.sync_chat')}}";
-                    break;
-                case 5:
-                    window.location.href = "#";
-                    break;
-                case 6:
-                    window.location.href = "#";
-                    break;
-                case 7:
-                    window.location.href = "#";
-                    break;
-                case 8:
-                    window.location.href = "{{route('users.actual_friends')}}";
-                    break;
-                case 9:
-                    window.location.href = "{{route('users.friendship')}}";
-                    break;
-                case 10:
-                    window.location.href = "{{route('users.modify')}}";
-                    break;
-                case 11:
-                    window.location.href = "{{route('users.delete')}}";
-                    break;
-                case 12:
-                    window.location.href = "{{route('users.close')}}";
-                    break;
-            }
-        }
-
-        function cerrarEmergetne(){
-            document.getElementById("pnlOscurecer"   ).style.visibility = "hidden";
-            document.getElementById("pnlEmergente"   ).style.visibility = "hidden";
-            document.getElementById("edtPnlEmergente").style.visibility = "hidden";
-        }
-
-        function aceptarPnlRespuestaEmergente(){
-            document.getElementById("pnlOscurecer"            ).style.visibility = "hidden" ;
-            document.getElementById("pnlRespuestaEmergente"   ).style.visibility = "hidden" ;
-            document.getElementById('btnAceptarEmergente'     ).style.visibility = "visible";
-
-            document.getElementById('btnCancelarEmergente').innerText = "Cancelar" ;
-        }
-    </script>
-
 </head>
 <body>
 
@@ -92,26 +46,26 @@
             <!--Apartado del menú-->
             <div class="pnlLeft">
                 <div class="menu">Tablón de anuncios      </div>
-                    <div class="submenu" onclick="redirection(1)">Tablón completo   </div>
-                    <div class="submenu" onclick="redirection(2)">Tareas completadas</div>
-                    <div class="submenu" onclick="redirection(3)">Tareas a completar</div>
+                    <div class="submenu" id="submenu_1" onclick="redirection(1)">Tablón completo   </div>
+                    <div class="submenu" id="submenu_2" onclick="redirection(2)">Tareas completadas</div>
+                    <div class="submenu" id="submenu_3" onclick="redirection(3)">Tareas a completar</div>
 
                 <div class="menu">Chats               </div>
-                    <div class="submenu" onclick="redirection(4)">Cats privados</div>
+                    <div class="submenu" id="submenu_4" onclick="redirection(4)">Cats privados</div>
 
                 <div class="menu">Tutorías                  </div>
-                    <div class="submenu" onclick="redirection(5)">Información        </div>
-                    <div class="submenu" onclick="redirection(6)">Solicitudes        </div>
-                    <div class="submenu" onclick="redirection(7)">Acceso a la tutoría</div>
+                    <div class="submenu" id="submenu_5" onclick="redirection(5)">Información        </div>
+                    <div class="submenu" id="submenu_6" onclick="redirection(6)">Solicitudes        </div>
+                    <div class="submenu" id="submenu_7" onclick="redirection(7)">Acceso a la tutoría</div>
 
                 <div class="menu">Gestión de amistades         </div>
-                    <div class="submenu" onclick="redirection(8)">Amigos actuales       </div>
-                    <div class="submenu" onclick="redirection(9)">Solicitudes de amistad</div>
+                    <div class="submenu" id="submenu_8" onclick="redirection(8)">Amigos actuales       </div>
+                    <div class="submenu" id="submenu_9" onclick="redirection(9)">Solicitudes de amistad</div>
 
                 <div class="menu">Gestión de usuario        </div>
-                    <div class="submenu" onclick="redirection(10)">Modificar mis datos </div>
-                    <div class="submenu" onclick="redirection(11)">Eliminar mi cuenta  </div>
-                    <div class="submenu" onclick="redirection(12)">Cerrar sesión       </div>
+                    <div class="submenu" id="submenu_10" onclick="redirection(10)">Modificar mis datos </div>
+                    <div class="submenu" id="submenu_11" onclick="redirection(11)">Eliminar mi cuenta  </div>
+                    <div class="submenu" id="submenu_12" onclick="redirection(12)">Cerrar sesión       </div>
             </div>
             <!--Apartado del resto de la pantalla-->
             <div class="pnlRight">
