@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Study_room extends Model{
     use HasFactory;
 
-    protected $fillable = ['id'       ,
-                           'mentor_id',
-                           'color'];
+    protected $primaryKey = "mentor_id";
+
+    protected $fillable = ['mentor_id',
+                           'color'    ];
 }
