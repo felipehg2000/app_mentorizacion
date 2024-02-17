@@ -93,8 +93,7 @@ return new class extends Migration{
          * Tabla asociada al mentor que contiene las características especiales de su sala.
          */
         Schema::create('STUDY_ROOMS', function(Blueprint $table){
-            $table->id                  ();
-            $table->unsignedBigInteger  ('MENTOR_ID');
+            $table->unsignedBigInteger  ('MENTOR_ID')->primary();
             $table->string              ('COLOR'    )->nullable();
             $table->timestamps          ();
 
@@ -107,14 +106,13 @@ return new class extends Migration{
          * Se almacena la información de a que sala tiene acceso cada estudiante.
          */
         Schema::create('STUDY_ROOM_ACCESS', function(Blueprint $table){
-            $table->id                  ();
-            $table->unsignedBigInteger  ('STUDENT_ID'   );
+            $table->unsignedBigInteger  ('STUDENT_ID'   )->primary();
             $table->unsignedBigInteger  ('STUDY_ROOM_ID');
             $table->boolean             ('LOGIC_CANCEL' );
             $table->timestamps          ();
 
-            $table->foreign('STUDENT_ID'   )->references('USER_ID')->on('STUDENTS'   )->onDelete('CASCADE');
-            $table->foreign('STUDY_ROOM_ID')->references('ID'     )->on('STUDY_ROOMS')->onDelete('CASCADE');
+            $table->foreign('STUDENT_ID'   )->references('USER_ID'  )->on('STUDENTS'   )->onDelete('CASCADE');
+            $table->foreign('STUDY_ROOM_ID')->references('MENTOR_ID')->on('STUDY_ROOMS')->onDelete('CASCADE');
         });
 
         /**
@@ -142,28 +140,65 @@ return new class extends Migration{
         Schema::create('SYNCHRONOUS_MESSAGES', function(Blueprint $table){
             $table->id                  ();
             $table->unsignedBigInteger  ('STUDY_ROOM_ID');
+            $table->unsignedBigInteger  ('STUDY_ROOM_ACCES_ID');
             $table->integer             ('SENDER'       ); /*1.- Mensaje del mentor, 2.- Mensaje del estudiante*/
             $table->text                ('MESSAGE'      );
             $table->timestamps          ();
 
-            $table->foreign('STUDY_ROOM_ID')->references('ID')->on('STUDY_ROOMS')->onDelete('CASCADE');
+            $table->foreign('STUDY_ROOM_ID'      )->references('MENTOR_ID')->on('STUDY_ROOMS'       )->onDelete('CASCADE');
+            $table->foreign('STUDY_ROOM_ACCES_ID')->references('STUDENT_ID')->on('STUDY_ROOM_ACCESS')->onDelete('CASCADE');
         });
 
         /**
-         * TABLA ASYNCHRONOUS_MESSAGES:
-         * ============================
-         * Almacena toda la información del tablón de anuncos de la aplicación, con las tareas subidas por los estudiantes y las respuestas dadas por los mentores.
+         * TASKS:
+         * ======
+         * Almacena toda la información de las tareas creadas por el mentor en la sala de estudio
          */
-        Schema::create('ASYNCHRONOUS_MESSAGES', function(Blueprint $table){
+        Schema::create('TASKS', function(Blueprint $table){
             $table->id                  ();
-            $table->unsignedBigInteger  ('STUDY_ROOM_ID'    );
-            $table->integer             ('SENDER'           );/*Tengo que ver como hacerlo pero creo que tengo que poner una referencia al id del estudiante que lo sube para poder identificarlo*/
-            $table->text                ('MESSAGE'          )->nullable();
-            $table->binary              ('DOCUMENT'         )->nullable();
-            $table->integer             ('TYPE_OF_DOCUMENT' )->nullable();
+            $table->unsignedBigInteger  ('STUDY_ROOM_ID');
+            $table->text                ('STATEMENT'    );
+            $table->dateTime            ('LAST_DAY'     );
             $table->timestamps          ();
 
-            $table->foreign('STUDY_ROOM_ID')->references('ID')->on('STUDY_ROOMS')->onDelete('CASCADE');
+            $table->foreign('STUDY_ROOM_ID')->references('MENTOR_ID')->on('STUDY_ROOMS')->onDelete('CASCADE');
+        });
+
+        /**
+         * SOLUTIONS:
+         * ==========
+         * Almacena la respuesta de cada usuario de la sala de estudio a la tarea que se ha creado
+         * Info: No me permite poner dos atributos como claves primarias, por lo que pondremos uno como primaria y otro como unica
+         */
+        Schema::create('ANSWERS', function(Blueprint $table){
+            $table->unsignedBigInteger('TASK_ID'            );
+            $table->unsignedBigInteger('STUDY_ROOM_ACCES_ID');
+            $table->text              ('TYPE_OF_DOCUMENT'   );
+            $table->binary            ('DOCUMENT'           );
+            $table->timestamps        ();
+
+            $table->primary('TASK_ID', 'STUDY_ROOM_ACCES_ID');
+
+            $table->foreign('TASK_ID'            )->references('ID'        )->on('TASKS'             )->onDelete('CASCADE');
+            $table->foreign('STUDY_ROOM_ACCES_ID')->references('STUDENT_ID')->on('STUDY_ROOM_ACCESS')->onDelete('CASCADE');
+        });
+
+        /**
+         * TUTORING:
+         * =========
+         * Almacena la fecha para la que se propone una tutoría y si está ha sido aceptada o no por el mentor
+         */
+        Schema::create('TUTORING', function(Blueprint $table){
+            $table->id();
+            $table->unsignedBigInteger('STUDY_ROOM_ID'       );
+            $table->unsignedBigInteger('STUDY_ROOM_ACCES_ID' );
+            $table->dateTime          ('DATE'                );
+            $table->boolean           ('STATUS'              )->nullable(); //0 DENEGADA, 1 ACEPTADA
+            $table->timestamps        ();
+
+            $table->foreign('STUDY_ROOM_ID'      )->references('MENTOR_ID' )->on('STUDY_ROOMS'       )->onDelete('CASCADE');
+            $table->foreign('STUDY_ROOM_ACCES_ID')->references('STUDENT_ID')->on('STUDY_ROOM_ACCESS')->onDelete('CASCADE');
+
         });
     }
 
@@ -173,11 +208,13 @@ return new class extends Migration{
      * Borra la migración a la base de datos completamente.
      */
     public function down(): void{
+        Schema::dropIfExists('TUTORING'             );
+        Schema::dropIfExists('ANSWERS'              );
+        Schema::dropIfExists('TASKS'                );
+        Schema::dropIfExists('SYNCHRONOUS_MESSAGES' );
         Schema::dropIfExists('STUDY_ROOM_ACCES'     );
         Schema::dropIfExists('STUDY_ROOMS'          );
         Schema::dropIfExists('FRIEND_REQUESTS'      );
-        Schema::dropIfExists('SYNCHRONOUS_MESSAGES' );
-        Schema::dropIfExists('ASYNCHRONOUS_MESSAGES');
         Schema::dropIfExists('INHERITANCE_USERS'    );
         Schema::dropIfExists('MENTORS'              );
         Schema::dropIfExists('STUDENTS'             );
