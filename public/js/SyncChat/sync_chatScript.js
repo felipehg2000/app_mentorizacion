@@ -25,7 +25,8 @@ function chat_selected(id_chat){
 
             ModifyBackgroundColorUserSelected(id_chat);
 
-            document.getElementById('lblUsuSeleccionado').textContent = respuesta.selec_user.NAME + ' ' + respuesta.selec_user.SURNAME;
+            document.getElementById('lblUsuSeleccionado')   .textContent = respuesta.selec_user.NAME + ' ' + respuesta.selec_user.SURNAME;
+            document.getElementById('lblIdChatSeleccionado').textContent = id_chat;
 
             document.getElementById('pnlSobreponerChatDcha').style.visibility = 'hidden' ;
             document.getElementById('pnlChatDcha'          ).style.visibility = 'visible';
@@ -37,11 +38,15 @@ function chat_selected(id_chat){
 }
 
 function SendMessage(){
-    var message_tmp = document.getElementById('edtMensajeChat').value;
+    var message_tmp = document.getElementById('edtMensajeChat'       ).value;
+    var id_chat_sel = document.getElementById('lblIdChatSeleccionado').textContent;
 
     var data = {
-        _token    : csrfToken,
-        message   : message_tmp
+        _token : csrfToken  ,
+        datos  : {
+            message: message_tmp,
+            id_chat: id_chat_sel
+        }
     }
 
     $.ajax({
@@ -49,7 +54,6 @@ function SendMessage(){
         method: 'POST'          ,
         data  : data
     }).done(function(respuesta){
-        console.log(respuesta)
         if (respuesta.success){
             document.getElementById('edtMensajeChat').value = '';
             PushMessage(respuesta.mi_id, message_tmp, 'pnlMensajeUsuario', 'mensajeUsuario');

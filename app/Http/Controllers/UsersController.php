@@ -19,7 +19,7 @@ use Exception;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-07 10:57:53
+ * @Last Modified time: 2024-02-19 22:24:35
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -100,7 +100,7 @@ class UsersController extends Controller
         $id_estudiante = 0;
         if (Auth::check()){
             if (Auth::user()->USER_TYPE == 1){ //Estudiante
-                $id_mentor     = $request    ->contact_id;
+                $id_mentor     = $request->contact_id;
                 $id_estudiante = Auth::user()->id;
             } else if (Auth::user()->USER_TYPE == 2){ //Mentor
                 $id_mentor     = Auth::user()->id;
@@ -108,8 +108,8 @@ class UsersController extends Controller
             }
 
             $resultado = DB::table  ('synchronous_messages')
-                           ->join   ('study_rooms'      , 'synchronous_messages.STUDY_ROOM_ID', '=', 'study_rooms.id'                 )
-                           ->join   ('study_room_access', 'study_rooms.id'                    , '=', 'study_room_access.STUDY_ROOM_ID')
+                           ->join   ('study_rooms'      , 'synchronous_messages.STUDY_ROOM_ID', '=', 'study_rooms.mentor_id'          )
+                           ->join   ('study_room_access', 'study_rooms.mentor_id'             , '=', 'study_room_access.STUDY_ROOM_ID')
                            ->where  ('study_rooms.MENTOR_ID'       , '=', $id_mentor    )
                            ->where  ('study_room_access.STUDENT_ID', '=', $id_estudiante)
                            ->select ('synchronous_messages.id', 'synchronous_messages.SENDER', 'synchronous_messages.MESSAGE')
@@ -134,22 +134,21 @@ class UsersController extends Controller
     public function send_message_store(Request $request){
         if (Auth::check()){
             $mi_id = Auth::user()->id;
+            $id_estudiante = 0;
+            $id_mentor     = 0;
 
+            //Necesito el id del estudiante y del mentor en ambos casos
             if (Auth::user()->USER_TYPE == 1){ //Estudiante
-                $study_room_id = DB::table('study_room_access')
-                                   ->select('STUDY_ROOM_ID')
-                                   ->where('STUDENT_ID', $mi_id)
-                                   ->where('LOGIC_CANCEL', 0)
-                                   ->first();
+                $id_estudiante = $mi_id                  ;
+                $id_mentor     = $request->datos['id_chat'];
 
-                $this->CreateSynchronousMessage($study_room_id->STUDY_ROOM_ID, $request->message);
+                $this->CreateSynchronousMessage($id_mentor, $id_estudiante, $request->datos['message']);
             }else if(Auth::user()->USER_TYPE == 2){ //Mentor
-                $study_room_id = DB::table('study_rooms')
-                                   ->select('id')
-                                   ->where('MENTOR_ID', $mi_id)
-                                   ->first();
+                $id_mentor     = $mi_id;
+                $id_estudiante = $request->datos['id_chat'];
 
-                $this->CreateSynchronousMessage($study_room_id->id, $request->message);
+
+                $this->CreateSynchronousMessage($id_mentor, $id_estudiante, $request->datos['message']);
             }
 
             return response()->json(['success' => true,
@@ -503,12 +502,13 @@ class UsersController extends Controller
         $study_room->save();
     }
 //--------------------------------------------------------------------------------------------------
-    private function CreateSynchronousMessage($param_study_room_id, $param_message){
+    private function CreateSynchronousMessage($param_study_room_id, $param_study_room_acces_id, $param_message){
         $sync_message = new Synchronous_message();
 
-        $sync_message->study_room_id = $param_study_room_id;
-        $sync_message->sender        = Auth::user()->id    ;
-        $sync_message->message       = $param_message      ;
+        $sync_message->study_room_id       = $param_study_room_id      ;
+        $sync_message->study_room_acces_id = $param_study_room_acces_id;
+        $sync_message->sender              = Auth::user()->id          ;
+        $sync_message->message             = $param_message            ;
 
         $sync_message->save();
     }

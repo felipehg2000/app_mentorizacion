@@ -131,15 +131,9 @@ class MentorsController extends Controller{
     }
 
     private function CreateStudyRoomAcces($param_student_id, $param_mentor_id) {
-        $study_room_id = DB::table ('STUDY_ROOMS')
-                           ->where ('MENTOR_ID', '=', $param_mentor_id)
-                           ->select('id')
-                           ->first ();
-
-
         $new_node = new Study_room_acces();
         $new_node->student_id    = $param_student_id ;
-        $new_node->study_room_id = $study_room_id->id;
+        $new_node->study_room_id = $param_mentor_id;
         $new_node->logic_cancel  = '0'               ;
 
         $new_node->save();
