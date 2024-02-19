@@ -38,6 +38,7 @@
     <div class='pnlChatDcha' id='pnlChatDcha'>
         <div class='pnlSuperiorChatDcha' id='pnlSuperiorChatDcha'>
             <p class='lblUsuSeleccionado' id='lblUsuSeleccionado'>PRUEBA</p>
+            <p class='lblIdChatSeleccionado' id = 'lblIdChatSeleccionado' style='visibility: hidden'></p>
         </div>
 
         <div class='pnlMensajes' id='pnlMensajes'> <!--style="background-image: url('{{ asset('photos/sync_chat/background_photo.jpeg') }}'); background-size: cover; ">-->
