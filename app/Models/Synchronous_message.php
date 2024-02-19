@@ -10,8 +10,7 @@ class Synchronous_message extends Model {
 
     protected $table = 'SYNCHRONOUS_MESSAGES';
 
-    protected $fillable = ['id'                 ,
-                           'study_room_id'      ,
+    protected $fillable = ['study_room_id'      ,
                            'study_room_acces_id',
                            'sender'             ,
                            'message'            ];
