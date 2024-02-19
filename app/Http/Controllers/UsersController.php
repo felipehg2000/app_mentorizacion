@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\MentorsController;
+use App\Models\Study_room;
+use App\Models\Synchronous_message;
+use Illuminate\Support\Facades\DB;
 use Exception;
 
 /*
@@ -16,7 +19,7 @@ use Exception;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2023-10-17 22:22:09
+ * @Last Modified time: 2024-02-19 22:24:35
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -69,7 +72,91 @@ class UsersController extends Controller
     }
 //--------------------------------------------------------------------------------------------------
     public function sync_chat(){
-        return view('users.sync_chat');
+        if (Auth::check()){
+            if (Auth::user()->USER_TYPE == 1) {
+                $mis_amigos = DB::table('USERS')
+                                ->join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.MENTOR_ID', '=', 'USERS.ID')
+                                ->where('FRIEND_REQUESTS.STUDENT_ID', '=', Auth::user()->id)
+                                ->where('FRIEND_REQUESTS.STATUS', '=', 2)
+                                ->select('USERS.*')
+                                ->get();
+            } else{
+                $mis_amigos = DB::table('USERS')
+                                ->join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.STUDENT_ID', '=', 'USERS.ID')
+                                ->where('FRIEND_REQUESTS.MENTOR_ID', '=', Auth::user()->id)
+                                ->where('FRIEND_REQUESTS.STATUS', '=', 2)
+                                ->select('USERS.*')
+                                ->get();
+            }
+
+            return view('users.sync_chat', compact('mis_amigos'));
+        } else {
+            return view('users.close');
+        }
+    }
+
+    public function sync_chat_store(Request $request){
+        $id_mentor     = 0;
+        $id_estudiante = 0;
+        if (Auth::check()){
+            if (Auth::user()->USER_TYPE == 1){ //Estudiante
+                $id_mentor     = $request->contact_id;
+                $id_estudiante = Auth::user()->id;
+            } else if (Auth::user()->USER_TYPE == 2){ //Mentor
+                $id_mentor     = Auth::user()->id;
+                $id_estudiante = $request    ->contact_id;
+            }
+
+            $resultado = DB::table  ('synchronous_messages')
+                           ->join   ('study_rooms'      , 'synchronous_messages.STUDY_ROOM_ID', '=', 'study_rooms.mentor_id'          )
+                           ->join   ('study_room_access', 'study_rooms.mentor_id'             , '=', 'study_room_access.STUDY_ROOM_ID')
+                           ->where  ('study_rooms.MENTOR_ID'       , '=', $id_mentor    )
+                           ->where  ('study_room_access.STUDENT_ID', '=', $id_estudiante)
+                           ->select ('synchronous_messages.id', 'synchronous_messages.SENDER', 'synchronous_messages.MESSAGE')
+                           ->orderBy('synchronous_messages.created_at', 'ASC')
+                           ->limit(30)
+                           ->get();
+
+            $selected_user = DB::table ('users')
+                               ->where ('users.id', '=', $request->contact_id)
+                               ->select('NAME', 'SURNAME')
+                               ->first();
+
+            return response()->json(['success'    => true      ,
+                                     'data'       => $resultado,
+                                     'selec_user' => $selected_user]);
+
+        }else{
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function send_message_store(Request $request){
+        if (Auth::check()){
+            $mi_id = Auth::user()->id;
+            $id_estudiante = 0;
+            $id_mentor     = 0;
+
+            //Necesito el id del estudiante y del mentor en ambos casos
+            if (Auth::user()->USER_TYPE == 1){ //Estudiante
+                $id_estudiante = $mi_id                  ;
+                $id_mentor     = $request->datos['id_chat'];
+
+                $this->CreateSynchronousMessage($id_mentor, $id_estudiante, $request->datos['message']);
+            }else if(Auth::user()->USER_TYPE == 2){ //Mentor
+                $id_mentor     = $mi_id;
+                $id_estudiante = $request->datos['id_chat'];
+
+
+                $this->CreateSynchronousMessage($id_mentor, $id_estudiante, $request->datos['message']);
+            }
+
+            return response()->json(['success' => true,
+                                     'mi_id'   => $mi_id]);
+
+        }else{
+            return response()->json(['success' => false]);
+        }
     }
 //--------------------------------------------------------------------------------------------------
     /**
@@ -131,7 +218,7 @@ class UsersController extends Controller
         log(Auth::check());
         return view('users.create');
     }
-//--------------------------------------------------------------------------------------------------
+
     public function create_store(Request $request){
         $this->validate_user_data($request);
 
@@ -144,10 +231,13 @@ class UsersController extends Controller
         } else if ($request->tipousuario == 2){
             $mentor = self::complet_mentors_model($user, $request);
             $mentor->save();
+
+            $this->CreateStudyRoom($mentor->user_id);
         }
 
         return view('home');
     }
+//--------------------------------------------------------------------------------------------------
     /**
      * Modificar datos usuario
      * =======================
@@ -401,6 +491,26 @@ class UsersController extends Controller
         $mentor->job     = $request->job;
 
         return $mentor;
+    }
+//--------------------------------------------------------------------------------------------------
+    private function CreateStudyRoom($param_mentor_id) {
+        $study_room = new Study_room();
+
+        $study_room->mentor_id = $param_mentor_id;
+        $study_room->color     = 'Blue';
+
+        $study_room->save();
+    }
+//--------------------------------------------------------------------------------------------------
+    private function CreateSynchronousMessage($param_study_room_id, $param_study_room_acces_id, $param_message){
+        $sync_message = new Synchronous_message();
+
+        $sync_message->study_room_id       = $param_study_room_id      ;
+        $sync_message->study_room_acces_id = $param_study_room_acces_id;
+        $sync_message->sender              = Auth::user()->id          ;
+        $sync_message->message             = $param_message            ;
+
+        $sync_message->save();
     }
 //--------------------------------------------------------------------------------------------------
     private function cifrate_private_key ($clave){

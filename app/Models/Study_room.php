@@ -5,13 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Friend_request extends Model
-{
+class Study_room extends Model{
     use HasFactory;
 
     protected $primaryKey = "mentor_id";
 
-    protected $fillable = ['mentor_id' ,
-                           'student_id',
-                           'status'    ];
+    protected $fillable = ['mentor_id',
+                           'color'    ];
 }
