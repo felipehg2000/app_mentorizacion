@@ -8,11 +8,17 @@
     <!--ESTILOS-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="{{ asset('css/plantilaUsuLogueadoStyle.css') }}" rel="stylesheet">
+
+    <!--YAJRA STYLE-->
+    <link rel="stylesheet" href="//cdn.datatables.net/2.0.0/css/dataTables.dataTables.min.css">
     @yield('style')
 
     <!--JAVA SCRIPTS-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/Layouts/PlantillausuLogueadoScript.js') }}"></script>
+
+    <!--YAJRA STYLE-->
+    <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
     <script>
         var csrfToken                  = '{{ csrf_token() }}';
         var url_tablon_completo        = "#";
