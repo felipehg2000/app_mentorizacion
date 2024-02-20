@@ -40,8 +40,9 @@ Route::controller(UsersController::class)->group(function(){
     Route::post ('users/check_password' , [UsersController::class, 'check_password_store'   ])->name('users.check_password.store'   );
     Route::get  ('users/delete'         , [UsersController::class, 'delete'                 ])->name('users.delete'                 );
     Route::post ('users/delete'         , [UsersController::class, 'delete_store'           ])->name('users.delete.store'           );
+    Route::get  ('users/done_tasks'     , [UsersController::class, 'done_tasks'             ])->name('users.done_tasks'             );
+    Route::post ('users/done_tasks'     , [UsersController::class, 'done_tasks_store'       ])->name('users.done_tasks.store'       );
     Route::get  ('users/close'          , [UsersController::class, 'close'                  ])->name('users.close'                  );
-
 });
 
 Route::controller(MentorsController::class)->group(function(){
