@@ -127,14 +127,18 @@ div.pnlRight{
 /*Estilo para oscurecer la pantalla excepto la navegación*/
 div.pnlOscurecer{
     width : 100vw;
-    height: 93vh;
+    height: 100vh;
 
+    top: 0;
+    left: 0;
     position: absolute;
 
     background-color: black;
     opacity         : 0.2;
 
     visibility: hidden;
+
+    z-index: 100;
 }
 /*Estilo para la ventana emergente*/
 div.pnlEmergente{
@@ -151,11 +155,20 @@ div.pnlEmergente{
     border-color: #0099cc;
 
     visibility: hidden;
+
+    z-index: 290;
 }
 
 div.pnlRespuestaEmergente{
     width : 30%;
     height: 30%;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    margin: auto;
 
     position: absolute;
 
@@ -167,6 +180,8 @@ div.pnlRespuestaEmergente{
     border-color: red;
 
     visibility: hidden;
+
+    z-index: 300;
 }
 
 
