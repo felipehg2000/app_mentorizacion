@@ -4,7 +4,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-14 20:19:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-20 13:04:51
+ * @Last Modified time: 2024-02-23 20:35:08
  * @Description: Migración completa para la base de datos de la primera versión de la aplicación mentoring, en la primera modificación añadiremos
  *               los datos respectivos al usuario.
  */
@@ -157,7 +157,7 @@ return new class extends Migration{
         Schema::create('TASKS', function(Blueprint $table){
             $table->id                  ();
             $table->unsignedBigInteger  ('STUDY_ROOM_ID');
-            $table->text                ('TASK_TITLE'   );
+            $table->string              ('TASK_TITLE'   );
             $table->text                ('DESCRIPTION'  );
             $table->boolean             ('STATEMENT'    );
             $table->dateTime            ('LAST_DAY'     );
