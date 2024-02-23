@@ -1,0 +1,90 @@
+div.PanelTaskBoardPrincipal{
+    height: 100%;
+    width:100%;
+
+    position: relative;
+}
+/*--------------------------------------------------------------------------------------------------*/
+div.PanelTaskBoardTareas{
+    background-color: whitesmoke;
+    height: 100%;
+    width : 100%;
+
+    display        : flex      ;
+    flex-direction : column    ;
+    align-items    : center  ;
+    overflow       : auto    ;
+}
+
+div.PanelTaskBoardSuperiorMentor{
+    height: auto;
+    width : 90%;
+
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: solid;
+    border-color: red;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+div.PanelTaskBoardEspecificoMentor{
+    width: auto;
+
+    display        : flex;
+    flex-direction : column;
+    justify-content: flex-end;
+}
+
+div.PanelTask_N{
+    height: auto;
+    width: 90%;
+
+    border: solid;
+    border-color: blue;
+
+    background-color: white;
+    box-shadow: 4px 4px 10px black;
+}
+/*--------------------------------------------------------------------------------------------------*/
+div.PanelTaskBoardCreateTask{
+    visibility: hidden;
+    position  : absolute;
+    top : 0;
+    left: 0;
+    width : 100%;
+    height: 100%;
+
+    background-color: whitesmoke;
+
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+}
+
+div.PanelNewTask{
+    height: auto;
+    width : 80%;
+
+    border-radius: 5%;
+
+    background-color: white;
+    box-shadow: 4px 4px 10px black;
+}
+
+div.PanelTituloNewTask{
+    width : 15%;
+    height: 10%;
+
+    background-color: #0099cc;
+
+    margin-left : 10%;
+    margin-top  : -2%;
+
+    border-radius: 10%;
+
+    display        : flex  ;
+    align-items    : center;
+}

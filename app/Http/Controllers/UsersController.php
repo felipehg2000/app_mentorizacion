@@ -11,6 +11,7 @@ use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\MentorsController;
 use App\Models\Study_room;
 use App\Models\Synchronous_message;
+use App\Models\Task;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -19,7 +20,7 @@ use Exception;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-19 22:24:35
+ * @Last Modified time: 2024-02-23 21:19:55
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -41,7 +42,7 @@ class UsersController extends Controller
     public function index(){
         return view('users.index');
     }
-//--------------------------------------------------------------------------------------------------
+
     public function store(Request $request){
         $validacion = $request->validate([
             'user'     => ['max:30', 'required'],
@@ -69,6 +70,31 @@ class UsersController extends Controller
         else{
         return redirect()->back()->withErrors(['message' => 'El correo electrónico o la contraseña son incorrectos.']);
         }
+    }
+//--------------------------------------------------------------------------------------------------
+    public function task_board(){
+        $tipo_usu = Auth::user()->USER_TYPE;
+
+        return view('users.task_board',  compact('tipo_usu'));
+    }
+
+    public function task_board_store(Request $request){
+
+    }
+
+    /**
+     * Carga los datos en el modelo y crea la entrada en la base de datos. Los datos vienen comprobados
+     */
+    public function add_task_store(Request $request){
+        $study_room_id  = Auth::user()->id           ;
+        $titulo         = $request->titulo_tarea     ;
+        $descripcion    = $request->descripcion_tarea;
+        $fecha_hasta    = $request->fecha_tarea      ;
+        $fecha_creacion = date('y-m-d')              ;
+
+        $this->CreateTask($study_room_id, $titulo, $descripcion, $fecha_hasta, $fecha_creacion);
+
+        return response()->json(['success' => true]);
     }
 //--------------------------------------------------------------------------------------------------
     public function sync_chat(){
@@ -511,6 +537,19 @@ class UsersController extends Controller
         $sync_message->message             = $param_message            ;
 
         $sync_message->save();
+    }
+//--------------------------------------------------------------------------------------------------
+    private function CreateTask($param_study_room_id, $param_titulo, $param_descripcion, $param_fecha_hasta, $param_fecha_creacion){
+        $task = new Task();
+
+        $task->study_room_id = $param_study_room_id ;
+        $task->task_title    = $param_titulo        ;
+        $task->description   = $param_descripcion   ;
+        $task->statment      = 0                    ;
+        $task->last_day      = $param_fecha_hasta   ;
+        $task->created_at    = $param_fecha_creacion;
+
+        $task->save();
     }
 //--------------------------------------------------------------------------------------------------
     private function cifrate_private_key ($clave){
