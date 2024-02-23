@@ -21,7 +21,7 @@
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
     <script>
         var csrfToken                  = '{{ csrf_token() }}';
-        var url_tablon_completo        = "#";
+        var url_tablon_completo        = "{{route('users.task_board')}}";
         var url_tareas_completadas     = "#";
         var url_tareas_a_completar     = "#";
         var url_chats_privados         = "{{route('users.sync_chat')}}";
