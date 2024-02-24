@@ -14,13 +14,14 @@ use App\Models\Synchronous_message;
 use App\Models\Task;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use DateTime;
 
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-23 21:19:55
+ * @Last Modified time: 2024-02-24 01:28:21
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -78,19 +79,20 @@ class UsersController extends Controller
         return view('users.task_board',  compact('tipo_usu'));
     }
 
-    public function task_board_store(Request $request){
+    /*public function task_board_store(Request $request){
 
-    }
+    }*/
 
     /**
      * Carga los datos en el modelo y crea la entrada en la base de datos. Los datos vienen comprobados
      */
     public function add_task_store(Request $request){
         $study_room_id  = Auth::user()->id           ;
-        $titulo         = $request->titulo_tarea     ;
-        $descripcion    = $request->descripcion_tarea;
-        $fecha_hasta    = $request->fecha_tarea      ;
-        $fecha_creacion = date('y-m-d')              ;
+        $titulo         = $request->datos['titulo_tarea'     ];
+        $descripcion    = $request->datos['descripcion_tarea'];
+        $fecha_hasta    = $request->datos['fecha_tarea'      ];
+        $fecha_hasta    = new DateTime($fecha_hasta);
+        $fecha_creacion = date('y-m-d');
 
         $this->CreateTask($study_room_id, $titulo, $descripcion, $fecha_hasta, $fecha_creacion);
 
@@ -545,7 +547,7 @@ class UsersController extends Controller
         $task->study_room_id = $param_study_room_id ;
         $task->task_title    = $param_titulo        ;
         $task->description   = $param_descripcion   ;
-        $task->statment      = 0                    ;
+        $task->statement     = 0                    ;
         $task->last_day      = $param_fecha_hasta   ;
         $task->created_at    = $param_fecha_creacion;
 

@@ -26,7 +26,6 @@ function MostrarPanelTareas(){
  * para crear el registro de la base de datos
  */
 function CrearNuevaTarea(){
-    console.log('1');
     var titulo      = document.getElementById('input_name'       ).value;
     var descripcion = document.getElementById('input_description').value;
 
@@ -36,7 +35,7 @@ function CrearNuevaTarea(){
     //Comprobacioines
     var datosCorrectos = true;
     var texto = '';
-    if (fechaForm == null || titulo == null || descripcion == null){
+    if (isNaN(fechaForm.getTime()) || titulo == '' || descripcion == ''){
         texto = 'Para dar de alta la tarea primero tiene que rellenar todos los campos';
         datosCorrectos = false;
     }else if (fechaForm <= fechaHoy){
@@ -56,7 +55,7 @@ function CrearNuevaTarea(){
             datos  : {
                 titulo_tarea     : titulo,
                 descripcion_tarea: descripcion,
-                fecha_tarea      : fechaForm
+                fecha_tarea      : fechaForm.toISOString()
             }
         }
 
@@ -75,7 +74,7 @@ function CrearNuevaTarea(){
     }
 
     if(!datosCorrectos){
-        document.getElementById('textoEmergenteRespuesta').value = texto;
+        document.getElementById('textoEmergenteRespuesta').textContent = texto;
 
         document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
         document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';

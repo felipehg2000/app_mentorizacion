@@ -12,7 +12,7 @@ class Task extends Model
     protected $fillable = ['study_room_id',
                            'task_title'   ,
                            'description'  ,
-                           'statment'     ,
+                           'statement'    ,
                            'last_day'     ,
                            'created_at'   ];
 }
