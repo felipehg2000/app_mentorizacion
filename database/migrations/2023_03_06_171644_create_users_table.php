@@ -159,7 +159,6 @@ return new class extends Migration{
             $table->unsignedBigInteger  ('STUDY_ROOM_ID');
             $table->string              ('TASK_TITLE'   );
             $table->text                ('DESCRIPTION'  );
-            $table->boolean             ('STATEMENT'    );
             $table->dateTime            ('LAST_DAY'     );
             $table->timestamps          ();
 
