@@ -21,9 +21,9 @@ div.PanelTaskBoardSuperiorMentor{
     width : 90%;
 
     margin-top: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     border: solid;
-    border-color: blue;
+    border-color: rgb(255, 66, 132);
 
     display: flex;
     align-items: center;
@@ -47,6 +47,53 @@ div.PanelTask_N{
 
     background-color: white;
     box-shadow: 4px 4px 10px black;
+}
+
+div.TaskTitulo_Azul{
+    width : 15%;
+    height: 50px;
+
+    background-color: #0099cc;
+
+    margin-left : 10%;
+    margin-top  : -2%;
+
+    border-radius: 10%;
+
+    display        : flex  ;
+    align-items    : center;
+}
+
+div.TaskTitulo_Rojo{
+    width : 15%;
+    height: 50px;
+
+    background-color: red;
+
+    margin-left : 10%;
+    margin-top  : -2%;
+
+    border-radius: 10%;
+
+    display        : flex  ;
+    align-items    : center;
+}
+
+p.TaskTitulo{
+    padding-left: 5%;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size  : 20px;
+    font-weight: bold;
+}
+
+p.TaskInfo{
+    padding-left : 2.5%;
+    padding-right: 2.5%;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: justify;
+
 }
 /*--------------------------------------------------------------------------------------------------*/
 div.PanelTaskBoardCreateTask{
@@ -74,6 +121,8 @@ div.PanelNewTask{
 
     background-color: white;
     box-shadow: 4px 4px 10px black;
+
+    margin-bottom: 30px;
 }
 
 div.PanelTituloNewTask{

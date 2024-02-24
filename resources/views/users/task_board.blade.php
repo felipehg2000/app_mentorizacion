@@ -30,20 +30,31 @@
                 @endif
             </div>
 
-
+            @foreach ($tasks as $task)
                 <div class='PanelNewTask'>
-                    <div class='PanelTituloTask_n'>
-                        <p class='LabelTituloTask_n'>1<p>
+                    @if(\Carbon\Carbon::parse($task->LAST_DAY)->gt(\Carbon\Carbon::now()))
+                        <!--Fecha es mayor que hoy-->
+                        <div class='TaskTitulo_Azul'>
+                    @else
+                        <!--Fecha es menor o igual que hoy-->
+                        <div class='TaskTitulo_Rojo'>
+                    @endif
+                        <!--Hacemos el cast a data table y lo formateamos para que salga solo la fecha y no salga fecha y hora-->
+                        <p class='tituloEmergente'>{{ \Carbon\Carbon::parse($task->LAST_DAY)->format('d-m-Y')}}</p>
                     </div>
 
-                    <div class=''>
-
+                    <div class='PanelFormNewTask'>
+                        <p class='TaskTitulo'>Titulo de la tarea:</p>
+                        <p class='TaskInfo'>{{ $task->TASK_TITLE }}</p><br>
+                        <p class='TaskTitulo'>Descripción</p>
+                        <p class='TaskInfo'>{{ $task->DESCRIPTION }}</p><br>
                     </div>
 
-                    <div class=''>
-                        <button class='' type="submit" onclick="VerDatosEspecíficos()">Ver</button>
+                    <div class='PanelBotones'>
+                        <button class='btn_create' type="submit" onclick="VerDatosEspecíficos($tipo_usu)">Ver</button>
                     </div>
                 </div>
+            @endforeach
 
         <div>
 

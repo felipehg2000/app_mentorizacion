@@ -74,9 +74,31 @@ class UsersController extends Controller
     }
 //--------------------------------------------------------------------------------------------------
     public function task_board(){
-        $tipo_usu = Auth::user()->USER_TYPE;
+        if (Auth::check()) {
+            $tipo_usu        = Auth::user()->USER_TYPE;
+            $id_sala_estudio = 0;
 
-        return view('users.task_board',  compact('tipo_usu'));
+            if ($tipo_usu == 1){ //Estudiante
+                $respuesta = DB::table('study_room_access')
+                                ->where('STUDENT_ID'  , '=', Auth::user()->id)
+                                ->where('LOGIC_CANCEL', '=', 0)
+                                ->select('STUDY_ROOM_ID')
+                                ->first();
+
+
+                $id_sala_estudio = $respuesta->STUDY_ROOM_ID;
+            } else if ($tipo_usu == 2) { //Mentor
+                $id_sala_estudio = Auth::user()->id;
+            }
+
+            $tasks = Task::where('study_room_id', $id_sala_estudio)
+                          ->orderBy('last_day', 'desc')
+                          ->get();
+
+            return view('users.task_board',  compact('tipo_usu', 'tasks'));
+        } else {
+            return view('users.close');
+        }
     }
 
     /*public function task_board_store(Request $request){
@@ -547,7 +569,6 @@ class UsersController extends Controller
         $task->study_room_id = $param_study_room_id ;
         $task->task_title    = $param_titulo        ;
         $task->description   = $param_descripcion   ;
-        $task->statement     = 0                    ;
         $task->last_day      = $param_fecha_hasta   ;
         $task->created_at    = $param_fecha_creacion;
 
