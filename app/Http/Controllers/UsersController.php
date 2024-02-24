@@ -21,7 +21,7 @@ use DateTime;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-24 01:28:21
+ * @Last Modified time: 2024-02-24 21:53:50
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -91,9 +91,10 @@ class UsersController extends Controller
                 $id_sala_estudio = Auth::user()->id;
             }
 
-            $tasks = Task::where('study_room_id', $id_sala_estudio)
-                          ->orderBy('last_day', 'desc')
-                          ->get();
+            $tasks = DB::table('TASKS')
+                        ->where('study_room_id', $id_sala_estudio)
+                        ->orderBy('last_day', 'desc')
+                        ->get();
 
             return view('users.task_board',  compact('tipo_usu', 'tasks'));
         } else {
@@ -118,6 +119,21 @@ class UsersController extends Controller
 
         $this->CreateTask($study_room_id, $titulo, $descripcion, $fecha_hasta, $fecha_creacion);
 
+        return response()->json(['success' => true]);
+    }
+
+    public function update_task_store(Request $request){
+        //modify de la base de datos del id que me pasan en la request
+        $task_id = $request->datos['id_tarea'];
+
+        $tarea = Task::where('id', $task_id)->first();
+
+        $tarea->task_title    = $request->datos['titulo_tarea'     ];
+        $tarea->description   = $request->datos['descripcion_tarea'];
+        $tarea->last_day      = $request->datos['fecha_tarea'      ];
+        $tarea->last_day      = new DateTime($tarea->last_day);
+
+        $tarea->save();
         return response()->json(['success' => true]);
     }
 //--------------------------------------------------------------------------------------------------
