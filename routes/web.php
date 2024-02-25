@@ -28,8 +28,7 @@ Route::get('/', HomeController::class)->name('home');
 Route::controller(UsersController::class)->group(function(){
     Route::get  ('users'                , [UsersController::class, 'index'                  ])->name('users.index'                  );
     Route::post ('users'                , [UsersController::class, 'store'                  ])->name('users.store'                  );
-
-    Route::get  ('users/task_board'     , [UsersController::class, 'task_board'             ])->name('users.task_board'             );
+	    Route::get  ('users/task_board'     , [UsersController::class, 'task_board'             ])->name('users.task_board'             );
     Route::post ('users/task_board'     , [UsersController::class, 'task_board_store'       ])->name('users.task_board.store'       );
     Route::post ('users/add_task'       , [UsersController::class, 'add_task_store'         ])->name('users.add_task.store'         );
     Route::post ('users/update_task'    , [UsersController::class, 'update_task_store'      ])->name('users.update_task.store'      );
@@ -52,7 +51,10 @@ Route::controller(UsersController::class)->group(function(){
 
     Route::get  ('users/delete'         , [UsersController::class, 'delete'                 ])->name('users.delete'                 );
     Route::post ('users/delete'         , [UsersController::class, 'delete_store'           ])->name('users.delete.store'           );
-
+	
+	Route::get  ('users/done_tasks'     , [UsersController::class, 'done_tasks'             ])->name('users.done_tasks'             );
+    Route::post ('users/done_tasks'     , [UsersController::class, 'done_tasks_store'       ])->name('users.done_tasks.store'       );
+ 
     Route::get  ('users/close'          , [UsersController::class, 'close'                  ])->name('users.close'                  );
 
 });
