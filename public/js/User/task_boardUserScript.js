@@ -1,5 +1,12 @@
 //Creación de registros
 //--------------------------------------------------------------------------------------------------
+/**
+ * Rellena los campos del formulario y en caso de que sea el estudiante deshabilita los campos para que
+ * no pueda modificarlos y solo pueda hacer la entrega. En caso del mentor lo deja habilitado para modificar.
+ *
+ * @param {Dato que nos dice si se trata de un usuario mentor o estudiante} param_tipo_usu
+ * @param {Id de la tarea seleccionada} param_task_id
+ */
 function VerDatosEspecíficos(param_tipo_usu, param_task_id){
     //Rellenamos los campos:
     var id_tarea_titulo      = 'titulo_tarea_'      + param_task_id;
@@ -49,8 +56,7 @@ function MostrarPanelTareas(){
 }
 
 /**
- * Comprueba si los datos cumplen los requisitos de la base de datos y se mandan al controlador
- * para crear el registro de la base de datos
+ * Comprueba los datos y redirecciona la funcionalidad al apartado de creación o modificación de los datos
  */
 function CrearNuevaTarea(){
     var titulo      = document.getElementById('input_name'       ).value;
@@ -88,10 +94,53 @@ function CrearNuevaTarea(){
     }
 }
 
-function CrearNuevaRespuesta(){
+/**
+ * Elimina la tarea seleccionada
+ *
+ * @param {El id de la tarea que queremos eliminar} param_id_tarea
+ */
+function BorrarTarea(param_id_tarea){
+    var data = {
+        _token : csrfToken,
+        datos  : param_id_tarea
+    }
 
+    $.ajax({
+        url   : url_delete_task,
+        method: 'POST'         ,
+        data  : data
+    }).done(function(respuesta){
+        if(respuesta.success){
+            location.reload()
+        } else {
+            texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
+            MostrarMensajeError(param_texto);
+        }
+    });
+}
+
+/**
+ *
+ */
+function CrearNuevaRespuesta(){
+    var fichero = document.getElementById('input_upload').files[0];
+
+    if (fichero == null){
+        MostrarMensajeError('Tienes que seleccionar un archivo antes de realizar la entrega');
+    } else if (fichero.type !== 'application/pdf') {
+        MostrarMensajeError('El archivo seleccionado tiene que ser de tipo PDF');
+    } else {
+        MostrarMensajeError('Todo bien');
+    }
 }
 //--------------------------------------------------------------------------------------------------
+/**
+ * Crea la petición ajax para crear la tarea nueva
+ *
+ * @param {Titulo de la tarea, para rellenar la base de datos tasks} param_titulo
+ * @param {Descripción de la tarea, para rellenar la base de datos tasks} param_descripcion
+ * @param {Fecha de la tarea, para rellenar la base de datos de tasks} param_fechaForm
+ */
 function FuncionCrearNuevaTarea(param_titulo, param_descripcion, param_fechaForm){
     var data = {
         _token : csrfToken,
@@ -116,6 +165,14 @@ function FuncionCrearNuevaTarea(param_titulo, param_descripcion, param_fechaForm
     });
 }
 //--------------------------------------------------------------------------------------------------
+/**
+ *  Crea la petición ajax para modificar los datos de la tarea seleccionada
+ *
+ * @param {Id de la tarea que vamos a modificar, para buscarla} param_id
+ * @param {Titulo de la tarea, para modificar la base de datos} param_titulo
+ * @param {Descripción de la tarea, para modificar la base de datos} param_descripcion
+ * @param {Fecha de entrega final de la tarea, para modificar la base de datos} param_fechaForm
+ */
 function FuncionModificarTarea(param_id, param_titulo, param_descripcion, param_fechaForm){
     var data = {
         _token : csrfToken,
@@ -141,6 +198,11 @@ function FuncionModificarTarea(param_id, param_titulo, param_descripcion, param_
     });
 }
 //--------------------------------------------------------------------------------------------------
+/**
+ * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
+ *
+ * @param {Texto que saldrá en el mensaje de error} param_texto
+ */
 function MostrarMensajeError(param_texto){
 
     document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
@@ -148,3 +210,4 @@ function MostrarMensajeError(param_texto){
     document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
     document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
 }
+//--------------------------------------------------------------------------------------------------

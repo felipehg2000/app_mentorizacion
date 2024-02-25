@@ -21,7 +21,7 @@ use DateTime;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-24 21:53:50
+ * @Last Modified time: 2024-02-25 14:14:51
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -73,6 +73,9 @@ class UsersController extends Controller
         }
     }
 //--------------------------------------------------------------------------------------------------
+    /**
+     * Selecciona las tareas que hay en una sala de estudio y devuelve una vista con esas tareas.
+     */
     public function task_board(){
         if (Auth::check()) {
             $tipo_usu        = Auth::user()->USER_TYPE;
@@ -110,31 +113,57 @@ class UsersController extends Controller
      * Carga los datos en el modelo y crea la entrada en la base de datos. Los datos vienen comprobados
      */
     public function add_task_store(Request $request){
-        $study_room_id  = Auth::user()->id           ;
-        $titulo         = $request->datos['titulo_tarea'     ];
-        $descripcion    = $request->datos['descripcion_tarea'];
-        $fecha_hasta    = $request->datos['fecha_tarea'      ];
-        $fecha_hasta    = new DateTime($fecha_hasta);
-        $fecha_creacion = date('y-m-d');
+        if(Auth::check()) {
+            $study_room_id  = Auth::user()->id           ;
+            $titulo         = $request->datos['titulo_tarea'     ];
+            $descripcion    = $request->datos['descripcion_tarea'];
+            $fecha_hasta    = $request->datos['fecha_tarea'      ];
+            $fecha_hasta    = new DateTime($fecha_hasta);
+            $fecha_creacion = date('y-m-d');
 
-        $this->CreateTask($study_room_id, $titulo, $descripcion, $fecha_hasta, $fecha_creacion);
+            $this->CreateTask($study_room_id, $titulo, $descripcion, $fecha_hasta, $fecha_creacion);
 
-        return response()->json(['success' => true]);
+            return response()->json(['success' => true]);
+        } else {
+            return view('users.close');
+        }
     }
 
+    /**
+     * Actualiza los campos de la base de datos por si se ha modificado algo. La tarea que esté en $request->id_task
+     */
     public function update_task_store(Request $request){
         //modify de la base de datos del id que me pasan en la request
-        $task_id = $request->datos['id_tarea'];
+        if (Auth::check()) {
+            $task_id = $request->datos['id_tarea'];
 
-        $tarea = Task::where('id', $task_id)->first();
+            $tarea = Task::where('id', $task_id)->first();
 
-        $tarea->task_title    = $request->datos['titulo_tarea'     ];
-        $tarea->description   = $request->datos['descripcion_tarea'];
-        $tarea->last_day      = $request->datos['fecha_tarea'      ];
-        $tarea->last_day      = new DateTime($tarea->last_day);
+            $tarea->task_title    = $request->datos['titulo_tarea'     ];
+            $tarea->description   = $request->datos['descripcion_tarea'];
+            $tarea->last_day      = $request->datos['fecha_tarea'      ];
+            $tarea->last_day      = new DateTime($tarea->last_day);
 
-        $tarea->save();
-        return response()->json(['success' => true]);
+            $tarea->save();
+            return response()->json(['success' => true]);
+        } else{
+            return view('users.close');
+        }
+    }
+
+    /**
+     * Borra un registro de la base de datos, el que esté en $request->id_task
+     */
+    public function delete_task_store(Request $request){
+        if (Auth::check()) {
+            $task_id = $request->datos;
+            $tarea = Task::where('id', $task_id)->first();
+            $tarea->delete();
+
+            return response()->json(['success' => true]);
+        } else {
+            return view('users.close');
+        }
     }
 //--------------------------------------------------------------------------------------------------
     public function sync_chat(){

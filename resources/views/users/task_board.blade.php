@@ -1,16 +1,23 @@
 @extends('layouts.plantillaUsuLogeado')
 
-@section('title', 'Estudiantes')
+@if ($tipo_usu == 1)
+    @section('title', 'Estudiantes')
+@elseif($tipo_usu == 2)
+    @section('title', 'Mentor')
+@endif
 
 @section ('style')
-    <link href="{{ asset('css/task_boardStyle.css') }}" rel="stylesheet">
+    <!--Linkeamos los estilos-->
+    <link href="{{ asset('css/task_boardStyle.css' ) }}" rel="stylesheet">
     <link href="{{ asset('css/formsSimplestyle.css') }}" rel="stylesheet">
 @endsection
 
 @section('js')
+    <!--Definición de rutas-->
     <script>
         var url_add_task    = "{{ route('users.add_task.store'   ) }}";
-        var url_update_task = "{{ route('users.update_task.store') }}"
+        var url_update_task = "{{ route('users.update_task.store') }}";
+        var url_delete_task = "{{ route('users.delete_task.store') }}";
     </script>
     <script src="{{ asset('js/User/task_boardUserScript.js') }}"></script>
 @endsection
@@ -52,7 +59,12 @@
                     </div>
 
                     <div class='PanelBotones'>
-                        <button class='btn_create' type="submit" onclick="VerDatosEspecíficos({{ $tipo_usu }}, {{ $task->id }})">Ver</button>
+                        @if ($tipo_usu == 1) <!--Estudiante-->
+                            <button class='btn_create' type="submit" onclick="VerDatosEspecíficos({{ $tipo_usu }}, {{ $task->id }})">Realizar entrega</button>
+                        @elseif($tipo_usu == 2)<!--Mentor-->
+                            <button class='btn_create_multiple' type="submit" onclick="VerDatosEspecíficos({{ $tipo_usu }}, {{ $task->id }})">Modificar</button>
+                            <button class='btnEmergenteAceptarDelete' type="submit" onclick="BorrarTarea({{ $task->id }})">Eliminar</button>
+                        @endif
                     </div>
                 </div>
             @endforeach
@@ -80,7 +92,7 @@
 
                     @if($tipo_usu == 1) <!--ESTUDIANTE-->
                     <label for='input_upload'>Realizar entrega</label>
-                    <input id='input_upload' type="file" >
+                    <input id='input_upload' type="file">
                     @endif
                 </div>
 

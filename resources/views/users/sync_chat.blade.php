@@ -1,6 +1,10 @@
 @extends('layouts.plantillaUsuLogeado')
 
-@section('title', 'Estudiantes')
+@if ($tipo_usu == 1)
+    @section('title', 'Estudiantes')
+@elseif($tipo_usu == 2)
+    @section('title', 'Mentor')
+@endif
 
 @section ('style')
     <link href="{{ asset('css/sync_chatUserStyle.css') }}" rel="stylesheet">
