@@ -22,8 +22,8 @@ class TaskDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'task.action')
-            ->setRowId('id');
+            ->setRowId('id')
+            ->addColumn('action', '<i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>');
     }
 
     /**
@@ -45,15 +45,7 @@ class TaskDataTable extends DataTable
                     ->minifiedAjax()
                     //->dom('Bfrtip')
                     ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+                    ->selectStyleSingle();
     }
 
     /**
@@ -62,14 +54,16 @@ class TaskDataTable extends DataTable
     public function getColumns(): array
     {
         return [
+            Column::make('id'),
+            Column::make('TASK_TITLE' )->title('Titulo'           ),
+            Column::make('created_at' )->title('Fecha de creación'),
+            Column::make('LAST_DAY'   )->title('Fecha tope'       ),
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
                   ->width(60)
-                  ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+                  ->addClass('text-center')
+                  ->title('Ver')
         ];
     }
 

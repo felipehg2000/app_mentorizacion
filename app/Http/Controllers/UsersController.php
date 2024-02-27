@@ -16,13 +16,15 @@ use App\Models\Task;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use DateTime;
-
+use Illuminate\Support\Facades\Route;
+use Yajra\DataTables\Contracts\DataTable;
+use Yajra\DataTables\DataTables;
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-20 00:30:54
+ * @Last Modified time: 2024-02-27 19:43:51
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -168,8 +170,11 @@ class UsersController extends Controller
     }
 //--------------------------------------------------------------------------------------------------
     public function done_tasks(){
-        $tasks_dataTable = new TaskDataTable();
-        return $tasks_dataTable->render('users.done_tasks');
+        $dataTable = new TaskDataTable();
+
+        $task = Task::where('study_room_id', '=', '2')->get();
+        $dataTable->query($task);
+        return $dataTable->render('users.done_tasks');
     }
 
     public function done_tasks_store(Request $request){
@@ -194,7 +199,8 @@ class UsersController extends Controller
                                 ->get();
             }
 
-            return view('users.sync_chat', compact('mis_amigos'));
+            $tipo_usu = Auth::user()->USER_TYPE;
+            return view('users.sync_chat', compact('mis_amigos', 'tipo_usu'));
         } else {
             return view('users.close');
         }

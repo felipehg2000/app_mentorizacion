@@ -81,13 +81,13 @@
 
                 <div class='PanelFormNewTask'>
                     <br><br>
-                    <label for='input_name'>Titulo</label>
+                    <label for='input_name'>Titulo</label><br>
                     <input id='input_name' type='text' placeholder="Titulo">
 
-                    <label for='input_last_day'>Último día</label>
+                    <label for='input_last_day'>Último día</label><br>
                     <input id='input_last_day' type='date' placeholder="Fecha">
 
-                    <label for='input_description'>Descripción</label>
+                    <label for='input_description'>Descripción</label><br>
                     <textarea id='input_description' type='text' placeholder="Descripción"></textarea>
 
                     @if($tipo_usu == 1) <!--ESTUDIANTE-->

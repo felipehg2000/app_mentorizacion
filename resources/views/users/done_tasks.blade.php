@@ -6,11 +6,16 @@
 
 @section('js')
     <script>
-        var url_open_chat    = "{{ route('users.sync_chat.store') }}";
+        var url_show_table    = "{{ route('users.show_table') }}";
         var url_send_message = "{{ route('users.send_message.store') }}";
         var url_close        = "{{ route('users.close') }}";
     </script>
     <script src="{{ asset('js/SyncChat/sync_chatScript.js') }}"></script>
+    <script>
+    $(document).ready(function(){
+        let dataTable = new DataTable('data_table_name');
+    });
+    </script>
 @endsection
 
 @section ('main')

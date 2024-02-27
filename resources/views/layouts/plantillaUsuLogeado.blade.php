@@ -7,10 +7,10 @@
 
     <!--ESTILOS-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css">
-    
+
     <link href="{{ asset('css/plantilaUsuLogueadoStyle.css') }}" rel="stylesheet">
 
     <!--YAJRA STYLE-->
@@ -37,11 +37,6 @@
         var url_modificar_mis_datos    = "{{route('users.modify')}}";
         var url_eliminar_mi_cuenta     = "{{route('users.delete')}}";
         var url_cerrar_sesion          = "{{route('users.close')}}";
-
-        $(document).ready(function(){
-            let dataTable = new DataTable('data_table_name');
-        });
-
     </script>
 
     @yield('js')
