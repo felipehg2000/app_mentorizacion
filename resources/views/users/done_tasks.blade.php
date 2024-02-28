@@ -6,10 +6,6 @@
 
 @section('js')
     <script>
-        var url_done_tasks    = "{{ route('users.done_tasks') }}";
-    </script>
-    <script src="{{ asset('js/SyncChat/sync_chatScript.js') }}"></script>
-    <script>
     $(document).ready(function(){
         let dataTable = new DataTable('data_table_name');
     });
