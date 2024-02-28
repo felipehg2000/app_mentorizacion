@@ -37,6 +37,8 @@ Route::controller(UsersController::class)->group(function(){
 
     Route::get  ('users/done_tasks'     , [UsersController::class, 'done_tasks'             ])->name('users.done_tasks'             );
 
+    Route::get  ('users/to_do_tasks'    , [UsersController::class, 'to_do_tasks'            ])->name('users.to_do_tasks'            );
+
     Route::get  ('users/sync_chat'      , [UsersController::class, 'sync_chat'              ])->name('users.sync_chat'              );
     Route::post ('users/sync_chat'      , [UsersController::class, 'sync_chat_store'        ])->name('users.sync_chat.store'        );
     Route::post ('users/send_message'   , [UsersController::class, 'send_message_store'     ])->name('users.send_message.store'     );

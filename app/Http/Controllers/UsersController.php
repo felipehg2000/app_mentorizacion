@@ -169,19 +169,82 @@ class UsersController extends Controller
         }
     }
 //--------------------------------------------------------------------------------------------------
+    /**
+     * Mentor    : le mostrará las tareas cuyas fechas de último día ha pasado ya.
+     * Estudiante: le mostrará sus tareas que aún no tienen una respuesta asociada
+     */
     public function done_tasks(){
-        $dataTable = new TaskDataTable();
-        if (request()->ajax()){
-            $action_code = '<i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>';
+        if (Auth::check()) {
+            $dataTable = new TaskDataTable();
+            if (request()->ajax()){
+                $action_code = '<i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>';
 
-            $query = Task::where('id', '=', 2);
-            return DataTables::of($query)
-                             ->addColumn('action', $action_code)
-                             ->rawColumns(['action'])
-                             ->toJson();
-       }
-       return  $dataTable->render('users.done_tasks');
+                if (Auth::user()->USER_TYPE == 1) {
+                    $studyRoomId = DB::table('STUDY_ROOM_ACCESS')
+                                      ->where('STUDENT_ID', Auth::user()->id)
+                                      ->where('LOGIC_CANCEL', 0)
+                                      ->value('STUDY_ROOM_ID');
+
+                    $query = DB::table('TASKS')
+                                ->join('ANSWERS', 'TASKS.id', '=', 'ANSWERS.TASK_ID')
+                                ->where('TASKS.STUDY_ROOM_ID', $studyRoomId)
+                                ->select('TASKS.*');
+                } elseif (Auth::user()->USER_TYPE == 2) {
+                    $query = DB::table('TASKS')
+                                ->where('STUDY_ROOM_ID', Auth::user()->id)
+                                ->whereDate('LAST_DAY', '<', now());
+                }
+
+
+                return DataTables::of($query)
+                                 ->addColumn('action', $action_code)
+                                 ->rawColumns(['action'])
+                                 ->toJson();
+            }
+            return  $dataTable->render('users.done_tasks');
+        } else{
+            return view('users.close');
+        }
     }
+
+    /**
+     * Mentor    : le mostrará las tareas cuyas fechas de último día aún no ha pasado.
+     * Estudiante: le mostrará las tareas que tienen asociada una entrega
+     */
+    public function to_do_tasks(){
+        if (Auth::check()){
+            $dataTable = new TaskDataTable();
+            if (request()->ajax()){
+                $action_code = '<i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>';
+
+                if (Auth::user()->USER_TYPE == 1) {
+                    $studyRoomId = DB::table('STUDY_ROOM_ACCESS')
+                                      ->where('STUDENT_ID', Auth::user()->id)
+                                      ->where('LOGIC_CANCEL', 0)
+                                      ->value('STUDY_ROOM_ID');
+
+                    $query = DB::table('TASKS')
+                                ->leftJoin('ANSWERS', 'TASKS.id', '=', 'ANSWERS.TASK_ID')
+                                ->whereNull('ANSWERS.TASK_ID')
+                                ->where('TASKS.STUDY_ROOM_ID', $studyRoomId)
+                            ->select('TASKS.*');
+                }elseif (Auth::user()->USER_TYPE == 2){
+                    $query = DB::table('TASKS')
+                                ->where('STUDY_ROOM_ID', Auth::user()->id)
+                                ->whereDate('LAST_DAY', '>', now());
+                }
+
+                return DataTables::of($query)
+                                 ->addColumn('action', $action_code)
+                                 ->rawColumns(['action'])
+                                 ->toJson();
+            }
+            return  $dataTable->render('users.done_tasks');
+        } else{
+            return view('users.close');
+        }
+    }
+
 //--------------------------------------------------------------------------------------------------
     public function sync_chat(){
         if (Auth::check()){

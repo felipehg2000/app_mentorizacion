@@ -24,19 +24,19 @@
     <!--YAJRA STYLE-->
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
     <script>
-        var csrfToken                  = '{{ csrf_token() }}';
-        var url_tablon_completo        = "{{route('users.task_board')}}";
-        var url_tareas_completadas     = "{{route('users.done_tasks')}}";
-        var url_tareas_a_completar     = "#";
-        var url_chats_privados         = "{{route('users.sync_chat')}}";
+        var csrfToken                  = '{{ csrf_token()               }}';
+        var url_tablon_completo        = "{{ route('users.task_board' ) }}";
+        var url_tareas_completadas     = "{{ route('users.done_tasks' ) }}";
+        var url_tareas_a_completar     = "{{ route('users.to_do_tasks') }}";
+        var url_chats_privados         = "{{ route('users.sync_chat'  ) }}";
         var url_informacion            = "#";
         var url_solicitudes            = "#";
         var url_acceso_a_tutoria       = "#";
-        var url_amigos_actuales        = "{{route('users.actual_friends')}}";
-        var url_solicitudes_de_amistad = "{{route('users.friendship')}}";
-        var url_modificar_mis_datos    = "{{route('users.modify')}}";
-        var url_eliminar_mi_cuenta     = "{{route('users.delete')}}";
-        var url_cerrar_sesion          = "{{route('users.close')}}";
+        var url_amigos_actuales        = "{{route('users.actual_friends') }}";
+        var url_solicitudes_de_amistad = "{{route('users.friendship'    ) }}";
+        var url_modificar_mis_datos    = "{{route('users.modify'        ) }}";
+        var url_eliminar_mi_cuenta     = "{{route('users.delete'        ) }}";
+        var url_cerrar_sesion          = "{{route('users.close'         ) }}";
     </script>
 
     @yield('js')
