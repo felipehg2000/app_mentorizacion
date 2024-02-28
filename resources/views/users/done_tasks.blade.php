@@ -6,9 +6,7 @@
 
 @section('js')
     <script>
-        var url_show_table    = "{{ route('users.show_table') }}";
-        var url_send_message = "{{ route('users.send_message.store') }}";
-        var url_close        = "{{ route('users.close') }}";
+        var url_done_tasks    = "{{ route('users.done_tasks') }}";
     </script>
     <script src="{{ asset('js/SyncChat/sync_chatScript.js') }}"></script>
     <script>

@@ -24,7 +24,7 @@ use Yajra\DataTables\DataTables;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-27 19:43:51
+ * @Last Modified time: 2024-02-28 19:53:02
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -171,14 +171,16 @@ class UsersController extends Controller
 //--------------------------------------------------------------------------------------------------
     public function done_tasks(){
         $dataTable = new TaskDataTable();
+        if (request()->ajax()){
+            $action_code = '<i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>';
 
-        $task = Task::where('study_room_id', '=', '2')->get();
-        $dataTable->query($task);
-        return $dataTable->render('users.done_tasks');
-    }
-
-    public function done_tasks_store(Request $request){
-
+            $query = Task::where('id', '=', 2);
+            return DataTables::of($query)
+                             ->addColumn('action', $action_code)
+                             ->rawColumns(['action'])
+                             ->toJson();
+       }
+       return  $dataTable->render('users.done_tasks');
     }
 //--------------------------------------------------------------------------------------------------
     public function sync_chat(){

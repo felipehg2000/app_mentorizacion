@@ -21,9 +21,10 @@ class TaskDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
+        $action_code = '<i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>';
         return (new EloquentDataTable($query))
             ->setRowId('id')
-            ->addColumn('action', '<i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>');
+            ->addColumn('action', $action_code);
     }
 
     /**
