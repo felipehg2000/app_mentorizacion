@@ -20,22 +20,32 @@ div.PanelTaskBoardSuperiorMentor{
     height: auto;
     width : 90%;
 
-    margin-top: 10px;
+    margin-top: 20px;
     margin-bottom: 30px;
-    border: solid;
-    border-color: rgb(255, 66, 132);
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 }
 
-div.PanelTaskBoardEspecificoMentor{
-    width: auto;
+button.btn_create_task{
+    margin-top   : -10px;
+    margin-bottom: 30px;
 
-    display        : flex;
-    flex-direction : column;
-    justify-content: flex-end;
+    width   : auto;
+    padding : 10px;
+
+    border       : none;
+    border-radius: 5px;
+
+    background-color: #0099cc;
+    color           : #fff;
+    font-size       : 16px;
+
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+button.btn_create_task:hover {
+    background-color: #0077b3;
 }
 
 div.PanelTask_N{
@@ -50,7 +60,7 @@ div.PanelTask_N{
 }
 
 div.TaskTitulo_Azul{
-    width : 15%;
+    width : max-content;
     height: 50px;
 
     background-color: #0099cc;
@@ -65,7 +75,7 @@ div.TaskTitulo_Azul{
 }
 
 div.TaskTitulo_Rojo{
-    width : 15%;
+    width : max-content;
     height: 50px;
 
     background-color: red;
@@ -127,17 +137,3 @@ div.PanelNewTask{
     margin-bottom: 30px;
 }
 
-div.PanelTituloNewTask{
-    width : 15%;
-    height: 10%;
-
-    background-color: #0099cc;
-
-    margin-left : 10%;
-    margin-top  : -2%;
-
-    border-radius: 10%;
-
-    display        : flex  ;
-    align-items    : center;
-}

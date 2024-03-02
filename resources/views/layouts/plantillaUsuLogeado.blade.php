@@ -61,7 +61,7 @@
                     <div class="submenu" id="submenu_3" onclick="redirection(3)">Tareas a completar</div>
 
                 <div class="menu">Chats               </div>
-                    <div class="submenu" id="submenu_4" onclick="redirection(4)">Cats privados</div>
+                    <div class="submenu" id="submenu_4" onclick="redirection(4)">Chats privados</div>
 
                 <div class="menu">Tutorías                  </div>
                     <div class="submenu" id="submenu_5" onclick="redirection(5)">Información        </div>
