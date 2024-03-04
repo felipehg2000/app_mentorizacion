@@ -275,6 +275,8 @@ button.btnEmergente{
 
     margin-left: 5%;
     margin-right: 5%;
+    margin-top: 50%;
+    margin-bottom: 50%;;
 
     border       : none;
     border-radius: 5px;
