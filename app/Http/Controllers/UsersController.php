@@ -19,12 +19,13 @@ use DateTime;
 use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\DataTables;
+use Carbon\Carbon;
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-28 19:53:02
+ * @Last Modified time: 2024-03-05 00:03:31
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -177,9 +178,12 @@ class UsersController extends Controller
         if (Auth::check()) {
             $dataTable = new TaskDataTable();
             if (request()->ajax()){
-                $action_code = '<i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>';
 
+                $action_code = '';
                 if (Auth::user()->USER_TYPE == 1) {
+                    $action_code = '<a onclick="clickColumnDoneTasks(1, {{ $model->id }})">
+                                        <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                    </a>';
                     $studyRoomId = DB::table('STUDY_ROOM_ACCESS')
                                       ->where('STUDENT_ID', Auth::user()->id)
                                       ->where('LOGIC_CANCEL', 0)
@@ -190,6 +194,10 @@ class UsersController extends Controller
                                 ->where('TASKS.STUDY_ROOM_ID', $studyRoomId)
                                 ->select('TASKS.*');
                 } elseif (Auth::user()->USER_TYPE == 2) {
+                    $action_code = '<a onclick="clickColumnDoneTasks(2, {{ $model->id }})">
+                                        <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                    </a>';
+
                     $query = DB::table('TASKS')
                                 ->where('STUDY_ROOM_ID', Auth::user()->id)
                                 ->whereDate('LAST_DAY', '<', now());
@@ -197,6 +205,12 @@ class UsersController extends Controller
 
 
                 return DataTables::of($query)
+                                 ->editColumn('LAST_DAY', function($query){
+                                     return Carbon::parse($query->LAST_DAY)->format('d-m-Y');
+                                 })
+                                 ->editColumn('created_at', function($query){
+                                    return Carbon::parse($query->created_at)->format('d-m-Y');
+                                 })
                                  ->addColumn('action', $action_code)
                                  ->rawColumns(['action'])
                                  ->toJson();
@@ -215,9 +229,11 @@ class UsersController extends Controller
         if (Auth::check()){
             $dataTable = new TaskDataTable();
             if (request()->ajax()){
-                $action_code = '<i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>';
-
+                $action_code = '';
                 if (Auth::user()->USER_TYPE == 1) {
+                    $action_code = '<a onclick="clickColumnToDoTasks(1, {{ $model->id }})">
+                                        <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                    </a>';
                     $studyRoomId = DB::table('STUDY_ROOM_ACCESS')
                                       ->where('STUDENT_ID', Auth::user()->id)
                                       ->where('LOGIC_CANCEL', 0)
@@ -229,12 +245,22 @@ class UsersController extends Controller
                                 ->where('TASKS.STUDY_ROOM_ID', $studyRoomId)
                             ->select('TASKS.*');
                 }elseif (Auth::user()->USER_TYPE == 2){
+                    $action_code = '<a onclick="clickColumnToDoTasks(2, {{ $model->id }})">
+                                        <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                    </a>';
+
                     $query = DB::table('TASKS')
                                 ->where('STUDY_ROOM_ID', Auth::user()->id)
                                 ->whereDate('LAST_DAY', '>', now());
                 }
 
                 return DataTables::of($query)
+                                 ->editColumn('LAST_DAY', function($query){
+                                     return Carbon::parse($query->LAST_DAY)->format('d-m-Y');
+                                 })
+                                 ->editColumn('created_at', function($query){
+                                    return Carbon::parse($query->created_at)->format('d-m-Y');
+                                 })
                                  ->addColumn('action', $action_code)
                                  ->rawColumns(['action'])
                                  ->toJson();

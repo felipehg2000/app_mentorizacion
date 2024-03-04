@@ -1,0 +1,12 @@
+div.container{
+    margin-top: 20px;
+    width: 95%;
+}
+
+div.card-header{
+    background-color: #0099cc;
+
+    font-size  : 20px;
+    font-weight: bold;
+    color      : white;
+}
