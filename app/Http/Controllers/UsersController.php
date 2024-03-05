@@ -25,7 +25,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-05 00:03:31
+ * @Last Modified time: 2024-03-05 17:35:46
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -181,7 +181,7 @@ class UsersController extends Controller
 
                 $action_code = '';
                 if (Auth::user()->USER_TYPE == 1) {
-                    $action_code = '<a onclick="clickColumnDoneTasks(1, {{ $model->id }})">
+                    $action_code = '<a onclick="StudentClickColumnDoneTask({{ $model->id }}, {{ $model->task_title }})">
                                         <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
                                     </a>';
                     $studyRoomId = DB::table('STUDY_ROOM_ACCESS')
@@ -194,7 +194,7 @@ class UsersController extends Controller
                                 ->where('TASKS.STUDY_ROOM_ID', $studyRoomId)
                                 ->select('TASKS.*');
                 } elseif (Auth::user()->USER_TYPE == 2) {
-                    $action_code = '<a onclick="clickColumnDoneTasks(2, {{ $model->id }})">
+                    $action_code = '<a onclick="MentorClickColumnDoneTask({{ $model->id }})">
                                         <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
                                     </a>';
 
@@ -231,7 +231,7 @@ class UsersController extends Controller
             if (request()->ajax()){
                 $action_code = '';
                 if (Auth::user()->USER_TYPE == 1) {
-                    $action_code = '<a onclick="clickColumnToDoTasks(1, {{ $model->id }})">
+                    $action_code = '<a onclick="StudentClickColumnToDoTask({{ $model->id }})">
                                         <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
                                     </a>';
                     $studyRoomId = DB::table('STUDY_ROOM_ACCESS')
@@ -245,7 +245,7 @@ class UsersController extends Controller
                                 ->where('TASKS.STUDY_ROOM_ID', $studyRoomId)
                             ->select('TASKS.*');
                 }elseif (Auth::user()->USER_TYPE == 2){
-                    $action_code = '<a onclick="clickColumnToDoTasks(2, {{ $model->id }})">
+                    $action_code = '<a onclick="MentorClickColumnDoneTask({{ $model->id }})">
                                         <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
                                     </a>';
 
@@ -269,6 +269,13 @@ class UsersController extends Controller
         } else{
             return view('users.close');
         }
+    }
+
+    public function found_task_store(Request $request){
+        $task = Task::find($request->id);
+
+        return response()->json(['success' => true,
+                                 'tarea'   => $task]);
     }
 
 //--------------------------------------------------------------------------------------------------

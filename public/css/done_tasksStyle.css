@@ -1,5 +1,27 @@
+div.PanelShowData{
+    height: auto;
+    width : 75%;
+
+    visibility: hidden;
+
+    border-radius: 5%;
+
+    background-color: white;
+    box-shadow: 4px 4px 10px black;
+
+    margin-bottom: 30px;
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    z-index: 110;
+}
+
 div.container{
-    margin-top: 20px;
+    padding-top: 20px;
     width: 95%;
 }
 

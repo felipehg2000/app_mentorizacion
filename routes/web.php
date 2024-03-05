@@ -11,7 +11,7 @@ use App\Http\Controllers\StudentsController;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:03:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-28 19:25:55
+ * @Last Modified time: 2024-03-05 16:16:53
  * @Description: De este archivo se leerán las rutas a las que el usuario pueda acceder, es decir, el usuario solo puede acceder a las rutas que especifiquemos aquí.
  *               Como buena práctica hay que darle nombre a cada una de las rutas, para que si una de estas cambie no haya que cambiar todos los lugares donde las referenciemos,
  *               para esto usaremos la función name.
@@ -36,6 +36,7 @@ Route::controller(UsersController::class)->group(function(){
     Route::post ('users/delete_task'    , [UsersController::class, 'delete_task_store'      ])->name('users.delete_task.store'      );
 
     Route::get  ('users/done_tasks'     , [UsersController::class, 'done_tasks'             ])->name('users.done_tasks'             );
+    Route::post ('users/found_task'     , [UsersController::class, 'found_task_store'       ])->name('users.found_task.store'       );
 
     Route::get  ('users/to_do_tasks'    , [UsersController::class, 'to_do_tasks'            ])->name('users.to_do_tasks'            );
 

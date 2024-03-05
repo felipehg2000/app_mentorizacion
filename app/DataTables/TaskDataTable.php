@@ -55,7 +55,7 @@ class TaskDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id')->visible(false),
+            Column::make('id')->visible(true),
             Column::make('TASK_TITLE' )->title('Titulo'           ),
             Column::make('created_at' )->title('Fecha de creación'),
             Column::make('LAST_DAY'   )->title('Fecha tope'       ),
