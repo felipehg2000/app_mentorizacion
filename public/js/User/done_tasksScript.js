@@ -3,10 +3,6 @@ $(document).ready(function(){
     });
 
 
-function StudentClickColumnDoneTask(param_id_tarea){
-
-}
-
 function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entrega){
     var data = {
         _token : csrfToken,
@@ -71,14 +67,6 @@ function FechaEsValida(param_fecha) {
 
 function MentorClickColumnDataTableTask(param_task_id) {
 
-}
-
-function clickColumnDoneTasks(param_user_type, param_task){
-    if (param_user_type == 1) { //Estudiante
-
-    } else if (param_user_type == 2) { //Mentor
-
-    }
 }
 
 function clickColumnToDoTasks(param_user_type, param_task){
