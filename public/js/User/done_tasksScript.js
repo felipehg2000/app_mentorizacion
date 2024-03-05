@@ -7,7 +7,7 @@ function StudentClickColumnDoneTask(param_id_tarea){
 
 }
 
-function StudentClickColumnToDoTask(param_id_tarea){
+function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entrega){
     var data = {
         _token : csrfToken,
         id     : param_id_tarea
@@ -23,10 +23,14 @@ function StudentClickColumnToDoTask(param_id_tarea){
             document.getElementById('input_description').value = respuesta.tarea.DESCRIPTION;
             document.getElementById('input_last_day'   ).value = FormatearFecha(respuesta.tarea.LAST_DAY);
 
-            if (!FechaEsValida(respuesta.tarea.LAST_DAY)){
+            if (!FechaEsValida(respuesta.tarea.LAST_DAY) || !param_posibilidad_hacer_entrega){
                 document.getElementById('lbl_input_upload').style.visibility = 'hidden';
                 document.getElementById('input_upload'    ).style.visibility = 'hidden';
-                document.getElementById('PanelTituloE'    ).style.backgroundColor = 'red';
+                if (!param_posibilidad_hacer_entrega){
+                    document.getElementById('PanelTituloE'    ).style.backgroundColor = 'green';
+                } else {
+                    document.getElementById('PanelTituloE'    ).style.backgroundColor = 'red';
+                }
             } else {
                 document.getElementById('lbl_input_upload').style.visibility = 'visible';
                 document.getElementById('input_upload'    ).style.visibility = 'visible';

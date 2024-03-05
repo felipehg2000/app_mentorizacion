@@ -181,7 +181,7 @@ class UsersController extends Controller
 
                 $action_code = '';
                 if (Auth::user()->USER_TYPE == 1) {
-                    $action_code = '<a onclick="StudentClickColumnDoneTask({{ $model->id }}, {{ $model->task_title }})">
+                    $action_code = '<a onclick="StudentClickColumnToDoTask({{ $model->id }}, false)">
                                         <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
                                     </a>';
                     $studyRoomId = DB::table('STUDY_ROOM_ACCESS')
@@ -231,7 +231,7 @@ class UsersController extends Controller
             if (request()->ajax()){
                 $action_code = '';
                 if (Auth::user()->USER_TYPE == 1) {
-                    $action_code = '<a onclick="StudentClickColumnToDoTask({{ $model->id }})">
+                    $action_code = '<a onclick="StudentClickColumnToDoTask({{ $model->id }}, true)">
                                         <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
                                     </a>';
                     $studyRoomId = DB::table('STUDY_ROOM_ACCESS')
