@@ -30,7 +30,7 @@
         var url_tareas_a_completar     = "{{ route('users.to_do_tasks') }}";
         var url_chats_privados         = "{{ route('users.sync_chat'  ) }}";
         var url_informacion            = "#";
-        var url_solicitudes            = "#";
+        var url_solicitudes            = "{{ route('users.tut_request') }}";
         var url_acceso_a_tutoria       = "#";
         var url_amigos_actuales        = "{{route('users.actual_friends') }}";
         var url_solicitudes_de_amistad = "{{route('users.friendship'    ) }}";

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\TaskDataTable;
+use App\DataTables\TutoringDataTable;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Mentor;
@@ -25,7 +26,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-11 11:13:32
+ * @Last Modified time: 2024-03-11 16:17:43
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -435,6 +436,19 @@ class UsersController extends Controller
         }else{
             return response()->json(['success' => false]);
         }
+    }
+//--------------------------------------------------------------------------------------------------
+    public function tut_request(){
+        if(!Auth::check()){
+            return view('users.close');
+        }
+
+        $dataTable = new TutoringDataTable();
+        if (request()->ajax()){
+            //hacer la consulta
+        }
+
+        return $dataTable->render('users.tut_request');
     }
 //--------------------------------------------------------------------------------------------------
     /**

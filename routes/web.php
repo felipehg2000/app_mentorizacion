@@ -44,6 +44,8 @@ Route::controller(UsersController::class)->group(function(){
     Route::post ('users/sync_chat'      , [UsersController::class, 'sync_chat_store'        ])->name('users.sync_chat.store'        );
     Route::post ('users/send_message'   , [UsersController::class, 'send_message_store'     ])->name('users.send_message.store'     );
 
+    Route::get  ('users/tut_request'    , [UsersController::class, 'tut_request'            ])->name('users.tut_request'            );
+
     Route::get  ('users/friendship'     , [UsersController::class, 'friendship'             ])->name('users.friendship'             );
     Route::get  ('users/actual_friends' , [UsersController::class, 'actual_friends'         ])->name('users.actual_friends'         );
 
