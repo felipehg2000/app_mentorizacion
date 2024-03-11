@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\TaskDataTable;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Mentor;
@@ -11,15 +12,20 @@ use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\MentorsController;
 use App\Models\Study_room;
 use App\Models\Synchronous_message;
+use App\Models\Task;
 use Illuminate\Support\Facades\DB;
 use Exception;
-
+use DateTime;
+use Illuminate\Support\Facades\Route;
+use Yajra\DataTables\Contracts\DataTable;
+use Yajra\DataTables\DataTables;
+use Carbon\Carbon;
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-02-19 22:24:35
+ * @Last Modified time: 2024-03-11 11:13:32
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -41,7 +47,7 @@ class UsersController extends Controller
     public function index(){
         return view('users.index');
     }
-//--------------------------------------------------------------------------------------------------
+
     public function store(Request $request){
         $validacion = $request->validate([
             'user'     => ['max:30', 'required'],
@@ -71,6 +77,277 @@ class UsersController extends Controller
         }
     }
 //--------------------------------------------------------------------------------------------------
+    /**
+     * Selecciona las tareas que hay en una sala de estudio y devuelve una vista con esas tareas.
+     */
+    public function task_board(){
+        if (Auth::check()) {
+            $tipo_usu        = Auth::user()->USER_TYPE;
+            $id_sala_estudio = 0;
+
+            if ($tipo_usu == 1){ //Estudiante
+                $respuesta = DB::table('study_room_access')
+                                ->where('STUDENT_ID'  , '=', Auth::user()->id)
+                                ->where('LOGIC_CANCEL', '=', 0)
+                                ->select('STUDY_ROOM_ID')
+                                ->first();
+
+
+                $id_sala_estudio = $respuesta->STUDY_ROOM_ID;
+            } else if ($tipo_usu == 2) { //Mentor
+                $id_sala_estudio = Auth::user()->id;
+            }
+
+            $tasks = DB::table('TASKS')
+                        ->where('study_room_id', $id_sala_estudio)
+                        ->orderBy('last_day', 'desc')
+                        ->get();
+
+            return view('users.task_board',  compact('tipo_usu', 'tasks'));
+        } else {
+            return view('users.close');
+        }
+    }
+
+    /*public function task_board_store(Request $request){
+
+    }*/
+
+    /**
+     * Carga los datos en el modelo y crea la entrada en la base de datos. Los datos vienen comprobados
+     */
+    public function add_task_store(Request $request){
+        if(Auth::check()) {
+            $study_room_id  = Auth::user()->id           ;
+            $titulo         = $request->datos['titulo_tarea'     ];
+            $descripcion    = $request->datos['descripcion_tarea'];
+            $fecha_hasta    = $request->datos['fecha_tarea'      ];
+            $fecha_hasta    = new DateTime($fecha_hasta);
+            $fecha_creacion = date('y-m-d');
+
+            $this->CreateTask($study_room_id, $titulo, $descripcion, $fecha_hasta, $fecha_creacion);
+
+            return response()->json(['success' => true]);
+        } else {
+            return view('users.close');
+        }
+    }
+
+    /**
+     * Actualiza los campos de la base de datos por si se ha modificado algo. La tarea que esté en $request->id_task
+     */
+    public function update_task_store(Request $request){
+        //modify de la base de datos del id que me pasan en la request
+        if (Auth::check()) {
+            $task_id = $request->datos['id_tarea'];
+
+            $tarea = Task::where('id', $task_id)->first();
+
+            $tarea->task_title    = $request->datos['titulo_tarea'     ];
+            $tarea->description   = $request->datos['descripcion_tarea'];
+            $tarea->last_day      = $request->datos['fecha_tarea'      ];
+            $tarea->last_day      = new DateTime($tarea->last_day);
+
+            $tarea->save();
+            return response()->json(['success' => true]);
+        } else{
+            return view('users.close');
+        }
+    }
+
+    /**
+     * Borra un registro de la base de datos, el que esté en $request->id_task
+     */
+    public function delete_task_store(Request $request){
+        if (Auth::check()) {
+            $task_id = $request->datos;
+            $tarea = Task::where('id', $task_id)->first();
+            $tarea->delete();
+
+            return response()->json(['success' => true]);
+        } else {
+            return view('users.close');
+        }
+    }
+//--------------------------------------------------------------------------------------------------
+    /**
+     * Mentor    : le mostrará las tareas cuyas fechas de último día ha pasado ya.
+     * Estudiante: le mostrará sus tareas que aún no tienen una respuesta asociada
+     */
+    public function done_tasks(){
+
+        if (Auth::check()) {
+            $dataTable = new TaskDataTable();
+            if (request()->ajax()){
+
+                $action_code = '';
+                if (Auth::user()->USER_TYPE == 1) {
+                    $action_code = '<a onclick="StudentClickColumnToDoTask({{ $model->id }}, false)">
+                                        <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                    </a>';
+                    $studyRoomId = DB::table('STUDY_ROOM_ACCESS')
+                                      ->where('STUDENT_ID', Auth::user()->id)
+                                      ->where('LOGIC_CANCEL', 0)
+                                      ->value('STUDY_ROOM_ID');
+
+                    $query = DB::table('TASKS')
+                                ->join('ANSWERS', 'TASKS.id', '=', 'ANSWERS.TASK_ID')
+                                ->where('TASKS.STUDY_ROOM_ID', $studyRoomId)
+                                ->select('TASKS.*');
+                } elseif (Auth::user()->USER_TYPE == 2) {
+                    $action_code = '<a onclick="MentorClickColumnDataTableTask({{ $model->id }})">
+                                        <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                    </a>';
+
+                    $query = DB::table('TASKS')
+                                ->where('STUDY_ROOM_ID', Auth::user()->id)
+                                ->whereDate('LAST_DAY', '<', now());
+                }
+
+
+                return DataTables::of($query)
+                                 ->editColumn('LAST_DAY', function($query){
+                                     return Carbon::parse($query->LAST_DAY)->format('d-m-Y');
+                                 })
+                                 ->editColumn('created_at', function($query){
+                                    return Carbon::parse($query->created_at)->format('d-m-Y');
+                                 })
+                                 ->addColumn('action', $action_code)
+                                 ->rawColumns(['action'])
+                                 ->toJson();
+            }
+            return  $dataTable->render('users.done_tasks');
+        } else{
+            return view('users.close');
+        }
+    }
+
+    /**
+     * Mentor    : le mostrará las tareas cuyas fechas de último día aún no ha pasado.
+     * Estudiante: le mostrará las tareas que tienen asociada una entrega
+     */
+    public function to_do_tasks(){
+        if (Auth::check()){
+            $dataTable = new TaskDataTable();
+            if (request()->ajax()){
+                $action_code = '';
+                if (Auth::user()->USER_TYPE == 1) {
+                    $action_code = '<a onclick="StudentClickColumnToDoTask({{ $model->id }}, true)">
+                                        <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                    </a>';
+                    $studyRoomId = DB::table('STUDY_ROOM_ACCESS')
+                                      ->where('STUDENT_ID', Auth::user()->id)
+                                      ->where('LOGIC_CANCEL', 0)
+                                      ->value('STUDY_ROOM_ID');
+
+                    $query = DB::table('TASKS')
+                                ->leftJoin('ANSWERS', 'TASKS.id', '=', 'ANSWERS.TASK_ID')
+                                ->whereNull('ANSWERS.TASK_ID')
+                                ->where('TASKS.STUDY_ROOM_ID', $studyRoomId)
+                            ->select('TASKS.*');
+                }elseif (Auth::user()->USER_TYPE == 2){
+                    $action_code = '<a onclick="MentorClickColumnDataTableTask({{ $model->id }})">
+                                        <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                    </a>';
+
+                    $query = DB::table('TASKS')
+                                ->where('STUDY_ROOM_ID', Auth::user()->id)
+                                ->whereDate('LAST_DAY', '>', now());
+                }
+
+                return DataTables::of($query)
+                                 ->editColumn('LAST_DAY', function($query){
+                                     return Carbon::parse($query->LAST_DAY)->format('d-m-Y');
+                                 })
+                                 ->editColumn('created_at', function($query){
+                                    return Carbon::parse($query->created_at)->format('d-m-Y');
+                                 })
+                                 ->addColumn('action', $action_code)
+                                 ->rawColumns(['action'])
+                                 ->toJson();
+            }
+            return  $dataTable->render('users.done_tasks');
+        } else{
+            return view('users.close');
+        }
+    }
+
+    public function found_task_store(Request $request){
+        $task = Task::find($request->id);
+
+        return response()->json(['success' => true,
+                                 'tarea'   => $task]);
+    }
+
+    public function found_answers_store(Request $request){
+
+        if (!Auth::check()) {
+            return response()->json(['success' => false]);
+        }
+
+        /**
+         * Hacemos un select de todas las personas dentro de una sala de estudio
+         */
+
+        $usuariosConAcceso = DB::table  ('users')
+                                ->join  ('study_room_access', 'users.id'             , '=', 'study_room_access.STUDENT_ID'   )
+                                ->join  ('study_rooms'      , 'study_rooms.MENTOR_ID', '=', 'study_room_access.STUDY_ROOM_ID')
+                                ->where ('study_room_access.LOGIC_CANCEL', '=', 0)
+                                ->select('users.id', 'users.NAME', 'users.SURNAME')
+                                ->get();
+
+        /**
+         * Hacemos una consulta para buscar todos los usuarios de la sala de estudios, que han realizado una entrega sobre esa tarea
+         */
+
+        /*
+         Todos los usuarios que han entregado algo
+         SELECT
+            users.id  ,
+            users.NAME,
+            users.SURNAME
+         FROM
+            study_rooms,
+            study_room_access,
+            tasks,
+            answers,
+            users
+         WHERE
+            study_rooms.MENTOR_ID = 1								AND
+            study_rooms.MENTOR_ID = study_room_access.STUDY_ROOM_ID AND
+            study_room_access.LOGIC_CANCEL = 0						AND
+            tasks.STUDY_ROOM_ID = study_rooms.MENTOR_ID				AND
+            tasks.id			= 7									AND
+            answers.STUDY_ROOM_ACCES_ID = study_room_access.STUDENT_ID AND
+            answers.TASK_ID		= 7										AND
+            users.id = study_room_access.STUDENT_ID
+        */
+
+        $mentorId = Auth::user()->id;
+        $tareaId  = $request->id;
+
+        $usuariosConRespuesta = DB::table('study_rooms')
+                                    ->join('study_room_access', 'study_rooms.MENTOR_ID', '=', 'study_room_access.STUDY_ROOM_ID')
+                                    ->join('tasks', function ($join) use ($tareaId) {
+                                        $join->on('tasks.STUDY_ROOM_ID', '=', 'study_rooms.MENTOR_ID')
+                                            ->where('tasks.id', '=', $tareaId);
+                                    })
+                                    ->join('answers', function ($join) use ($tareaId) {
+                                        $join->on('answers.STUDY_ROOM_ACCES_ID', '=', 'study_room_access.STUDENT_ID')
+                                            ->where('answers.TASK_ID', '=', $tareaId);
+                                    })
+                                    ->join('users', 'users.id', '=', 'study_room_access.STUDENT_ID')
+                                    ->where('study_rooms.MENTOR_ID', '=', $mentorId)
+                                    ->where('study_room_access.LOGIC_CANCEL', '=', 0)
+                                    ->select('users.id', 'users.NAME', 'users.SURNAME')
+                                    ->get();
+
+        return response()->json(['success'               => true,
+                                 'usuarios_sala_estudio' => $usuariosConAcceso,
+                                 'usuarios_con_entrega'  => $usuariosConRespuesta]);
+    }
+
+//--------------------------------------------------------------------------------------------------
     public function sync_chat(){
         if (Auth::check()){
             if (Auth::user()->USER_TYPE == 1) {
@@ -89,7 +366,8 @@ class UsersController extends Controller
                                 ->get();
             }
 
-            return view('users.sync_chat', compact('mis_amigos'));
+            $tipo_usu = Auth::user()->USER_TYPE;
+            return view('users.sync_chat', compact('mis_amigos', 'tipo_usu'));
         } else {
             return view('users.close');
         }
@@ -511,6 +789,18 @@ class UsersController extends Controller
         $sync_message->message             = $param_message            ;
 
         $sync_message->save();
+    }
+//--------------------------------------------------------------------------------------------------
+    private function CreateTask($param_study_room_id, $param_titulo, $param_descripcion, $param_fecha_hasta, $param_fecha_creacion){
+        $task = new Task();
+
+        $task->study_room_id = $param_study_room_id ;
+        $task->task_title    = $param_titulo        ;
+        $task->description   = $param_descripcion   ;
+        $task->last_day      = $param_fecha_hasta   ;
+        $task->created_at    = $param_fecha_creacion;
+
+        $task->save();
     }
 //--------------------------------------------------------------------------------------------------
     private function cifrate_private_key ($clave){

@@ -71,7 +71,6 @@ function SendMessage(){
  * @param {Nombre que se le pondrá a la clase del label, sumado al id se creará el nombre del id} param_name_lbl
  */
 function PushMessage(param_id_chat, param_message, param_name_pnl, param_name_lbl){
-    console.log('PUSH MESSAGE')
     var pnlMensajes = document.getElementById('pnlMensajes');
     var pnl         = document.createElement ('div'        );
     var txt         = document.createElement ('p'          );

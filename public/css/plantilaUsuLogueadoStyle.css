@@ -127,14 +127,18 @@ div.pnlRight{
 /*Estilo para oscurecer la pantalla excepto la navegación*/
 div.pnlOscurecer{
     width : 100vw;
-    height: 93vh;
+    height: 100vh;
 
+    top: 0;
+    left: 0;
     position: absolute;
 
     background-color: black;
     opacity         : 0.2;
 
     visibility: hidden;
+
+    z-index: 100;
 }
 /*Estilo para la ventana emergente*/
 div.pnlEmergente{
@@ -151,11 +155,20 @@ div.pnlEmergente{
     border-color: #0099cc;
 
     visibility: hidden;
+
+    z-index: 290;
 }
 
 div.pnlRespuestaEmergente{
     width : 30%;
     height: 30%;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    margin: auto;
 
     position: absolute;
 
@@ -167,25 +180,24 @@ div.pnlRespuestaEmergente{
     border-color: red;
 
     visibility: hidden;
+
+    z-index: 300;
 }
 
 
 div.pnlEmergenteTitulo{
-    width : 25%;
-    height: 20%;
+    width : max-content;
+    height: 50px;
 
     background-color: #0099cc;
 
     margin-left : 10%;
-    margin-top  : -5%;
+    margin-top  : -2%;
 
-    border       : solid;
-    border-width : 1px;
-    border-color : black;
     border-radius: 10%;
 
-    display    : flex;
-    align-items: center;
+    display        : flex  ;
+    align-items    : center;
 }
 
 i {
@@ -193,7 +205,10 @@ i {
 }
 
 p.tituloEmergente{
-    margin-left: 15px;
+    margin-left  : 15px;
+    margin-right : 20px;
+    margin-top   : 100% ;
+    margin-bottom: 100% ;
 
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size  : 20px;
@@ -260,6 +275,8 @@ button.btnEmergente{
 
     margin-left: 5%;
     margin-right: 5%;
+    margin-top: 50%;
+    margin-bottom: 50%;;
 
     border       : none;
     border-radius: 5px;

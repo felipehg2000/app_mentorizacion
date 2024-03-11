@@ -7,6 +7,10 @@
 
     <!--ESTILOS-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css">
+
     <link href="{{ asset('css/plantilaUsuLogueadoStyle.css') }}" rel="stylesheet">
 
     <!--YAJRA STYLE-->
@@ -20,19 +24,19 @@
     <!--YAJRA STYLE-->
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
     <script>
-        var csrfToken                  = '{{ csrf_token() }}';
-        var url_tablon_completo        = "#";
-        var url_tareas_completadas     = "#";
-        var url_tareas_a_completar     = "#";
-        var url_chats_privados         = "{{route('users.sync_chat')}}";
+        var csrfToken                  = '{{ csrf_token()               }}';
+        var url_tablon_completo        = "{{ route('users.task_board' ) }}";
+        var url_tareas_completadas     = "{{ route('users.done_tasks' ) }}";
+        var url_tareas_a_completar     = "{{ route('users.to_do_tasks') }}";
+        var url_chats_privados         = "{{ route('users.sync_chat'  ) }}";
         var url_informacion            = "#";
         var url_solicitudes            = "#";
         var url_acceso_a_tutoria       = "#";
-        var url_amigos_actuales        = "{{route('users.actual_friends')}}";
-        var url_solicitudes_de_amistad = "{{route('users.friendship')}}";
-        var url_modificar_mis_datos    = "{{route('users.modify')}}";
-        var url_eliminar_mi_cuenta     = "{{route('users.delete')}}";
-        var url_cerrar_sesion          = "{{route('users.close')}}";
+        var url_amigos_actuales        = "{{route('users.actual_friends') }}";
+        var url_solicitudes_de_amistad = "{{route('users.friendship'    ) }}";
+        var url_modificar_mis_datos    = "{{route('users.modify'        ) }}";
+        var url_eliminar_mi_cuenta     = "{{route('users.delete'        ) }}";
+        var url_cerrar_sesion          = "{{route('users.close'         ) }}";
     </script>
 
     @yield('js')
@@ -57,7 +61,7 @@
                     <div class="submenu" id="submenu_3" onclick="redirection(3)">Tareas a completar</div>
 
                 <div class="menu">Chats               </div>
-                    <div class="submenu" id="submenu_4" onclick="redirection(4)">Cats privados</div>
+                    <div class="submenu" id="submenu_4" onclick="redirection(4)">Chats privados</div>
 
                 <div class="menu">Tutorías                  </div>
                     <div class="submenu" id="submenu_5" onclick="redirection(5)">Información        </div>
@@ -120,5 +124,7 @@
 
         @yield('panelesEmergentes')
     </div>
+
+    @stack('scripts_yajra')
 </body>
 </html>

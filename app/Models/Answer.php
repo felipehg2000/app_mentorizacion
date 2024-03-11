@@ -9,7 +9,12 @@ class Answer extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = "task_id";
+    protected $table = 'ANSWERS';
+
+    protected $primaryKey = ['task_id', 'study_room_acces_id'];
+    public $incrementing  = false;
+    protected $keyType    = ['integer', 'integer'];
+
     protected $fillable   = ['task_id'            ,
                              'study_room_acces_id',
                              'type_of_document'   ,
