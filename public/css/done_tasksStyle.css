@@ -32,3 +32,55 @@ div.card-header{
     font-weight: bold;
     color      : white;
 }
+
+div.PanelShowAnswers{
+    height: auto;
+    width : 75%;
+
+    visibility: hidden;
+
+    border-radius: 5%;
+
+    background-color: white;
+    box-shadow: 4px 4px 10px black;
+
+    margin-bottom: 30px;
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    z-index: 110;
+}
+
+div.AnswersCenter{
+    display: flex;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+div.PanelIzqDone_Task{
+    height: 90%;
+    width: 40%;
+
+    margin-right: 5%;
+    margin-left : 5%;
+
+    box-shadow: 4px 4px 10px black;
+}
+
+div.PanelDchaDone_Task{
+    height: 90%;
+    width: 40%;
+
+    margin-right: 5%;
+    margin-left : 5%;
+
+    box-shadow: 4px 4px 10px black;
+}
+
+ul {
+    margin-top: 20px;
+}

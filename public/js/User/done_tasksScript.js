@@ -41,32 +41,44 @@ function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entr
     });
 }
 
-function FormatearFecha(param_fecha) {
-    var fechaOriginal = param_fecha;
-    var fechaCompleta = new Date(fechaOriginal);
-
-    var year = fechaCompleta.getFullYear();
-    var mes  = ('0' + (fechaCompleta.getMonth() + 1)).slice(-2);
-    var day  = ('0' + fechaCompleta.getDate()).slice(-2);
-
-    var fechaFormateada = year + '-' + mes + '-' + day;
-
-    return fechaFormateada
-}
-
-function FechaEsValida(param_fecha) {
-    var fechaCompleta = new Date(param_fecha);
-    var fechaHoy      = new Date();
-
-    if (fechaCompleta >= fechaHoy){
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function MentorClickColumnDataTableTask(param_task_id) {
+    var data = {
+        _token : csrfToken,
+        id     : param_task_id
+    }
 
+    $.ajax({
+        url   : url_found_answers,
+        method: 'POST'         ,
+        data  : data
+    }).done(function(respuesta){
+        if(respuesta.success){
+            document.getElementById('pnlOscurecer').style.visibility = 'visible';
+
+            document.getElementById('ListaEstudiantesConEntrega').innerHTML = '';
+            document.getElementById('ListaEstudiantesSinEntrega').innerHTML = '';
+
+            respuesta.usuarios_sala_estudio.forEach(function(usuario){
+                var entregado = false;
+
+                respuesta.usuarios_con_entrega.forEach(function(entrega){
+                    if (entrega.id == usuario.id) {
+                        entregado = true;
+                        PushUser(entrega.id, entrega.NAME, entrega.SURNAME, 'ListaEstudiantesConEntrega');
+                    }
+                });
+
+                if (!entregado){
+                    PushUser(usuario.id, usuario.NAME, usuario.SURNAME, 'ListaEstudiantesSinEntrega');
+                }
+            });
+
+            document.getElementById('PanelShowAnswers').style.visibility = 'visible';
+        } else {
+            //devolver la vista de cerrar sesión
+            window.location.href = url_close;
+        }
+    });
 }
 
 function clickColumnToDoTasks(param_user_type, param_task){
@@ -91,6 +103,8 @@ function MostrarPanelTareas(param_campos_editables){
     document.getElementById('lbl_input_upload').style.visibility = 'hidden';
     document.getElementById('input_upload'    ).style.visibility = 'hidden';
 
+    document.getElementById('PanelShowAnswers').style.visibility = 'hidden';
+
     if (!param_campos_editables){
         document.getElementById('input_name'       ).readOnly = true;
         document.getElementById('input_last_day'   ).readOnly = true;
@@ -109,4 +123,49 @@ function MostrarMensajeError(param_texto){
 
     document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
     document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
+}
+
+function FormatearFecha(param_fecha) {
+    var fechaOriginal = param_fecha;
+    var fechaCompleta = new Date(fechaOriginal);
+
+    var year = fechaCompleta.getFullYear();
+    var mes  = ('0' + (fechaCompleta.getMonth() + 1)).slice(-2);
+    var day  = ('0' + fechaCompleta.getDate()).slice(-2);
+
+    var fechaFormateada = year + '-' + mes + '-' + day;
+
+    return fechaFormateada
+}
+
+function FechaEsValida(param_fecha) {
+    var fechaCompleta = new Date(param_fecha);
+    var fechaHoy      = new Date();
+
+    if (fechaCompleta >= fechaHoy){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function PushUser(pragma_usuario_id, pragma_usuario_nombre, pragma_usuario_ape, pragma_nombre_lista) {
+    var lista = document.getElementById(pragma_nombre_lista);
+
+    var listItem = document.createElement('li');
+    var anchor   = document.createElement('a' );
+
+    var texto = pragma_usuario_nombre + " " + pragma_usuario_ape;
+
+    anchor.href        = '';
+    anchor.textContent = texto;
+
+    /**
+     * Si quiero hacer que salte una función js en vez de una ruta url puedo hacer lo siguiente:
+     *    anchor.href    = 'javascript:void(0)';
+     *    anchor.onclick = nombreFuncion;
+     */
+
+    listItem.appendChild(anchor  );
+    lista   .appendChild(listItem);
 }

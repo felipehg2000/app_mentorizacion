@@ -1,7 +1,7 @@
 @extends('layouts.plantillaUsuLogeado')
 
 @section ('style')
-    <link href="{{ asset('css/done_tasksStyle.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/done_tasksStyle.css')  }}" rel="stylesheet">
     <link href="{{ asset('css/task_boardStyle.css' ) }}" rel="stylesheet">
     <link href="{{ asset('css/formsSimplestyle.css') }}" rel="stylesheet">
 @endsection
@@ -9,7 +9,9 @@
 @section('js')
     <script src="{{ asset('js/User/done_tasksScript.js') }}"></script>
     <script>
-        var url_found_task = "{{ route('users.found_task.store') }}";
+        var url_found_task    = "{{ route('users.found_task.store'   ) }}";
+        var url_found_answers = "{{ route('users.found_answers.store') }}";
+        var url_close         = "{{ route('users.close'              ) }}";
     </script>
 @endsection
 
@@ -49,6 +51,42 @@
         <div class="PanelBotones">
             <button class='btn_create_multiple' type="submit" onclick="CrearNuevaRespuesta()">Guardar</button>
             <button class='btnEmergenteAceptarDelete' type="submit" onclick="MostrarPanelTareas()">Cancelar</button>
+        </div>
+    </div>
+
+    <div class='PanelShowAnswers' id='PanelShowAnswers'>
+        <div class = 'pnlEmergenteTitulo' id='AnswersTitle'>
+            <p class="tituloEmergente">  Enlaces a las entregas</p>
+        </div>
+
+        <div class='AnswersCenter'>
+            <div class = 'PanelIzqDone_Task'>
+                <div class='card-header'>
+                    Tareas finalizadas
+                </div>
+
+                <div class='PanelCentral'>
+                    <ul id='ListaEstudiantesConEntrega'>
+
+                    </ul>
+                </div>
+            </div>
+
+            <div class = 'PanelDchaDone_Task'>
+                <div class='card-header'>
+                    Tareas pendientes
+                </div>
+
+                <div class='PanelCentral'>
+                    <ul id='ListaEstudiantesSinEntrega'>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class='PanelBotones'>
+            <button class='btnEmergenteAceptarDelete' type="submit" onclick="MostrarPanelTareas(true)">Salir</button>
         </div>
     </div>
 @endsection
