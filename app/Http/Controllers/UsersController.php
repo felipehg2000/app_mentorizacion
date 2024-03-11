@@ -26,7 +26,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-11 16:17:43
+ * @Last Modified time: 2024-03-12 00:46:14
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -446,9 +446,44 @@ class UsersController extends Controller
         $dataTable = new TutoringDataTable();
         if (request()->ajax()){
             //hacer la consulta
+
+            $query = DB::table('users')
+                        ->join('tutoring', 'users.id', '=', 'tutoring.STUDY_ROOM_ACCES_ID')
+                        ->join('study_room_access', function ($join) {
+                            $join->on('study_room_access.STUDENT_ID', '=', 'tutoring.STUDY_ROOM_ACCES_ID')
+                                ->where('study_room_access.LOGIC_CANCEL', '=', 0);
+                        })
+                        ->select('users.NAME', 'users.SURNAME', 'tutoring.*');
+
+
+                        $action_code = $action_code = ' <a onclick="ClickDataTable({{ $model->id }})">
+                                                            <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                                        </a>';
+                        return DataTables::of($query)
+                                          ->addColumn('action', $action_code)
+                                          ->rawColumns(['action'])
+                                          ->toJson();
         }
 
-        return $dataTable->render('users.tut_request');
+        $tipo_usu = Auth::user()->USER_TYPE;
+
+        return $dataTable->render('users.tut_request', compact('tipo_usu'));
+    }
+
+    public function add_tuto_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        //Insertar registro en la base de datos
+    }
+
+    public function get_tuto_data_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        //Buscar datos en la base de datos
     }
 //--------------------------------------------------------------------------------------------------
     /**

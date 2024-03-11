@@ -11,7 +11,7 @@ use App\Http\Controllers\StudentsController;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:03:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-07 09:43:56
+ * @Last Modified time: 2024-03-12 00:42:31
  * @Description: De este archivo se leerán las rutas a las que el usuario pueda acceder, es decir, el usuario solo puede acceder a las rutas que especifiquemos aquí.
  *               Como buena práctica hay que darle nombre a cada una de las rutas, para que si una de estas cambie no haya que cambiar todos los lugares donde las referenciemos,
  *               para esto usaremos la función name.
@@ -45,6 +45,8 @@ Route::controller(UsersController::class)->group(function(){
     Route::post ('users/send_message'   , [UsersController::class, 'send_message_store'     ])->name('users.send_message.store'     );
 
     Route::get  ('users/tut_request'    , [UsersController::class, 'tut_request'            ])->name('users.tut_request'            );
+    Route::post ('users/add_tuto'       , [UsersController::class, 'add_tuto_store'         ])->name('users.add_tuto.store'         );
+    Route::post ('users/get_tuto_data'  , [UsersController::class, 'get_tuto_data_store'    ])->name('users.get_tuto_data.store'    );
 
     Route::get  ('users/friendship'     , [UsersController::class, 'friendship'             ])->name('users.friendship'             );
     Route::get  ('users/actual_friends' , [UsersController::class, 'actual_friends'         ])->name('users.actual_friends'         );

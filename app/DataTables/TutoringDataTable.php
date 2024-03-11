@@ -21,9 +21,10 @@ class TutoringDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
+        $action_code = '<i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>';
         return (new EloquentDataTable($query))
-            ->addColumn('action', 'tutoring.action')
-            ->setRowId('id');
+            ->setRowId('id')
+            ->addColumn('action', $action_code);
     }
 
     /**
@@ -40,20 +41,12 @@ class TutoringDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('tutoring-table')
+                    ->setTableId('tutoring_table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     //->dom('Bfrtip')
                     ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+                    ->selectStyleSingle();
     }
 
     /**
@@ -62,15 +55,18 @@ class TutoringDataTable extends DataTable
     public function getColumns(): array
     {
         return [
+            Column::make('id'        )->title('id'           )->visible(false),
+            Column::make('NAME'      )->title('Nombre'       ),
+            Column::make('SURNAME'   )->title('Apellidos'    ),
+            Column::make('DATE'      )->title('Fecha y hora' ),
+            Column::make('created_at')->title('Solicitada'   ),
+            Column::make('STATUS'    )->title('Estado'       ),
             Column::computed('action')
                   ->exportable(false)
                   ->printable(false)
                   ->width(60)
-                  ->addClass('text-center'),
-            Column::make('id'),
-            Column::make('add your columns'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+                  ->addClass('text-center')
+                  ->title('Ver')
         ];
     }
 
