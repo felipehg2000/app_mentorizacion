@@ -29,14 +29,15 @@
         var url_tareas_completadas     = "{{ route('users.done_tasks' ) }}";
         var url_tareas_a_completar     = "{{ route('users.to_do_tasks') }}";
         var url_chats_privados         = "{{ route('users.sync_chat'  ) }}";
-        var url_informacion            = "#";
         var url_solicitudes            = "{{ route('users.tut_request') }}";
         var url_acceso_a_tutoria       = "#";
-        var url_amigos_actuales        = "{{route('users.actual_friends') }}";
-        var url_solicitudes_de_amistad = "{{route('users.friendship'    ) }}";
-        var url_modificar_mis_datos    = "{{route('users.modify'        ) }}";
-        var url_eliminar_mi_cuenta     = "{{route('users.delete'        ) }}";
-        var url_cerrar_sesion          = "{{route('users.close'         ) }}";
+        var url_amigos_actuales        = "{{ route('users.actual_friends') }}";
+        var url_solicitudes_de_amistad = "{{ route('users.friendship'    ) }}";
+        var url_informacion            = "{{ route('users.tutorial'      ) }}";
+        var url_novedades              = "{{ route('users.news'          ) }}";
+        var url_modificar_mis_datos    = "{{ route('users.modify'        ) }}";
+        var url_eliminar_mi_cuenta     = "{{ route('users.delete'        ) }}";
+        var url_cerrar_sesion          = "{{ route('users.close'         ) }}";
     </script>
 
     @yield('js')
@@ -64,13 +65,16 @@
                     <div class="submenu" id="submenu_4" onclick="redirection(4)">Chats privados</div>
 
                 <div class="menu">Tutorías                  </div>
-                    <div class="submenu" id="submenu_5" onclick="redirection(5)">Información        </div>
                     <div class="submenu" id="submenu_6" onclick="redirection(6)">Solicitudes        </div>
                     <div class="submenu" id="submenu_7" onclick="redirection(7)">Acceso a la tutoría</div>
 
                 <div class="menu">Gestión de amistades         </div>
                     <div class="submenu" id="submenu_8" onclick="redirection(8)">Amigos actuales       </div>
                     <div class="submenu" id="submenu_9" onclick="redirection(9)">Solicitudes de amistad</div>
+
+                <div class="menu">Guías de uso</div>
+                    <div class="submenu" id="submenu_5" onclick="redirection(5)">Primeros pasos        </div>
+                    <div class="submenu" id="submenu_5" onclick="redirection(13)">Novedades        </div>
 
                 <div class="menu">Gestión de usuario        </div>
                     <div class="submenu" id="submenu_10" onclick="redirection(10)">Modificar mis datos </div>

@@ -35,6 +35,8 @@ function redirection(index) {
             break;
         case 12:
             window.location.href = url_cerrar_sesion;
+        case 13:
+            window.location.href = url_novedades;
             break;
     }
 }
