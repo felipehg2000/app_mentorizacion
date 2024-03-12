@@ -64,7 +64,7 @@
                 <label for="duration">Duración: </label><br>
                 <input type="number" min="1" max="10" id="duration" value="{{ $data['duration'] }}">   <br>
             @else
-                <h2>Datos especificos de los mentores:<h2><br>
+                <h2>Datos especificos de los mentores:</h2><br>
 
                 <label for="company">Empresa: </label><br>
                 <input type="text" id="company" value="{{ $data['company'] }}">        <br>
