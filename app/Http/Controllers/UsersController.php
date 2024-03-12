@@ -14,6 +14,7 @@ use App\Http\Controllers\MentorsController;
 use App\Models\Study_room;
 use App\Models\Synchronous_message;
 use App\Models\Task;
+use App\Models\Tutoring;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use DateTime;
@@ -26,7 +27,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-12 00:46:14
+ * @Last Modified time: 2024-03-12 12:28:38
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -456,9 +457,9 @@ class UsersController extends Controller
                         ->select('users.NAME', 'users.SURNAME', 'tutoring.*');
 
 
-                        $action_code = $action_code = ' <a onclick="ClickDataTable({{ $model->id }})">
-                                                            <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
-                                                        </a>';
+                        $action_code = ' <a onclick="ClickDataTable({{ $model->id }})">
+                                            <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                         </a>';
                         return DataTables::of($query)
                                           ->addColumn('action', $action_code)
                                           ->rawColumns(['action'])
@@ -472,10 +473,29 @@ class UsersController extends Controller
 
     public function add_tuto_store(Request $request){
         if (!Auth::check()){
-            return view('users.close');
+            return response()->json(['success' => false]);
         }
 
         //Insertar registro en la base de datos
+        $date                 = $request->fecha;
+        $hour                 = $request->hora;
+        $status               = $request->status;
+        $study_room_access_id = Auth::user()->id;
+
+        $consulta = DB::table('study_room_access')
+                       ->where('STUDENT_ID'  , '=', $study_room_access_id)
+                       ->where('LOGIC_CANCEL', '=', 0)
+                       ->select('STUDY_ROOM_ID')
+                       ->first();
+
+
+        $dateTime = $date . ' ' . $hour;
+
+        $datetime = new DateTime($dateTime);
+
+        $this->CreateTutoring($consulta->STUDY_ROOM_ID, $study_room_access_id, $datetime, $status);
+
+        return response()->json(['success' => true]);
     }
 
     public function get_tuto_data_store(Request $request){
@@ -850,6 +870,17 @@ class UsersController extends Controller
         $task->created_at    = $param_fecha_creacion;
 
         $task->save();
+    }
+//--------------------------------------------------------------------------------------------------
+    private function CreateTutoring($param_study_room_id, $param_study_room_acces_id, $param_date, $param_status){
+        $tutoring = new Tutoring();
+
+        $tutoring->study_room_id       = $param_study_room_id;
+        $tutoring->study_room_acces_id = $param_study_room_acces_id;
+        $tutoring->date                = $param_date;
+        $tutoring->status              = $param_status;
+
+        $tutoring->save();
     }
 //--------------------------------------------------------------------------------------------------
     private function cifrate_private_key ($clave){

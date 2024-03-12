@@ -81,6 +81,7 @@ function MentorClickColumnDataTableTask(param_task_id) {
     });
 }
 
+//Borrar¿?
 function clickColumnToDoTasks(param_user_type, param_task){
     if (param_user_type == 1) { //Estudiante
         alert('Patata estudiante');
