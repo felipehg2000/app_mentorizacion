@@ -27,7 +27,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-12 12:28:38
+ * @Last Modified time: 2024-03-12 19:11:06
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -500,11 +500,29 @@ class UsersController extends Controller
 
     public function get_tuto_data_store(Request $request){
         if (!Auth::check()){
-            return view('users.close');
+            return response()->json(['success' => false]);
         }
 
-        //Buscar datos en la base de datos
+        $datos_tutoria = Tutoring::find($request->id);
+
+        return response()->json(['success'   => true,
+                                 'user_type' => Auth::user()->USER_TYPE,
+                                 'tut_data'  => $datos_tutoria]);
     }
+
+    public function update_tuto_store(Request $request){
+        if (!Auth::check()){
+            return response()->json(['success' => false]);
+        }
+        $tutoria = Tutoring::where('id', $request->id)->first();
+
+        $tutoria->date   = $request->fecha . ' ' . $request->hora;
+        $tutoria->status = $request->status;
+
+        $tutoria->save();
+        return response()->json(['success' => true]);
+    }
+
 //--------------------------------------------------------------------------------------------------
     /**
      * Manejar solicitudes de amistad

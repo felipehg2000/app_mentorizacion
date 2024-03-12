@@ -9,9 +9,10 @@
 @section('js')
     <script src="{{ asset('js/User/tut_request.js') }}"></script>
     <script>
-        var url_get_tuto = "{{ route('users.get_tuto_data.store') }}";
-        var url_add_tuto = "{{ route('users.add_tuto.store'     ) }}";
-        var url_close    = "{{ route('users.close'              ) }}";
+        var url_get_tuto    = "{{ route('users.get_tuto_data.store') }}";
+        var url_add_tuto    = "{{ route('users.add_tuto.store'     ) }}";
+        var url_close       = "{{ route('users.close'              ) }}";
+        var url_update_tuto = "{{ route('users.update_tuto.store'  ) }}"
     </script>
 @endsection
 
@@ -39,7 +40,7 @@
 <div class='new_tutoring' id='new_tutoring'>
     <div class='pnlEmergenteTitulo'>
         <p class="tituloEmergente">  Tutoría</p>
-        <p id='id_task' style="visibility: hidden">Texto oculto</p>
+        <p id='id_tut' style="visibility: hidden">Texto oculto</p>
     </div>
 
     <div class='PanelFormNewTask'>
@@ -58,7 +59,7 @@
     </div>
 
     <div class='PanelBotones'>
-        <button class='btn_create_multiple' type="submit" onclick="CrearNuevaTutoria()">Guardar</button>
+        <button class='btn_create_multiple' type="submit" onclick="CrearOModificarNuevaTutoria()">Guardar</button>
         <button class='btnEmergenteAceptarDelete' type="submit" onclick="MostrarTabla()">Cancelar</button>
     </div>
 </div>

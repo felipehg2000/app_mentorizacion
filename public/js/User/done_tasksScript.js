@@ -99,8 +99,8 @@ function MostrarPanelFormulario(){
  * Muestra el tablón de tareas
  */
 function MostrarPanelTareas(param_campos_editables){
-    document.getElementById('pnlOscurecer' ).style.visibility = 'hidden';
-    document.getElementById('PanelShowData').style.visibility = 'hidden';
+    document.getElementById('pnlOscurecer'    ).style.visibility = 'hidden';
+    document.getElementById('PanelShowData'   ).style.visibility = 'hidden';
     document.getElementById('lbl_input_upload').style.visibility = 'hidden';
     document.getElementById('input_upload'    ).style.visibility = 'hidden';
 
