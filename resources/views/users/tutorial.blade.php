@@ -27,7 +27,7 @@
             <div class='PanelFormNewTask'>
                 <p class='TaskTitulo'>Mentores:</p>
                 <p>
-                    Los mentores podrán tener hasta 5 alumnos en su sala de estudios.
+                    Los mentores podrán tener hasta 5 alumnos en su sala de estudios. No podrán seguir directamente a los estudiantes. Les llegarán solicitudes y las aceptará o denegará.
                 </p>
                 <p class='TaskTitulo'>Estudiantes:</p>
                 <p>
@@ -44,11 +44,11 @@
             <div class='PanelFormNewTask'>
                 <p class='TaskTitulo'>Mentores:</p>
                 <p>
-
+                    Aunque no tenga ningún estudiante a su cargo puede dejar todas las tareas que quiera preparadas y una vez entren los estudiantes en la sala podrán ver todas las tareas que hay preparadas.
                 </p>
                 <p class='TaskTitulo'>Estudiantes:</p>
                 <p>
-
+                    Podrá ver todas las tareas que se hayan creado, y no se hayan eliminado, en la sala de estudio que esté. Si la fecha de respuesta se ha pasado no podrá hacer entregas. Las tareas no recibirán ningún tipo de puntuación.
                 </p>
             </div>
         </div>
