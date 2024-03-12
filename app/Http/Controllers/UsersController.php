@@ -27,7 +27,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-12 19:11:06
+ * @Last Modified time: 2024-03-12 19:22:39
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -461,6 +461,30 @@ class UsersController extends Controller
                                             <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
                                          </a>';
                         return DataTables::of($query)
+                                          ->editColumn('STATUS', function($query){
+                                                if ($query->STATUS == 0) {
+                                                    return 'En tratmite';
+                                                } else if ($query->STATUS == 1) {
+                                                    return 'Aceptada';
+                                                } else if ($query->STATUS == 2) {
+                                                    return 'Denegada';
+                                                }
+                                          })
+                                          ->editColumn('created_at', function($query){
+                                                return Carbon::parse($query->created_at)->format('d-m-Y');
+                                          })
+                                          ->addColumn('action', $action_code)
+                                          ->rawColumns(['action'])
+                                          ->toJson();
+
+
+                                          return DataTables::of($query)
+                                          ->editColumn('LAST_DAY', function($query){
+                                              return Carbon::parse($query->LAST_DAY)->format('d-m-Y');
+                                          })
+                                          ->editColumn('created_at', function($query){
+                                             return Carbon::parse($query->created_at)->format('d-m-Y');
+                                          })
                                           ->addColumn('action', $action_code)
                                           ->rawColumns(['action'])
                                           ->toJson();

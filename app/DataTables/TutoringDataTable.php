@@ -58,7 +58,7 @@ class TutoringDataTable extends DataTable
             Column::make('id'        )->title('id'           )->visible(false),
             Column::make('NAME'      )->title('Nombre'       ),
             Column::make('SURNAME'   )->title('Apellidos'    ),
-            Column::make('DATE'      )->title('Fecha y hora' ),
+            Column::make('DATE'      )->title('Fecha y Hora' ),
             Column::make('created_at')->title('Solicitada'   ),
             Column::make('STATUS'    )->title('Estado'       ),
             Column::computed('action')
