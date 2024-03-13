@@ -8,6 +8,8 @@ div.pnlSuperiorEspecifico{
 
 p{
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    margin: 20px;
+    text-align: justify;
 }
 
 label {

@@ -38,6 +38,8 @@
         var url_modificar_mis_datos    = "{{ route('users.modify'        ) }}";
         var url_eliminar_mi_cuenta     = "{{ route('users.delete'        ) }}";
         var url_cerrar_sesion          = "{{ route('users.close'         ) }}";
+
+        var url_datos_inicio           = "{{ route('users.info_inicial.store') }}";
     </script>
 
     @yield('js')
@@ -73,8 +75,8 @@
                     <div class="submenu" id="submenu_9" onclick="redirection(9)">Solicitudes de amistad</div>
 
                 <div class="menu">Guías de uso</div>
-                    <div class="submenu" id="submenu_5" onclick="redirection(5)">Primeros pasos        </div>
-                    <div class="submenu" id="submenu_5" onclick="redirection(13)">Novedades        </div>
+                    <div class="submenu" id="submenu_5"  onclick="redirection(5)">Primeros pasos        </div>
+                    <div class="submenu" id="submenu_13" onclick="redirection(13)">Novedades        </div>
 
                 <div class="menu">Gestión de usuario        </div>
                     <div class="submenu" id="submenu_10" onclick="redirection(10)">Modificar mis datos </div>
@@ -83,6 +85,13 @@
             </div>
             <!--Apartado del resto de la pantalla-->
             <div class="pnlRight">
+                <div class='pnlCarga' id='pnlCarga'>
+                    <i class="fa-li fa fa-spinner fa-spin"></i>
+                </div>
+
+                <div class='pnlCubierta' id='pnlCubierta'> </div>
+
+                <div class='pnlCubiertaMensaje' id="pnlCubiertaMensaje"></div>
                 @yield('main')
             </div>
         </div>

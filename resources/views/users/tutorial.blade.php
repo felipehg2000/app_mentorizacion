@@ -48,7 +48,7 @@
                 </p>
                 <p class='TaskTitulo'>Estudiantes:</p>
                 <p>
-                    Podrá ver todas las tareas que se hayan creado, y no se hayan eliminado, en la sala de estudio que esté. Si la fecha de respuesta se ha pasado no podrá hacer entregas. Las tareas no recibirán ningún tipo de puntuación.
+                    Podrá ver todas las tareas que se hayan creado, y no se hayan eliminado, en la sala de estudio que esté. Si la fecha de respuesta se ha pasado no podrá hacer entregas. Las tareas no recibirán ningún tipo de puntuación.ew
                 </p>
             </div>
         </div>

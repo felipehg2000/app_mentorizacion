@@ -27,7 +27,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-12 20:24:03
+ * @Last Modified time: 2024-03-13 14:21:55
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -78,6 +78,42 @@ class UsersController extends Controller
         return redirect()->back()->withErrors(['message' => 'El correo electrónico o la contraseña son incorrectos.']);
         }
     }
+
+    public function info_inicial_store(Request $request){
+        if (!Auth::check()){
+            return response()->json(['success' => false]);
+        }
+        $num_estudiantes = 0;
+        if (Auth::user()->USER_TYPE == 1){
+            $num_salas_estudio = DB::table('study_room_access')
+                                    ->where('STUDENT_ID'  , '=', Auth::user()->id)
+                                    ->where('LOGIC_CANCEL', '=', 0)
+                                    ->count();
+
+            if ($num_salas_estudio == 0){
+                $tiene_sala_estudio = false;
+            } else {
+                $tiene_sala_estudio = true;
+            }
+        } else if (Auth::user()->USER_TYPE == 2) {
+            $num_estudiantes = DB::table('study_room_access')
+                                  ->where('STUDY_ROOM_ID'  , '=', Auth::user()->id)
+                                  ->where('LOGIC_CANCEL', '=', 0)
+                                  ->count();
+
+            if ($num_estudiantes == 0){
+                $tiene_sala_estudio = false;
+            } else {
+                $tiene_sala_estudio = true;
+            }
+        }
+
+        return response()->json(['success'            => true,
+                                 'user_type'          => Auth::user()->USER_TYPE,
+                                 'tiene_sala_estudio' => $tiene_sala_estudio   ,
+                                 'numero_alumnos'     => $num_estudiantes]);
+    }
+
 //--------------------------------------------------------------------------------------------------
     /**
      * Selecciona las tareas que hay en una sala de estudio y devuelve una vista con esas tareas.
@@ -93,8 +129,10 @@ class UsersController extends Controller
                                 ->where('LOGIC_CANCEL', '=', 0)
                                 ->select('STUDY_ROOM_ID')
                                 ->first();
-
-
+                if ($respuesta == NULL){
+                    $tasks = NULL;
+                    return view('users.task_board',  compact('tipo_usu', 'tasks'));
+                }
                 $id_sala_estudio = $respuesta->STUDY_ROOM_ID;
             } else if ($tipo_usu == 2) { //Mentor
                 $id_sala_estudio = Auth::user()->id;
