@@ -80,6 +80,7 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
     var mostrarCubierta = false;
     var mensajeMuchosAlumnos = false;
     var mensajeYaSalaEstudio = false;
+    var mensajeAmigosActuales = false;
 
     if (url_actual == url_tablon_completo){
         id_elemento = "submenu_1";
@@ -117,6 +118,7 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         id_elemento = "submenu_8";
         if ((param_user_type == 1 && !param_tiene_sala_estudio) || (param_user_type == 2 && !param_tiene_sala_estudio)){
             mostrarCubierta = true;
+            mensajeAmigosActuales = true;
         }
     }else if (url_actual == url_solicitudes_de_amistad){
         id_elemento = "submenu_9";
@@ -149,16 +151,20 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         var mensaje = '';
         if (param_user_type == 1) {
             if (mensajeYaSalaEstudio){
-                mensaje = 'No puedes seguir a más tutores hasta que no abandnes la sala de estudio a la que perteneces.';
+                mensaje = 'No puede seguir a más tutores hasta que no abandne la sala de estudio a la que pertenece.';
+            } else if (mensajeAmigosActuales){
+                mensaje = 'No pertenece a ninguna sala de estudios aún.'
+            }else {
+                mensaje = 'Debe pertenecer a una sala de estudio para acceder a esta opción.';
             }
-
-            mensaje = 'Debe pertenecer a una sala de estudio para acceder a esta opción';
         } else if(param_user_type == 2){
             if (mensajeMuchosAlumnos){
-                mensaje = 'Tiene el límite de alumnos permitidos, no puede aceptar más solicitudes de amistad';
+                mensaje = 'Tiene el límite de alumnos permitidos, no puede aceptar más solicitudes de amistad.';
+            } else if (mensajeAmigosActuales){
+                mensaje = 'No tiene ningún contacto aún.'
+            }else {
+                mensaje = 'Debe tener alumnos en su sala de estudios para acceder a esta opción.';
             }
-
-            mensaje = 'Debe tener alumnos en su sala de estudios para acceder a esta opción'
         }
 
         document.getElementById('pnlCubiertaMensaje').textContent = mensaje;

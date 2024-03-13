@@ -51,7 +51,7 @@ textarea{
     resize   : none;
     border: solid;
     border-width: 1px;
-    border-radius: 5%;
+    /*border-radius: 5%;*/
     border-color:blue;
 }
 

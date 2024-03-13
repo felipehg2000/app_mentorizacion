@@ -27,7 +27,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-13 14:21:55
+ * @Last Modified time: 2024-03-13 23:12:02
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -583,6 +583,12 @@ class UsersController extends Controller
 
         $tutoria->save();
         return response()->json(['success' => true]);
+    }
+
+//--------------------------------------------------------------------------------------------------
+    public function tut_access(){
+        $tipo_usu = Auth::user()->USER_TYPE;
+        return view('users.tut_access', compact('tipo_usu'));
     }
 
 //--------------------------------------------------------------------------------------------------

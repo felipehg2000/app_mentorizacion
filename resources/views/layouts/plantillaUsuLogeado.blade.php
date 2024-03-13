@@ -24,13 +24,13 @@
     <!--YAJRA STYLE-->
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
     <script>
-        var csrfToken                  = '{{ csrf_token()               }}';
-        var url_tablon_completo        = "{{ route('users.task_board' ) }}";
-        var url_tareas_completadas     = "{{ route('users.done_tasks' ) }}";
-        var url_tareas_a_completar     = "{{ route('users.to_do_tasks') }}";
-        var url_chats_privados         = "{{ route('users.sync_chat'  ) }}";
-        var url_solicitudes            = "{{ route('users.tut_request') }}";
-        var url_acceso_a_tutoria       = "#";
+        var csrfToken                  = '{{ csrf_token()                  }}';
+        var url_tablon_completo        = "{{ route('users.task_board'    ) }}";
+        var url_tareas_completadas     = "{{ route('users.done_tasks'    ) }}";
+        var url_tareas_a_completar     = "{{ route('users.to_do_tasks'   ) }}";
+        var url_chats_privados         = "{{ route('users.sync_chat'     ) }}";
+        var url_solicitudes            = "{{ route('users.tut_request'   ) }}";
+        var url_acceso_a_tutoria       = "{{ route('users.tut_access'    ) }}";
         var url_amigos_actuales        = "{{ route('users.actual_friends') }}";
         var url_solicitudes_de_amistad = "{{ route('users.friendship'    ) }}";
         var url_informacion            = "{{ route('users.tutorial'      ) }}";
@@ -70,9 +70,9 @@
                     <div class="submenu" id="submenu_6" onclick="redirection(6)">Solicitudes        </div>
                     <div class="submenu" id="submenu_7" onclick="redirection(7)">Acceso a la tutoría</div>
 
-                <div class="menu">Gestión de amistades         </div>
-                    <div class="submenu" id="submenu_8" onclick="redirection(8)">Amigos actuales       </div>
-                    <div class="submenu" id="submenu_9" onclick="redirection(9)">Solicitudes de amistad</div>
+                <div class="menu">Sala de estudios         </div>
+                    <div class="submenu" id="submenu_8" onclick="redirection(8)">Integrantes       </div>
+                    <div class="submenu" id="submenu_9" onclick="redirection(9)">Solicitudes    </div>
 
                 <div class="menu">Guías de uso</div>
                     <div class="submenu" id="submenu_5"  onclick="redirection(5)">Primeros pasos        </div>
@@ -89,9 +89,10 @@
                     <i class="fa-li fa fa-spinner fa-spin"></i>
                 </div>
 
-                <div class='pnlCubierta' id='pnlCubierta'> </div>
+                <div class='pnlCubierta' id='pnlCubierta'>
+                    <div class='pnlCubiertaMensaje' id="pnlCubiertaMensaje"></div>
+                </div>
 
-                <div class='pnlCubiertaMensaje' id="pnlCubiertaMensaje"></div>
                 @yield('main')
             </div>
         </div>
