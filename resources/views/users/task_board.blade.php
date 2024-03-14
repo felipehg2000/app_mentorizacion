@@ -40,6 +40,7 @@
             @endif
 
             <!--Cargamos los paneles de las tareas que se vayan a mostrar-->
+            @if($tasks != NULL)
             @foreach ($tasks as $task)
                 <div class='PanelNewTask'>
                     @if(\Carbon\Carbon::parse($task->LAST_DAY)->gt(\Carbon\Carbon::now()))
@@ -70,6 +71,7 @@
                     </div>
                 </div>
             @endforeach
+            @endif
 
         <div>
 

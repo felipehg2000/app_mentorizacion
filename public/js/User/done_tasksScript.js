@@ -81,6 +81,7 @@ function MentorClickColumnDataTableTask(param_task_id) {
     });
 }
 
+//Borrar¿?
 function clickColumnToDoTasks(param_user_type, param_task){
     if (param_user_type == 1) { //Estudiante
         alert('Patata estudiante');
@@ -98,8 +99,8 @@ function MostrarPanelFormulario(){
  * Muestra el tablón de tareas
  */
 function MostrarPanelTareas(param_campos_editables){
-    document.getElementById('pnlOscurecer' ).style.visibility = 'hidden';
-    document.getElementById('PanelShowData').style.visibility = 'hidden';
+    document.getElementById('pnlOscurecer'    ).style.visibility = 'hidden';
+    document.getElementById('PanelShowData'   ).style.visibility = 'hidden';
     document.getElementById('lbl_input_upload').style.visibility = 'hidden';
     document.getElementById('input_upload'    ).style.visibility = 'hidden';
 

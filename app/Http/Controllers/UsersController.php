@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DataTables\TaskDataTable;
+use App\DataTables\TutoringDataTable;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Mentor;
@@ -13,6 +14,7 @@ use App\Http\Controllers\MentorsController;
 use App\Models\Study_room;
 use App\Models\Synchronous_message;
 use App\Models\Task;
+use App\Models\Tutoring;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use DateTime;
@@ -25,7 +27,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-11 11:13:32
+ * @Last Modified time: 2024-03-13 23:12:02
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -76,6 +78,42 @@ class UsersController extends Controller
         return redirect()->back()->withErrors(['message' => 'El correo electrónico o la contraseña son incorrectos.']);
         }
     }
+
+    public function info_inicial_store(Request $request){
+        if (!Auth::check()){
+            return response()->json(['success' => false]);
+        }
+        $num_estudiantes = 0;
+        if (Auth::user()->USER_TYPE == 1){
+            $num_salas_estudio = DB::table('study_room_access')
+                                    ->where('STUDENT_ID'  , '=', Auth::user()->id)
+                                    ->where('LOGIC_CANCEL', '=', 0)
+                                    ->count();
+
+            if ($num_salas_estudio == 0){
+                $tiene_sala_estudio = false;
+            } else {
+                $tiene_sala_estudio = true;
+            }
+        } else if (Auth::user()->USER_TYPE == 2) {
+            $num_estudiantes = DB::table('study_room_access')
+                                  ->where('STUDY_ROOM_ID'  , '=', Auth::user()->id)
+                                  ->where('LOGIC_CANCEL', '=', 0)
+                                  ->count();
+
+            if ($num_estudiantes == 0){
+                $tiene_sala_estudio = false;
+            } else {
+                $tiene_sala_estudio = true;
+            }
+        }
+
+        return response()->json(['success'            => true,
+                                 'user_type'          => Auth::user()->USER_TYPE,
+                                 'tiene_sala_estudio' => $tiene_sala_estudio   ,
+                                 'numero_alumnos'     => $num_estudiantes]);
+    }
+
 //--------------------------------------------------------------------------------------------------
     /**
      * Selecciona las tareas que hay en una sala de estudio y devuelve una vista con esas tareas.
@@ -91,8 +129,10 @@ class UsersController extends Controller
                                 ->where('LOGIC_CANCEL', '=', 0)
                                 ->select('STUDY_ROOM_ID')
                                 ->first();
-
-
+                if ($respuesta == NULL){
+                    $tasks = NULL;
+                    return view('users.task_board',  compact('tipo_usu', 'tasks'));
+                }
                 $id_sala_estudio = $respuesta->STUDY_ROOM_ID;
             } else if ($tipo_usu == 2) { //Mentor
                 $id_sala_estudio = Auth::user()->id;
@@ -437,6 +477,121 @@ class UsersController extends Controller
         }
     }
 //--------------------------------------------------------------------------------------------------
+    public function tut_request(){
+        if(!Auth::check()){
+            return view('users.close');
+        }
+
+        $dataTable = new TutoringDataTable();
+        if (request()->ajax()){
+            //hacer la consulta
+
+            $query = DB::table('users')
+                        ->join('tutoring', 'users.id', '=', 'tutoring.STUDY_ROOM_ACCES_ID')
+                        ->join('study_room_access', function ($join) {
+                            $join->on('study_room_access.STUDENT_ID', '=', 'tutoring.STUDY_ROOM_ACCES_ID')
+                                ->where('study_room_access.LOGIC_CANCEL', '=', 0);
+                        })
+                        ->select('users.NAME', 'users.SURNAME', 'tutoring.*');
+
+
+                        $action_code = ' <a onclick="ClickDataTable({{ $model->id }})">
+                                            <i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i>
+                                         </a>';
+                        return DataTables::of($query)
+                                          ->editColumn('STATUS', function($query){
+                                                if ($query->STATUS == 0) {
+                                                    return 'En tratmite';
+                                                } else if ($query->STATUS == 1) {
+                                                    return 'Aceptada';
+                                                } else if ($query->STATUS == 2) {
+                                                    return 'Denegada';
+                                                }
+                                          })
+                                          ->editColumn('created_at', function($query){
+                                                return Carbon::parse($query->created_at)->format('d-m-Y');
+                                          })
+                                          ->addColumn('action', $action_code)
+                                          ->rawColumns(['action'])
+                                          ->toJson();
+
+
+                                          return DataTables::of($query)
+                                          ->editColumn('LAST_DAY', function($query){
+                                              return Carbon::parse($query->LAST_DAY)->format('d-m-Y');
+                                          })
+                                          ->editColumn('created_at', function($query){
+                                             return Carbon::parse($query->created_at)->format('d-m-Y');
+                                          })
+                                          ->addColumn('action', $action_code)
+                                          ->rawColumns(['action'])
+                                          ->toJson();
+        }
+
+        $tipo_usu = Auth::user()->USER_TYPE;
+
+        return $dataTable->render('users.tut_request', compact('tipo_usu'));
+    }
+
+    public function add_tuto_store(Request $request){
+        if (!Auth::check()){
+            return response()->json(['success' => false]);
+        }
+
+        //Insertar registro en la base de datos
+        $date                 = $request->fecha;
+        $hour                 = $request->hora;
+        $status               = $request->status;
+        $study_room_access_id = Auth::user()->id;
+
+        $consulta = DB::table('study_room_access')
+                       ->where('STUDENT_ID'  , '=', $study_room_access_id)
+                       ->where('LOGIC_CANCEL', '=', 0)
+                       ->select('STUDY_ROOM_ID')
+                       ->first();
+
+
+        $dateTime = $date . ' ' . $hour;
+
+        $datetime = new DateTime($dateTime);
+
+        $this->CreateTutoring($consulta->STUDY_ROOM_ID, $study_room_access_id, $datetime, $status);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function get_tuto_data_store(Request $request){
+        if (!Auth::check()){
+            return response()->json(['success' => false]);
+        }
+
+        $datos_tutoria = Tutoring::find($request->id);
+
+        return response()->json(['success'   => true,
+                                 'user_type' => Auth::user()->USER_TYPE,
+                                 'tut_data'  => $datos_tutoria]);
+    }
+
+    public function update_tuto_store(Request $request){
+        if (!Auth::check()){
+            return response()->json(['success' => false]);
+        }
+        $tutoria = Tutoring::where('id', $request->id)->first();
+
+        $tutoria->date   = $request->fecha . ' ' . $request->hora;
+        $tutoria->status = $request->status;
+
+        $tutoria->save();
+        return response()->json(['success' => true]);
+    }
+
+//--------------------------------------------------------------------------------------------------
+    public function tut_access(){
+        $tipo_usu = Auth::user()->USER_TYPE;
+        return view('users.tut_access', compact('tipo_usu'));
+    }
+
+//--------------------------------------------------------------------------------------------------
     /**
      * Manejar solicitudes de amistad
      * ==============================
@@ -480,6 +635,22 @@ class UsersController extends Controller
         }
     }
 
+//--------------------------------------------------------------------------------------------------
+    public function tutorial(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('users.tutorial');
+    }
+
+    public function news(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('users.news');
+    }
 //--------------------------------------------------------------------------------------------------
     /**
      * Crear usuario
@@ -801,6 +972,17 @@ class UsersController extends Controller
         $task->created_at    = $param_fecha_creacion;
 
         $task->save();
+    }
+//--------------------------------------------------------------------------------------------------
+    private function CreateTutoring($param_study_room_id, $param_study_room_acces_id, $param_date, $param_status){
+        $tutoring = new Tutoring();
+
+        $tutoring->study_room_id       = $param_study_room_id;
+        $tutoring->study_room_acces_id = $param_study_room_acces_id;
+        $tutoring->date                = $param_date;
+        $tutoring->status              = $param_status;
+
+        $tutoring->save();
     }
 //--------------------------------------------------------------------------------------------------
     private function cifrate_private_key ($clave){
