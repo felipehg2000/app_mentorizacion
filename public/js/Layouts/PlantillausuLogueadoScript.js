@@ -82,6 +82,7 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
     var mensajeYaSalaEstudio  = false;
     var mensajeAmigosActuales = false;
     var mensajeNoHora         = false;
+    var mensajeNoUsuarios     = false;
 
     if (url_actual == url_tablon_completo){
         id_elemento = "submenu_1";
@@ -134,6 +135,10 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
             mostrarCubierta = true;
             mensajeMuchosAlumnos = true;
         }
+        if (document.getElementById('friendship_title').innerText == ''){
+            mostrarCubierta = true;
+            mensajeNoUsuarios = true;
+        }
     }else if (url_actual == url_modificar_mis_datos){
         id_elemento = "submenu_10";
     }else if (url_actual == url_eliminar_mi_cuenta){
@@ -160,6 +165,8 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
                 mensaje = 'No pertenece a ninguna sala de estudios aún.'
             }else if(mensajeNoHora){
                 mensaje = 'Para acceder a una tutoría debe tenerla programada, que esté aceptada y que sea la hora de la tutoría o una hora posterior a la concretada.';
+            }else if (mensajeNoUsuarios){
+                mensaje = 'No tiene ninguna solicitud pendiente.';
             }else{
                 mensaje = 'Debe pertenecer a una sala de estudio para acceder a esta opción.';
             }
@@ -170,6 +177,8 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
                 mensaje = 'No tiene ningún contacto aún.'
             }else if(mensajeNoHora){
                 mensaje = 'Para acceder a una tutoría debe tenerla programada, que esté aceptada y que sea la hora de la tutoría o una hora posterior a la concretada.';
+            }else if (mensajeNoUsuarios){
+                mensaje = 'No tiene ninguna solicitud pendiente.';
             }else {
                 mensaje = 'Debe tener alumnos en su sala de estudios para acceder a esta opción.';
             }

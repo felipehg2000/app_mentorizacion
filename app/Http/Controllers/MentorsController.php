@@ -41,11 +41,17 @@ class MentorsController extends Controller{
         /*$result_student = Student::where('id', $result_user->id)
                                  ->get();
         */
+
+        $titulo = '';
         foreach($result_user as $user){
             $this->convertToPhoto($user->IMAGE, $user->USER);
         }
 
-        return view('mentors.friendship', compact('result_user'));
+        if (!$result_user->isEmpty()){
+            $titulo = 'Solicitudes de amistad:';
+        }
+
+        return view('mentors.friendship', compact('result_user', 'titulo'));
     }
     public function friendship_store (Request $request){
         $mentor_id  = Auth::user()->id;

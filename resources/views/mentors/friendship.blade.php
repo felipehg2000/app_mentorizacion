@@ -8,6 +8,7 @@
 
 @section ('main')
     <div class="pnlPrincipalFriendship">
+        <h2 id='friendship_title'> {{ $titulo }}</h2>
         @foreach ($result_user as $user)
             <div class="pnlCard">
                 <div class="pnlSuperiorCard">

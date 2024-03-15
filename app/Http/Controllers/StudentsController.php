@@ -39,7 +39,12 @@ class StudentsController extends Controller{
             $this->convertToPhoto($user->IMAGE, $user->USER);
         }
 
-        return view ('students.friendship', compact('users'));
+        $titulo = '';
+        if (!$users->isEmpty()){
+            $titulo = 'Solicitudes de amistad:';
+        }
+
+        return view ('students.friendship', compact('users', 'titulo'));
     }
 //----------------------------------------- ---------------------------------------------------------
     /**
