@@ -75,12 +75,13 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 
 function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sala_estudio, param_num_alumnos){
-    var url_actual = window.location.href;
-    var id_elemento = '';
-    var mostrarCubierta = false;
-    var mensajeMuchosAlumnos = false;
-    var mensajeYaSalaEstudio = false;
+    var url_actual            = window.location.href;
+    var id_elemento           = ''   ;
+    var mostrarCubierta       = false;
+    var mensajeMuchosAlumnos  = false;
+    var mensajeYaSalaEstudio  = false;
     var mensajeAmigosActuales = false;
+    var mensajeNoHora         = false;
 
     if (url_actual == url_tablon_completo){
         id_elemento = "submenu_1";
@@ -113,6 +114,9 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         id_elemento = "submenu_7";
         if ((param_user_type == 1 && !param_tiene_sala_estudio) || (param_user_type == 2 && !param_tiene_sala_estudio)){
             mostrarCubierta = true;
+        } else if (document.getElementById('tit_tut_access').innerText == ''){
+            mostrarCubierta = true;
+            mensajeNoHora   = true;
         }
     }else if (url_actual == url_amigos_actuales){
         id_elemento = "submenu_8";
@@ -154,7 +158,9 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
                 mensaje = 'No puede seguir a más tutores hasta que no abandne la sala de estudio a la que pertenece.';
             } else if (mensajeAmigosActuales){
                 mensaje = 'No pertenece a ninguna sala de estudios aún.'
-            }else {
+            }else if(mensajeNoHora){
+                mensaje = 'Para acceder a una tutoría debe tenerla programada, que esté aceptada y que sea la hora de la tutoría o una hora posterior a la concretada.';
+            }else{
                 mensaje = 'Debe pertenecer a una sala de estudio para acceder a esta opción.';
             }
         } else if(param_user_type == 2){
@@ -162,6 +168,8 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
                 mensaje = 'Tiene el límite de alumnos permitidos, no puede aceptar más solicitudes de amistad.';
             } else if (mensajeAmigosActuales){
                 mensaje = 'No tiene ningún contacto aún.'
+            }else if(mensajeNoHora){
+                mensaje = 'Para acceder a una tutoría debe tenerla programada, que esté aceptada y que sea la hora de la tutoría o una hora posterior a la concretada.';
             }else {
                 mensaje = 'Debe tener alumnos en su sala de estudios para acceder a esta opción.';
             }

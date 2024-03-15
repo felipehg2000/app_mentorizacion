@@ -27,7 +27,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-13 23:12:02
+ * @Last Modified time: 2024-03-15 09:17:57
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -587,8 +587,40 @@ class UsersController extends Controller
 
 //--------------------------------------------------------------------------------------------------
     public function tut_access(){
-        $tipo_usu = Auth::user()->USER_TYPE;
-        return view('users.tut_access', compact('tipo_usu'));
+        $tipo_usu  = Auth::user()->USER_TYPE;
+        $titulo    = '';
+        $hora_tuto = '';
+
+        $fechaHoy = Carbon::now()->toDateString();
+        $fechaManana = Carbon::tomorrow()->toDateString();
+
+        if ($tipo_usu == 1) {
+            $fecha_hora_tuto = DB::table('tutoring')
+                                  ->select('DATE')
+                                  ->where('STUDY_ROOM_ACCES_ID', '=', Auth::user()->id)
+                                  ->where('STATUS', '=', '1')
+                                  ->where('DATE', '>=', $fechaHoy)
+                                  ->where('DATE', '<', $fechaManana)
+                                  ->first();
+        } else if ($tipo_usu == 2) {
+            $fecha_hora_tuto = DB::table('tutoring')
+                                  ->select('DATE')
+                                  ->where('STUDY_ROOM_ID', '=', Auth::user()->id)
+                                  ->where('STATUS', '=', '1')
+                                  ->where('DATE', '>=', $fechaHoy)
+                                  ->where('DATE', '<' , $fechaManana)
+                                  ->first();
+        }
+
+        if ($fecha_hora_tuto != NULL){
+            $horaTuto = Carbon::parse($fecha_hora_tuto->DATE)->format('H:i:s');
+            $horaHoy  = Carbon::now();
+
+            if ($horaHoy->gte($horaTuto)){
+                $titulo = 'Acceso a la tutoría:';
+            }
+        }
+        return view('users.tut_access', compact('tipo_usu', 'titulo'));
     }
 
 //--------------------------------------------------------------------------------------------------

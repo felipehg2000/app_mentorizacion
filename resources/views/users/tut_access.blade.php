@@ -21,7 +21,7 @@
 @section ('main')
     <div class='pnlCopmpletoTut'>
         <div class='pnlSupTut'>
-            <h2> Tutoría en curso</h2>
+            <h2 id='tit_tut_access'> {{ $titulo }}</h2>
             <button class='btn_create' id='btnPizarra' onclick="ActivarPizarraClick()">Activar Pizarra</button>
         </div>
 
