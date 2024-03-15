@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\MentorsController;
+use App\Models\Answer;
 use App\Models\Study_room;
 use App\Models\Synchronous_message;
 use App\Models\Task;
@@ -27,7 +28,7 @@ use Carbon\Carbon;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-15 09:17:57
+ * @Last Modified time: 2024-03-15 12:14:19
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -149,9 +150,21 @@ class UsersController extends Controller
         }
     }
 
-    /*public function task_board_store(Request $request){
+    public function task_board_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
 
-    }*/
+        $file = $request->fichero;
+        $task_id = $request->id_task;
+
+        $name = Auth::user()->id . '_' . $task_id . '.' . $file->extension();
+        $file->storeAs('', $name, 'public');
+
+        $this->CreateAnswer($task_id, Auth::user()->id, $name);
+
+        return response()->json(['success' => true]);
+    }
 
     /**
      * Carga los datos en el modelo y crea la entrada en la base de datos. Los datos vienen comprobados
@@ -1015,6 +1028,16 @@ class UsersController extends Controller
         $tutoring->status              = $param_status;
 
         $tutoring->save();
+    }
+//--------------------------------------------------------------------------------------------------
+    private function CreateAnswer($param_task_id, $param_study_room_acces_id, $param_name) {
+        $answer = new Answer();
+
+        $answer->task_id             = $param_task_id;
+        $answer->study_room_acces_id = $param_study_room_acces_id;
+        $answer->name                = $param_name;
+
+        $answer->save();
     }
 //--------------------------------------------------------------------------------------------------
     private function cifrate_private_key ($clave){

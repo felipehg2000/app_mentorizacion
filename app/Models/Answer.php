@@ -17,6 +17,5 @@ class Answer extends Model
 
     protected $fillable   = ['task_id'            ,
                              'study_room_acces_id',
-                             'type_of_document'   ,
-                             'document'           ];
+                             'name'];
 }

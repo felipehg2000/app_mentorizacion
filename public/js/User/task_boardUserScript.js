@@ -130,7 +130,33 @@ function CrearNuevaRespuesta(){
     } else if (fichero.type !== 'application/pdf') {
         MostrarMensajeError('El archivo seleccionado tiene que ser de tipo PDF');
     } else {
-        MostrarMensajeError('Todo bien');
+        /**Como al ser un booleano no puede leer los datos antes de pasarlos porque da error, usamos
+         * el tipo de dato FormData para que lea el token pero no el fichero
+         */
+        var formData = new FormData();
+        var archivo  = document.getElementById('input_upload').files[0];
+        var id_task  = document.getElementById('id_task'     ).textContent;
+
+        formData.append('_token' , csrfToken);
+        formData.append('fichero', archivo  );
+        formData.append('id_task', id_task  );
+
+        $.ajax({
+            url   : url_update_file,
+            method: 'POST'         ,
+            data  : formData       ,
+            processData : false    ,
+            contentType : false
+        }).done(function(respuesta){
+            if(respuesta.success){
+                texto = 'Tarea subida correctamente';
+                MostrarMensajeError(texto);
+                MostrarPanelTareas();
+            } else {
+                texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
+                MostrarMensajeError(param_texto);
+            }
+        });
     }
 }
 //--------------------------------------------------------------------------------------------------

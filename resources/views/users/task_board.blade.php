@@ -18,6 +18,7 @@
         var url_add_task    = "{{ route('users.add_task.store'   ) }}";
         var url_update_task = "{{ route('users.update_task.store') }}";
         var url_delete_task = "{{ route('users.delete_task.store') }}";
+        var url_update_file = "{{ route('users.task_board.store' ) }}";
     </script>
     <script src="{{ asset('js/User/task_boardUserScript.js') }}"></script>
 @endsection
