@@ -11,6 +11,7 @@
     <script>
         var url_found_task    = "{{ route('users.found_task.store'   ) }}";
         var url_found_answers = "{{ route('users.found_answers.store') }}";
+        var url_download_file = "{{ route('users.download_task'      ) }}";
         var url_close         = "{{ route('users.close'              ) }}";
     </script>
 @endsection
@@ -57,6 +58,7 @@
     <div class='PanelShowAnswers' id='PanelShowAnswers'>
         <div class = 'pnlEmergenteTitulo' id='AnswersTitle'>
             <p class="tituloEmergente">  Enlaces a las entregas</p>
+            <p id='id_task_answer' style="visibility: hidden"></p>
         </div>
 
         <div class='AnswersCenter'>
@@ -84,6 +86,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class='PanelBotones'>
             <button class='btnEmergenteAceptarDelete' type="submit" onclick="MostrarPanelTareas(true)">Salir</button>

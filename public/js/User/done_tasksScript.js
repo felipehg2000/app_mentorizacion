@@ -73,6 +73,7 @@ function MentorClickColumnDataTableTask(param_task_id) {
                 }
             });
 
+            document.getElementById('id_task_answer').textContent = param_task_id;
             document.getElementById('PanelShowAnswers').style.visibility = 'visible';
         } else {
             //devolver la vista de cerrar sesión
@@ -158,15 +159,40 @@ function PushUser(pragma_usuario_id, pragma_usuario_nombre, pragma_usuario_ape, 
 
     var texto = pragma_usuario_nombre + " " + pragma_usuario_ape;
 
-    anchor.href        = '';
+    anchor.href        = 'javascript:downloadTask(' + pragma_usuario_id +')';
     anchor.textContent = texto;
-
-    /**
-     * Si quiero hacer que salte una función js en vez de una ruta url puedo hacer lo siguiente:
-     *    anchor.href    = 'javascript:void(0)';
-     *    anchor.onclick = nombreFuncion;
-     */
 
     listItem.appendChild(anchor  );
     lista   .appendChild(listItem);
+}
+
+function downloadTask(pragma_usuario_id){
+    var id_task = document.getElementById('id_task_answer').textContent
+    var data = {
+        _token : csrfToken,
+        id_user: pragma_usuario_id,
+        id_task: id_task
+    }
+
+    $.ajax({
+        url   : url_download_file,
+        method: 'POST'           ,
+        data  : data,
+        xhrFields: {
+            responseType: 'blob' // Esperamos un tipo de dato Blob (archivo)
+        }
+    }).done(function(respuesta){
+         // Crear un objeto Blob con la respuesta recibida
+         var blob = new Blob([respuesta], {type: 'application/pdf'});
+         // Crear una URL para el Blob
+         var url = window.URL.createObjectURL(blob);
+         // Crear un enlace <a> para descargar el archivo
+         var a = document.createElement('a');
+         a.href = url;
+         a.download = pragma_usuario_id + '_' + id_task + '.pdf';
+         document.body.appendChild(a);
+         a.click();
+         // Limpiar el objeto URL creado
+         window.URL.revokeObjectURL(url);
+    })
 }

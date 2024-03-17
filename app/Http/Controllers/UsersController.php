@@ -23,12 +23,13 @@ use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-15 12:14:19
+ * @Last Modified time: 2024-03-17 12:49:55
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -166,6 +167,29 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function download_task(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $answer = DB::table('answers')
+                     ->select('NAME')
+                     ->where('TASK_ID', '=',             $request->id_task)
+                     ->where('STUDY_ROOM_ACCES_ID', '=', $request->id_user)
+                     ->first();
+
+        $name = $answer->NAME;
+
+        if (Storage::disk('public')->exists($name)){
+            $path = storage_path('app\\public\\' . $name);
+            $header = ['Content-Type' => 'application/pdf'];
+
+            return response()->download($path, $name, [], 'inline');
+        }else {
+            return response()->json(['success' => false]);
+        }
+    }
+
     /**
      * Carga los datos en el modelo y crea la entrada en la base de datos. Los datos vienen comprobados
      */
@@ -177,7 +201,6 @@ class UsersController extends Controller
             $fecha_hasta    = $request->datos['fecha_tarea'      ];
             $fecha_hasta    = new DateTime($fecha_hasta);
             $fecha_creacion = date('y-m-d');
-
             $this->CreateTask($study_room_id, $titulo, $descripcion, $fecha_hasta, $fecha_creacion);
 
             return response()->json(['success' => true]);
