@@ -1,9 +1,10 @@
 $(document).ready(function(){
         let dataTable = new DataTable('data_table_name');
     });
-
-
+//--------------------------------------------------------------------------------------------------
 function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entrega){
+    document.getElementById('id_task').innerText = param_id_tarea;
+
     var data = {
         _token : csrfToken,
         id     : param_id_tarea
@@ -40,93 +41,7 @@ function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entr
         }
     });
 }
-
-function MentorClickColumnDataTableTask(param_task_id) {
-    var data = {
-        _token : csrfToken,
-        id     : param_task_id
-    }
-
-    $.ajax({
-        url   : url_found_answers,
-        method: 'POST'         ,
-        data  : data
-    }).done(function(respuesta){
-        if(respuesta.success){
-            document.getElementById('pnlOscurecer').style.visibility = 'visible';
-
-            document.getElementById('ListaEstudiantesConEntrega').innerHTML = '';
-            document.getElementById('ListaEstudiantesSinEntrega').innerHTML = '';
-
-            respuesta.usuarios_sala_estudio.forEach(function(usuario){
-                var entregado = false;
-
-                respuesta.usuarios_con_entrega.forEach(function(entrega){
-                    if (entrega.id == usuario.id) {
-                        entregado = true;
-                        PushUser(entrega.id, entrega.NAME, entrega.SURNAME, 'ListaEstudiantesConEntrega');
-                    }
-                });
-
-                if (!entregado){
-                    PushUser(usuario.id, usuario.NAME, usuario.SURNAME, 'ListaEstudiantesSinEntrega');
-                }
-            });
-
-            document.getElementById('id_task_answer').textContent = param_task_id;
-            document.getElementById('PanelShowAnswers').style.visibility = 'visible';
-        } else {
-            //devolver la vista de cerrar sesión
-            window.location.href = url_close;
-        }
-    });
-}
-
-//Borrar¿?
-function clickColumnToDoTasks(param_user_type, param_task){
-    if (param_user_type == 1) { //Estudiante
-        alert('Patata estudiante');
-    } else if (param_user_type == 2) { //Mentor
-        alert('Patata mentor ' + param_task);
-    }
-}
-
-function MostrarPanelFormulario(){
-    document.getElementById('pnlOscurecer' ).style.visibility = 'visible';
-    document.getElementById('PanelShowData').style.visibility = 'visible';
-}
-
-/**
- * Muestra el tablón de tareas
- */
-function MostrarPanelTareas(param_campos_editables){
-    document.getElementById('pnlOscurecer'    ).style.visibility = 'hidden';
-    document.getElementById('PanelShowData'   ).style.visibility = 'hidden';
-    document.getElementById('lbl_input_upload').style.visibility = 'hidden';
-    document.getElementById('input_upload'    ).style.visibility = 'hidden';
-
-    document.getElementById('PanelShowAnswers').style.visibility = 'hidden';
-
-    if (!param_campos_editables){
-        document.getElementById('input_name'       ).readOnly = true;
-        document.getElementById('input_last_day'   ).readOnly = true;
-        document.getElementById('input_description').readOnly = true;
-    }
-}
-
-/**
- * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
- *
- * @param {Texto que saldrá en el mensaje de error} param_texto
- */
-function MostrarMensajeError(param_texto){
-
-    document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
-
-    document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
-    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
-}
-
+//--------------------------------------------------------------------------------------------------
 function FormatearFecha(param_fecha) {
     var fechaOriginal = param_fecha;
     var fechaCompleta = new Date(fechaOriginal);
@@ -139,7 +54,7 @@ function FormatearFecha(param_fecha) {
 
     return fechaFormateada
 }
-
+//--------------------------------------------------------------------------------------------------
 function FechaEsValida(param_fecha) {
     var fechaCompleta = new Date(param_fecha);
     var fechaHoy      = new Date();
@@ -150,49 +65,7 @@ function FechaEsValida(param_fecha) {
         return false;
     }
 }
+//--------------------------------------------------------------------------------------------------
 
-function PushUser(pragma_usuario_id, pragma_usuario_nombre, pragma_usuario_ape, pragma_nombre_lista) {
-    var lista = document.getElementById(pragma_nombre_lista);
 
-    var listItem = document.createElement('li');
-    var anchor   = document.createElement('a' );
 
-    var texto = pragma_usuario_nombre + " " + pragma_usuario_ape;
-
-    anchor.href        = 'javascript:downloadTask(' + pragma_usuario_id +')';
-    anchor.textContent = texto;
-
-    listItem.appendChild(anchor  );
-    lista   .appendChild(listItem);
-}
-
-function downloadTask(pragma_usuario_id){
-    var id_task = document.getElementById('id_task_answer').textContent
-    var data = {
-        _token : csrfToken,
-        id_user: pragma_usuario_id,
-        id_task: id_task
-    }
-
-    $.ajax({
-        url   : url_download_file,
-        method: 'POST'           ,
-        data  : data,
-        xhrFields: {
-            responseType: 'blob' // Esperamos un tipo de dato Blob (archivo)
-        }
-    }).done(function(respuesta){
-         // Crear un objeto Blob con la respuesta recibida
-         var blob = new Blob([respuesta], {type: 'application/pdf'});
-         // Crear una URL para el Blob
-         var url = window.URL.createObjectURL(blob);
-         // Crear un enlace <a> para descargar el archivo
-         var a = document.createElement('a');
-         a.href = url;
-         a.download = pragma_usuario_id + '_' + id_task + '.pdf';
-         document.body.appendChild(a);
-         a.click();
-         // Limpiar el objeto URL creado
-         window.URL.revokeObjectURL(url);
-    })
-}

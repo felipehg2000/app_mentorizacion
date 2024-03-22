@@ -31,28 +31,7 @@ function VerDatosEspecíficos(param_tipo_usu, param_task_id){
         document.getElementById('input_description').readOnly = true;
     }
 
-    document.getElementById('PanelTaskBoardCreateTask').style.visibility = 'visible';
-    document.getElementById('PanelTaskBoardTareas'    ).style.visibility = 'hidden' ;
-}
-/**
- * Muestra el panel del formulario
- */
-function MostrarPanelFormulario(){
-    document.getElementById('PanelTaskBoardCreateTask').style.visibility = 'visible';
-    document.getElementById('PanelTaskBoardTareas'    ).style.visibility = 'hidden' ;
-
-    document.getElementById('input_name'       ).value = "";
-    document.getElementById('input_last_day'   ).value = "";
-    document.getElementById('input_description').value = "";
-}
-
-/**
- * Muestra el tablón de tareas
- */
-function MostrarPanelTareas(){
-    document.getElementById('id_task'                 ).textContent      = 'Texto oculto';
-    document.getElementById('PanelTaskBoardCreateTask').style.visibility = 'hidden' ;
-    document.getElementById('PanelTaskBoardTareas'    ).style.visibility = 'visible';
+    MostrarPanelFormulario(false, );
 }
 
 /**
@@ -118,47 +97,6 @@ function BorrarTarea(param_id_tarea){
         }
     });
 }
-
-/**
- *
- */
-function CrearNuevaRespuesta(){
-    var fichero = document.getElementById('input_upload').files[0];
-
-    if (fichero == null){
-        MostrarMensajeError('Tienes que seleccionar un archivo antes de realizar la entrega');
-    } else if (fichero.type !== 'application/pdf') {
-        MostrarMensajeError('El archivo seleccionado tiene que ser de tipo PDF');
-    } else {
-        /**Como al ser un booleano no puede leer los datos antes de pasarlos porque da error, usamos
-         * el tipo de dato FormData para que lea el token pero no el fichero
-         */
-        var formData = new FormData();
-        var archivo  = document.getElementById('input_upload').files[0];
-        var id_task  = document.getElementById('id_task'     ).textContent;
-
-        formData.append('_token' , csrfToken);
-        formData.append('fichero', archivo  );
-        formData.append('id_task', id_task  );
-
-        $.ajax({
-            url   : url_update_file,
-            method: 'POST'         ,
-            data  : formData       ,
-            processData : false    ,
-            contentType : false
-        }).done(function(respuesta){
-            if(respuesta.success){
-                texto = 'Tarea subida correctamente';
-                MostrarMensajeError(texto);
-                MostrarPanelTareas();
-            } else {
-                texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
-                MostrarMensajeError(param_texto);
-            }
-        });
-    }
-}
 //--------------------------------------------------------------------------------------------------
 /**
  * Crea la petición ajax para crear la tarea nueva
@@ -222,18 +160,5 @@ function FuncionModificarTarea(param_id, param_titulo, param_descripcion, param_
             MostrarMensajeError(param_texto);
         }
     });
-}
-//--------------------------------------------------------------------------------------------------
-/**
- * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
- *
- * @param {Texto que saldrá en el mensaje de error} param_texto
- */
-function MostrarMensajeError(param_texto){
-
-    document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
-
-    document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
-    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
 }
 //--------------------------------------------------------------------------------------------------
