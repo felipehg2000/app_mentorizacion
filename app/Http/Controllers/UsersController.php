@@ -162,7 +162,13 @@ class UsersController extends Controller
         $name = Auth::user()->id . '_' . $task_id . '.' . $file->extension();
         $file->storeAs('', $name, 'public');
 
-        $this->CreateAnswer($task_id, Auth::user()->id, $name);
+        $task = Answer::where('TASK_ID', '=', $task_id)
+                      ->where('STUDY_ROOM_ACCES_ID', '=', Auth::user()->id)
+                      ->first();
+
+        if ($task == null) {
+            $this->CreateAnswer($task_id, Auth::user()->id, $name);
+        }
 
         return response()->json(['success' => true]);
     }
