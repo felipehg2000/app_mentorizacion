@@ -166,4 +166,14 @@ function CrearNuevaRespuesta(){
     }
 }
 //--------------------------------------------------------------------------------------------------
+function FechaEsValida(param_fecha) {
+    var fechaCompleta = new Date(param_fecha);
+    var fechaHoy      = new Date();
 
+    if (fechaCompleta >= fechaHoy){
+        return true;
+    } else {
+        return false;
+    }
+}
+//--------------------------------------------------------------------------------------------------

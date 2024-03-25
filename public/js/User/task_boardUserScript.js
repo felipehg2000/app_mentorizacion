@@ -29,9 +29,17 @@ function VerDatosEspecíficos(param_tipo_usu, param_task_id){
         document.getElementById('input_name'       ).readOnly = true;
         document.getElementById('input_last_day'   ).readOnly = true;
         document.getElementById('input_description').readOnly = true;
+
+        if (FechaEsValida(fechaFormateada)){
+            document.getElementById('lbl_input_upload').style.visibility = 'visible';
+            document.getElementById('input_upload'    ).style.visibility = 'visible';
+        } else {
+            document.getElementById('lbl_input_upload').style.visibility = 'hidden';
+            document.getElementById('input_upload'    ).style.visibility = 'hidden';
+        }
     }
 
-    MostrarPanelFormulario(false, );
+    MostrarPanelFormulario(false);
 }
 
 /**
