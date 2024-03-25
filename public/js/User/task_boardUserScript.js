@@ -31,11 +31,17 @@ function VerDatosEspecíficos(param_tipo_usu, param_task_id){
         document.getElementById('input_description').readOnly = true;
 
         if (FechaEsValida(fechaFormateada)){
-            document.getElementById('lbl_input_upload').style.visibility = 'visible';
-            document.getElementById('input_upload'    ).style.visibility = 'visible';
+            document.getElementById('lbl_input_upload').style.visibility      = 'visible';
+            document.getElementById('input_upload'    ).style.visibility      = 'visible';
+            document.getElementById('PanelTituloE'    ).style.backgroundColor = '#0099cc';
+
+            document.getElementById('titEmergenteShowData').innerText    = 'Añadir o modificar entrega';
         } else {
-            document.getElementById('lbl_input_upload').style.visibility = 'hidden';
-            document.getElementById('input_upload'    ).style.visibility = 'hidden';
+            document.getElementById('lbl_input_upload').style.visibility      = 'hidden';
+            document.getElementById('input_upload'    ).style.visibility      = 'hidden';
+            document.getElementById('PanelTituloE'    ).style.backgroundColor = 'red';
+
+            document.getElementById('titEmergenteShowData').innerText = 'Fuera de plazo';
         }
     }
 

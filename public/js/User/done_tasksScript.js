@@ -25,13 +25,16 @@ function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entr
                 document.getElementById('input_upload'    ).style.visibility = 'hidden';
                 if (!param_posibilidad_hacer_entrega){
                     document.getElementById('PanelTituloE'    ).style.backgroundColor = 'green';
+                    document.getElementById('titEmergenteShowData').innerText = 'Tarea entregada';
                 } else {
                     document.getElementById('PanelTituloE'    ).style.backgroundColor = 'red';
+                    document.getElementById('titEmergenteShowData').innerText = 'Fuera de plazo';
                 }
             } else {
                 document.getElementById('lbl_input_upload').style.visibility = 'visible';
                 document.getElementById('input_upload'    ).style.visibility = 'visible';
                 document.getElementById('PanelTituloE'    ).style.backgroundColor = '#0099cc';
+                document.getElementById('titEmergenteShowData').innerText = 'Añadir o modificar entrega';
             }
 
             MostrarPanelFormulario(false);

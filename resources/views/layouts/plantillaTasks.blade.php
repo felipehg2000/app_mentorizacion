@@ -24,8 +24,8 @@
 
     <div class='PanelShowData' id='PanelShowData'>
         <div class='pnlEmergenteTitulo' id='PanelTituloE'>
-            <i class="fa fa-plus" style="font-size:24px;color:white"></i>
-            <p class="tituloEmergente">  Añadir</p>
+            <!--<i class="fa fa-plus" style="font-size:24px;color:white"></i>-->
+            <p class="tituloEmergente" id="titEmergenteShowData">  Añadir</p>
             <p id='id_task' style="visibility: hidden">Texto oculto</p>
         </div>
 
