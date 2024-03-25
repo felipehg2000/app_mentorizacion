@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Events\NewMessageEvent;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsersController;
@@ -47,6 +47,13 @@ Route::controller(UsersController::class)->group(function(){
     Route::get  ('users/sync_chat'      , [UsersController::class, 'sync_chat'              ])->name('users.sync_chat'              );
     Route::post ('users/sync_chat'      , [UsersController::class, 'sync_chat_store'        ])->name('users.sync_chat.store'        );
     Route::post ('users/send_message'   , [UsersController::class, 'send_message_store'     ])->name('users.send_message.store'     );
+
+    /*--------------------------------------------------------------------------------------------------------------------------------*/
+    Route::get('users/sync_chat_event'  , function(){
+        event(new NewMessageEvent);
+        return 'Mensaje';
+    });
+    /*--------------------------------------------------------------------------------------------------------------------------------*/
 
     Route::get  ('users/tut_request'    , [UsersController::class, 'tut_request'            ])->name('users.tut_request'            );
     Route::post ('users/add_tuto'       , [UsersController::class, 'add_tuto_store'         ])->name('users.add_tuto.store'         );
