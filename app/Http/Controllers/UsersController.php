@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\TaskDataTable;
 use App\DataTables\TutoringDataTable;
+use App\Events\NewMessageEvent;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Mentor;
@@ -29,7 +30,7 @@ use Illuminate\Support\Facades\Storage;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-17 12:49:55
+ * @Last Modified time: 2024-03-26 01:25:04
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -40,6 +41,11 @@ use Illuminate\Support\Facades\Storage;
 
 class UsersController extends Controller
 {
+    public function sync_chat_event(){
+        event(new NewMessageEvent(['data' => 'Hola mundo']));
+
+        return 'Mensaje enviado';
+    }
 //--------------------------------------------------------------------------------------------------
     /**
      * Iniciar sesión
@@ -1074,5 +1080,7 @@ class UsersController extends Controller
 
         return openssl_encrypt($clave, 'aes-256-ecb', $key);
     }
-//--------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------+
+
+
 }

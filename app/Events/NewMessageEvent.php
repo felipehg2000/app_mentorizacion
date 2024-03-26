@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use Dflydev\DotAccessData\Data;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -30,7 +31,7 @@ class NewMessageEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('sync-chat'),
+            new Channel('sync_chat'),
         ];
     }
 }
