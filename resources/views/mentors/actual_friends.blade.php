@@ -1,12 +1,13 @@
 @extends('layouts.plantillaUsuLogeado')
 
-@section('title', 'Mentores')
+@section('title', 'Mentor')
 
 @section ('style')
     <link href="{{ asset('css/friendshipStyle.css') }}" rel="stylesheet">
 @endsection
 
 @section ('main')
+    <h2> Integrantes de la sala de estudio</h2><br>
     <div class="pnlPrincipalFriendship">
         @foreach ($result_users as $user)
             <div class="pnlCard">
@@ -19,12 +20,12 @@
                     <label>{{ $user->DESCRIPTION }}</label><br>
                     <form action="{{ route('mentors.actual_fruends.store')}}"  method="POST">
                         @csrf
-                        <input class="ocultar", id="user_user" name="user_user" value = {{$user->USER}} type="hidden">
+                        <input class="ocultar", id="user_user_{{$user->id}}" name="user_user" value = {{$user->USER}} type="hidden">
                         @if ($errors->first('error') == $user->USER)
                             <br><small>Solicitud de amsitad enviada anteriormente.</small><br>
                         @endif
                         <div class="btnFollow">
-                            <button type="submit" class="btnFollow" id="btnFollow">Eliminar</button>
+                            <button type="submit" class="btnFollow" id="btnFollow_{{$user->id}}">Eliminar</button>
                         </div>
                     </form>
                 </div>
