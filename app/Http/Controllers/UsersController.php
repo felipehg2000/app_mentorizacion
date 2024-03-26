@@ -283,7 +283,7 @@ class UsersController extends Controller
 
                     $query = DB::table('TASKS')
                                 ->where('STUDY_ROOM_ID', Auth::user()->id)
-                                ->whereDate('LAST_DAY', '<', now());
+                                ->whereDate('LAST_DAY', '<=', now());
                 }
 
 
