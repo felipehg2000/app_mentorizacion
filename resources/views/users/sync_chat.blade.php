@@ -22,22 +22,17 @@
 @section ('main')
 <div class='pnlChat'>
     <div class='pnlChatIzq'>
-        <h2 class='lblTituloChats'> Chats <h3>
+        <p class='lblTituloChats'> Chats <p>
 
-        <div class='pnlBusquedaChatIzq'>
-            <i class='fa fa-search' style="font-size:20px;color:black"></i>
-            <input class='edtBusquedaChat' id='edtBusquedaChat' placeholder="Busque un chat">
-        </div>
-
-        <div class='pnlContactosChatIzq'>
-            @foreach ($mis_amigos as $friend)
-                <div class='friend_card' onclick="chat_selected({{ $friend->id }})">
-                    <p class='friend_card_hidden_id' style='visibility: hidden'>{{ $friend->id }}</p>
-                    <p class='lblFriendCard'>{{ $friend->NAME }}</p>
-                </div>
-            @endforeach
-        </div>
+            <div class='pnlContactosChatIzq'>
+                @foreach ($mis_amigos as $friend)
+                    <div class='friend_card' onclick="chat_selected({{ $friend->id }})" id='friend_card_hidden_{{$friend->id}}'>
+                        <p class='lblFriendCard'>{{ $friend->NAME }} {{ $friend->SURNAME}}</p>
+                    </div>
+                @endforeach
+            </div>
     </div>
+
 
     <div class='pnlChatDcha' id='pnlChatDcha'>
         <div class='pnlSuperiorChatDcha' id='pnlSuperiorChatDcha'>

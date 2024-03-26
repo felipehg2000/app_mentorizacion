@@ -26,25 +26,6 @@ div.pnlChatIzq{
     background-color: gray;
 }
 
-div.pnlBusquedaChatIzq{
-    display        : flex;
-    align-items    : center;
-    justify-content: left;
-    border             : solid     ;
-    border-top-width   : 0         ;
-    border-left-width  : 0         ;
-    border-right-width : 0         ;
-    border-bottom-width: 0         ;
-    border-color       : darkgray;
-    border-radius      : 20px      ;
-
-    background-color: darkgray;
-
-    padding-top   : 5px;
-    padding-bottom: 5px;
-    margin-top: 3px;
-}
-
 div.pnlContactosChatIzq{
     padding-top: 5px;
 }
@@ -52,10 +33,9 @@ div.pnlContactosChatIzq{
 div.friend_card{
     height: 40px;
     width : 100% ;
-
-    display        : flex  ;
+    /*display        : column  ;
     align-items    : center;
-    justify-content: center;
+    justify-content: left;*/
 
 }
 
@@ -69,17 +49,6 @@ p.lblFriendCard{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: bold;
     color: black;
-}
-
-i{
-    margin-right: 1%;
-}
-
-input.edtBusquedaChat{
-    background-color: darkgray;
-
-    border:solid;
-    border-color: darkgray;
 }
 
 input.edtBusquedaChat:focus{
