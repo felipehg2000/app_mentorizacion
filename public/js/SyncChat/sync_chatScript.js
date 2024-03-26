@@ -102,15 +102,4 @@ function EmptyPnael(param_div_name){
 function ModifyBackgroundColorUserSelected(param_id_selected){
     var friend_id = document.getElementById('friend_card_hidden_' + param_id_selected);
     friend_id.style.backgroundColor = 'white';
-
-   /*var friendCards = document.querySelectorAll('.friend_card');
-
-    friend_id.forEach(function(card) {
-        var hiddenIdElement = card.querySelector('.friend_card_hidden_id');
-        var friendId        = parseInt(hiddenIdElement.textContent);
-
-        if (friendId === param_id_selected) {
-            card.style.backgroundColor = 'white';
-        }
-    });*/
 }
