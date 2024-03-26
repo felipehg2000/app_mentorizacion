@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Event;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-26 01:25:04
+ * @Last Modified time: 2024-03-26 23:27:03
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -44,7 +44,14 @@ class UsersController extends Controller
 {
     public function sync_chat_event(){
         $data = 'Hola mundo';
-        Event::dispatch(new NewMessageEvent($data));
+        $mentor_id = 1;
+
+        if (Auth::user()->USER_TYPE == 1){
+            $mentor_id = 1;
+        }else if (Auth::user()->USER_TYPE == 2){
+            $mentor_id = 1;
+        }
+        Event::dispatch(new NewMessageEvent($data, $mentor_id));
 
         return "Mensaje enviado";
     }

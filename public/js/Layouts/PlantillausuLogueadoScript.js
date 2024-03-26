@@ -1,3 +1,30 @@
+document.addEventListener('DOMContentLoaded', function() {
+    var data = {
+        _token : csrfToken,
+    }
+
+    $.ajax({
+        url   : url_datos_inicio,
+        method: 'POST',
+        data  : data
+    }).done(function(respuesta){
+        if(respuesta.success){
+            CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.num_alumnos);
+        } else {
+            window.location.href = url_close;
+        }
+    });
+})
+
+const beamsClient = new PusherPushNotifications.Client({
+    instanceId: '401f22f3-f032-4e40-a223-5257c7359f8a',
+  });
+
+  beamsClient.start()
+    .then(() => beamsClient.addDeviceInterest('hello'))
+    .then(() => console.log('Successfully registered and subscribed!'))
+    .catch(console.error);
+
 // Enable pusher logging - don't include this in production
 Pusher.logToConsole = true;
 
@@ -5,7 +32,7 @@ var pusher = new Pusher('7b7c6d7f8ba7188308b6', {
 cluster: 'eu'
 });
 
-var channel = pusher.subscribe('sync_chat');
+var channel = pusher.subscribe('sync_chat_1');
 channel.bind('App\\Events\\NewMessageEvent', function(data) {
     alert(JSON.stringify(data));
 });
@@ -67,24 +94,6 @@ function aceptarPnlRespuestaEmergente(){
 
     document.getElementById('btnCancelarEmergente').innerText = "Cancelar" ;
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    var data = {
-        _token : csrfToken,
-    }
-
-    $.ajax({
-        url   : url_datos_inicio,
-        method: 'POST',
-        data  : data
-    }).done(function(respuesta){
-        if(respuesta.success){
-            CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.num_alumnos);
-        } else {
-            window.location.href = url_close;
-        }
-    });
-})
 
 function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sala_estudio, param_num_alumnos){
     var url_actual            = window.location.href;

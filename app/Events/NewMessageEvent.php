@@ -16,15 +16,19 @@ class NewMessageEvent implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $data;
+    public $id_mentor;
+    //public $id_estudiante;
 
     /**
      * Create a new event instance.
      *
      * @param String param_data
      */
-    public function __construct($param_data)
+    public function __construct($param_data, $param_id_mentor)
     {
-        $this->data = $param_data;
+        $this->data          = $param_data;
+        $this->id_mentor     = $param_id_mentor;
+        //$this->id_estudiante = $param_for_user_id;
     }
 
     /**
@@ -35,7 +39,7 @@ class NewMessageEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('sync_chat'),
+            new Channel('sync_chat_'. $this->id_mentor),
         ];
     }
 }
