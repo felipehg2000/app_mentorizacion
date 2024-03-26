@@ -25,6 +25,7 @@ use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Event;
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
@@ -42,9 +43,10 @@ use Illuminate\Support\Facades\Storage;
 class UsersController extends Controller
 {
     public function sync_chat_event(){
-        event(new NewMessageEvent(['data' => 'Hola mundo']));
+        $data = 'Hola mundo';
+        Event::dispatch(new NewMessageEvent($data));
 
-        return 'Mensaje enviado';
+        return "Mensaje enviado";
     }
 //--------------------------------------------------------------------------------------------------
     /**

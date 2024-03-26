@@ -1,3 +1,15 @@
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true;
+
+var pusher = new Pusher('7b7c6d7f8ba7188308b6', {
+cluster: 'eu'
+});
+
+var channel = pusher.subscribe('sync_chat');
+channel.bind('App\\Events\\NewMessageEvent', function(data) {
+    alert(JSON.stringify(data));
+});
+
 function redirection(index) {
     switch(index){
         case 1:

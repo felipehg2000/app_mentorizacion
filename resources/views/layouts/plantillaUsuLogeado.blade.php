@@ -18,21 +18,8 @@
     @yield('style')
 
     <!--JAVA SCRIPTS-->
-        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-        <script>
-
-            // Enable pusher logging - don't include this in production
-            Pusher.logToConsole = true;
-
-            var pusher = new Pusher('7b7c6d7f8ba7188308b6', {
-            cluster: 'eu'
-            });
-
-            var channel = pusher.subscribe('sync_chat');
-            channel.bind('sync_chat', function(data) {
-                alert(JSON.stringify(data));
-            });
-    </script>
+        <!--Biblioteca pusher-->
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/Layouts/PlantillausuLogueadoScript.js') }}"></script>
 

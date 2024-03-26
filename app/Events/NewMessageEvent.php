@@ -15,12 +15,16 @@ class NewMessageEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $data;
+
     /**
      * Create a new event instance.
+     *
+     * @param String param_data
      */
-    public function __construct()
+    public function __construct($param_data)
     {
-        //
+        $this->data = $param_data;
     }
 
     /**
