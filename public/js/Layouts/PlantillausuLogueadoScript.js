@@ -16,15 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 })
 
-const beamsClient = new PusherPushNotifications.Client({
-    instanceId: '401f22f3-f032-4e40-a223-5257c7359f8a',
-  });
-
-  beamsClient.start()
-    .then(() => beamsClient.addDeviceInterest('hello'))
-    .then(() => console.log('Successfully registered and subscribed!'))
-    .catch(console.error);
-
 // Enable pusher logging - don't include this in production
 Pusher.logToConsole = true;
 
@@ -34,7 +25,8 @@ cluster: 'eu'
 
 var channel = pusher.subscribe('sync_chat_1');
 channel.bind('App\\Events\\NewMessageEvent', function(data) {
-    alert(JSON.stringify(data));
+    VisibilidadNotificacionNuevoMensaje(true);
+    InicializarTemporizador();
 });
 
 function redirection(index) {
@@ -213,4 +205,18 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
     }
 
     document.getElementById('pnlCarga').style.visibility = 'hidden';
+}
+
+function VisibilidadNotificacionNuevoMensaje(param_hacer_visible) {
+    if (param_hacer_visible) {
+        document.getElementById('pnlNotificacionMensajeNuevo').style.visibility= 'visible';
+    } else {
+        document.getElementById('pnlNotificacionMensajeNuevo').style.visibility= 'hidden';
+    }
+}
+
+function InicializarTemporizador(){
+    setTimeout(function() {
+        VisibilidadNotificacionNuevoMensaje(false);
+    }, 4000); //Se ejecuta después de 4 segundos
 }
