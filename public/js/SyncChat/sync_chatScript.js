@@ -30,6 +30,7 @@ function chat_selected(id_chat){
 
             document.getElementById('pnlSobreponerChatDcha').style.visibility = 'hidden' ;
             document.getElementById('pnlChatDcha'          ).style.visibility = 'visible';
+            scrollAlFinal();
 
         }else {
             window.location.href = url_close;
@@ -40,6 +41,7 @@ function chat_selected(id_chat){
 function SendMessage(){
     var message_tmp = document.getElementById('edtMensajeChat'       ).value;
     var id_chat_sel = document.getElementById('lblIdChatSeleccionado').textContent;
+    document.getElementById('edtMensajeChat').value = '';
 
     var data = {
         _token : csrfToken  ,
@@ -55,7 +57,6 @@ function SendMessage(){
         data  : data
     }).done(function(respuesta){
         if (respuesta.success){
-            document.getElementById('edtMensajeChat').value = '';
             PushMessage(respuesta.mi_id, message_tmp, 'pnlMensajeUsuario', 'mensajeUsuario');
         }else{
             window.location.href = url_close;
@@ -63,28 +64,6 @@ function SendMessage(){
     });
 }
 
-/**
- *
- * @param {Se utilizara para que el id de cada mensaje sea distinto                             } param_id_chat
- * @param {El texto que se mostrará en el mensaje                                               } param_message
- * @param {Nombre que se le pondrá a la clase del panel, sumado al id se creará el nombre del id} param_name_pnl
- * @param {Nombre que se le pondrá a la clase del label, sumado al id se creará el nombre del id} param_name_lbl
- */
-function PushMessage(param_id_chat, param_message, param_name_pnl, param_name_lbl){
-    var pnlMensajes = document.getElementById('pnlMensajes');
-    var pnl         = document.createElement ('div'        );
-    var txt         = document.createElement ('p'          );
-
-    pnl.classList.add(param_name_pnl);
-    pnl.id        = param_name_pnl + '_' + param_id_chat;
-
-    txt.classList.add(param_name_lbl);
-    txt.id          = param_name_lbl + '_' + param_id_chat;
-    txt.textContent = param_message;
-
-    pnlMensajes.appendChild(pnl);
-    pnl        .appendChild(txt);
-}
 
 /**
  * @param {Nombre del panel del que queremos borrar todo su contenido} param_div_name

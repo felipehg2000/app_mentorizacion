@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Event;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-27 00:51:37
+ * @Last Modified time: 2024-03-27 13:32:57
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -114,7 +114,8 @@ class UsersController extends Controller
 
         return response()->json(['success'            => true,
                                  'user_type'          => Auth::user()->USER_TYPE,
-                                 'tiene_sala_estudio' => $tiene_sala_estudio   ,
+                                 'user_id'            => Auth::user()->id       ,
+                                 'tiene_sala_estudio' => $tiene_sala_estudio    ,
                                  'numero_alumnos'     => $num_estudiantes]);
     }
 
@@ -501,22 +502,31 @@ class UsersController extends Controller
             $mi_id = Auth::user()->id;
             $id_estudiante = 0;
             $id_mentor     = 0;
+            $id_canal      = 0;
 
             //Necesito el id del estudiante y del mentor en ambos casos
             if (Auth::user()->USER_TYPE == 1){ //Estudiante
                 $id_estudiante = $mi_id                  ;
                 $id_mentor     = $request->datos['id_chat'];
+                $id_canal      = $id_mentor;
 
                 $this->CreateSynchronousMessage($id_mentor, $id_estudiante, $request->datos['message']);
             }else if(Auth::user()->USER_TYPE == 2){ //Mentor
                 $id_mentor     = $mi_id;
                 $id_estudiante = $request->datos['id_chat'];
-
+                $id_canal      = $id_estudiante;
 
                 $this->CreateSynchronousMessage($id_mentor, $id_estudiante, $request->datos['message']);
             }
 
-            Event::dispatch(new NewMessageEvent('Hola mundo', $id_mentor));
+            $id_mensaje = DB::table('synchronous_messages')
+                            ->max('id');
+            $message = [
+                'mensaje'    => $request->datos['message'],
+                'mi_id'      => Auth::user()->id          ,
+                'message_id' => $id_mensaje
+            ];
+            Event::dispatch(new NewMessageEvent($message, $id_canal));
 
             return response()->json(['success' => true,
                                      'mi_id'   => $mi_id]);

@@ -1,3 +1,11 @@
+var channel;
+// Enable pusher logging - don't include this in production
+Pusher.logToConsole = true;
+
+var pusher = new Pusher('7b7c6d7f8ba7188308b6', {
+cluster: 'eu'
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     var data = {
         _token : csrfToken,
@@ -9,25 +17,29 @@ document.addEventListener('DOMContentLoaded', function() {
         data  : data
     }).done(function(respuesta){
         if(respuesta.success){
+            channel = pusher.subscribe('sync_chat_' + respuesta.user_id);
+
+            channel.bind('App\\Events\\NewMessageEvent', function(data) {
+                if(window.location.href == url_chats_privados){
+                    var id_usuario_seleccionado = document.getElementById('lblIdChatSeleccionado').textContent;
+
+                    if (respuesta.user_type == 1 && id_usuario_seleccionado == data.data.mi_id){ //Estudiante
+                        PushMessage(data.data.message_id, data.data.mensaje, 'pnlMensajeContacto', 'mensajeContacto');
+                    } else if (respuesta.user_type == 2 && id_usuario_seleccionado == data.data.mi_id) {
+                        PushMessage(data.data.message_id, data.data.mensaje, 'pnlMensajeContacto', 'mensajeContacto');
+                    }
+                }
+
+                VisibilidadNotificacionNuevoMensaje(true);
+                InicializarTemporizador();
+            });
+
             CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.num_alumnos);
         } else {
             window.location.href = url_close;
         }
     });
 })
-
-// Enable pusher logging - don't include this in production
-Pusher.logToConsole = true;
-
-var pusher = new Pusher('7b7c6d7f8ba7188308b6', {
-cluster: 'eu'
-});
-
-var channel = pusher.subscribe('sync_chat_1');
-channel.bind('App\\Events\\NewMessageEvent', function(data) {
-    VisibilidadNotificacionNuevoMensaje(true);
-    InicializarTemporizador();
-});
 
 function redirection(index) {
     switch(index){
@@ -219,4 +231,36 @@ function InicializarTemporizador(){
     setTimeout(function() {
         VisibilidadNotificacionNuevoMensaje(false);
     }, 4000); //Se ejecuta después de 4 segundos
+}
+
+/**
+ *
+ * @param {Se utilizara para que el id de cada mensaje sea distinto                             } param_id_chat
+ * @param {El texto que se mostrará en el mensaje                                               } param_message
+ * @param {Nombre que se le pondrá a la clase del panel, sumado al id se creará el nombre del id} param_name_pnl
+ * @param {Nombre que se le pondrá a la clase del label, sumado al id se creará el nombre del id} param_name_lbl
+ */
+function PushMessage(param_id_chat, param_message, param_name_pnl, param_name_lbl){
+    var pnlMensajes = document.getElementById('pnlMensajes');
+    var pnl         = document.createElement ('div'        );
+    var txt         = document.createElement ('p'          );
+
+    pnl.classList.add(param_name_pnl);
+    pnl.id        = param_name_pnl + '_' + param_id_chat;
+
+    txt.classList.add(param_name_lbl);
+    txt.id          = param_name_lbl + '_' + param_id_chat;
+    txt.textContent = param_message;
+
+    pnlMensajes.appendChild(pnl);
+    pnl        .appendChild(txt);
+
+    scrollAlFinal();
+}
+
+function scrollAlFinal() {
+    if (document.getElementById('pnlSobreponerChatDcha').style.visibility == 'hidden'){
+        var panel = $('#pnlMensajes')[0]; // Obtenemos el elemento DOM
+        panel.scrollTop = panel.scrollHeight; // Hacemos scroll al final
+    }
 }
