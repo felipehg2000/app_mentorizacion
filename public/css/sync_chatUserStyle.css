@@ -31,8 +31,12 @@ div.pnlContactosChatIzq{
 }
 
 div.friend_card{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+
     height: 40px;
-    width : 100% ;
+    width : 100%;
 }
 
 div.friend_card:hover{
@@ -45,6 +49,8 @@ p.lblFriendCard{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: bold;
     color: black;
+
+    margin: 0;
 }
 
 input.edtBusquedaChat:focus{
