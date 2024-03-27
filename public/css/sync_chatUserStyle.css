@@ -33,10 +33,6 @@ div.pnlContactosChatIzq{
 div.friend_card{
     height: 40px;
     width : 100% ;
-    /*display        : column  ;
-    align-items    : center;
-    justify-content: left;*/
-
 }
 
 div.friend_card:hover{

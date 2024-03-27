@@ -24,7 +24,7 @@
     <div class='pnlChatIzq'>
         <p class='lblTituloChats'> Chats <p>
 
-            <div class='pnlContactosChatIzq'>
+            <div class='pnlContactosChatIzq' id='pnlContactosChatIzq'>
                 @foreach ($mis_amigos as $friend)
                     <div class='friend_card' onclick="chat_selected({{ $friend->id }})" id='friend_card_hidden_{{$friend->id}}'>
                         <p class='lblFriendCard'>{{ $friend->NAME }} {{ $friend->SURNAME}}</p>

@@ -79,6 +79,23 @@ function EmptyPnael(param_div_name){
  * @param {id del usuario que hemos seleccionado, habrá un componente oculto con esta informaicón para acceder al div que hayamos seleccionado} param_id_selected
  */
 function ModifyBackgroundColorUserSelected(param_id_selected){
+    var panel_padre = document.getElementById('pnlContactosChatIzq');
+
+    for (var i = 0; i < panel_padre.children.length; i++) {
+        var panel_hijo = panel_padre.children[i];
+        panel_hijo.style.backgroundColor = 'gray';
+
+        if (panel_hijo.id !== 'friend_card_hidden_' + param_id_selected) {
+            panel_hijo.onmouseover = function() {
+                this.style.backgroundColor = 'lightgray';
+            };
+
+            panel_hijo.onmouseout = function() {
+                this.style.backgroundColor = 'gray';
+            };
+        }
+    }
+
     var friend_id = document.getElementById('friend_card_hidden_' + param_id_selected);
     friend_id.style.backgroundColor = 'white';
 }
