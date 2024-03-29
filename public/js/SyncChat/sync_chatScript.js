@@ -83,19 +83,9 @@ function ModifyBackgroundColorUserSelected(param_id_selected){
 
     for (var i = 0; i < panel_padre.children.length; i++) {
         var panel_hijo = panel_padre.children[i];
-        panel_hijo.style.backgroundColor = 'gray';
-
-        if (panel_hijo.id !== 'friend_card_hidden_' + param_id_selected) {
-            panel_hijo.onmouseover = function() {
-                this.style.backgroundColor = 'lightgray';
-            };
-
-            panel_hijo.onmouseout = function() {
-                this.style.backgroundColor = 'gray';
-            };
-        }
+        panel_hijo.classList.remove('selected');
     }
 
     var friend_id = document.getElementById('friend_card_hidden_' + param_id_selected);
-    friend_id.style.backgroundColor = 'white';
+    friend_id.classList.add('selected');
 }
