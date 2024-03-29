@@ -18,6 +18,8 @@
     @yield('style')
 
     <!--JAVA SCRIPTS-->
+        <!--Biblioteca pusher-->
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/Layouts/PlantillausuLogueadoScript.js') }}"></script>
 
@@ -45,7 +47,6 @@
     @yield('js')
 </head>
 <body>
-
     <!--HEADER-->
     <!--Parte de la navegación-->
     <nav>
@@ -133,6 +134,16 @@
                 <button class="btnEmergente" id="btnEmergenteAceptar" type="submit" onclick="aceptarPnlRespuestaEmergente()">
                     Aceptar
                 </button>
+            </div>
+        </div>
+
+        <div class='pnlMensajeNuevo' id='pnlNotificacionMensajeNuevo'>
+            <div class='pnlMensajeNuevoSuperior'>
+                <div class='btnCerrar' onclick="VisibilidadNotificacionNuevoMensaje(false)">x</div>
+            </div>
+
+            <div class='pnlPrincipalMensajeNuevo'>
+                Nuevo mensaje del chat
             </div>
         </div>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\TaskDataTable;
 use App\DataTables\TutoringDataTable;
+use App\Events\NewMessageEvent;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Mentor;
@@ -24,12 +25,13 @@ use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Event;
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-17 12:49:55
+ * @Last Modified time: 2024-03-27 13:32:57
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -112,7 +114,8 @@ class UsersController extends Controller
 
         return response()->json(['success'            => true,
                                  'user_type'          => Auth::user()->USER_TYPE,
-                                 'tiene_sala_estudio' => $tiene_sala_estudio   ,
+                                 'user_id'            => Auth::user()->id       ,
+                                 'tiene_sala_estudio' => $tiene_sala_estudio    ,
                                  'numero_alumnos'     => $num_estudiantes]);
     }
 
@@ -467,14 +470,17 @@ class UsersController extends Controller
                 $id_estudiante = $request    ->contact_id;
             }
 
-            $resultado = DB::table  ('synchronous_messages')
-                           ->join   ('study_rooms'      , 'synchronous_messages.STUDY_ROOM_ID', '=', 'study_rooms.mentor_id'          )
-                           ->join   ('study_room_access', 'study_rooms.mentor_id'             , '=', 'study_room_access.STUDY_ROOM_ID')
-                           ->where  ('study_rooms.MENTOR_ID'       , '=', $id_mentor    )
-                           ->where  ('study_room_access.STUDENT_ID', '=', $id_estudiante)
-                           ->select ('synchronous_messages.id', 'synchronous_messages.SENDER', 'synchronous_messages.MESSAGE')
+            $resultado = DB::table('synchronous_messages')
+                           ->join('study_room_access', function ($join) {
+                               $join->on('study_room_access.STUDENT_ID', '=', 'synchronous_messages.STUDY_ROOM_ACCES_ID')
+                                    ->on('study_room_access.STUDY_ROOM_ID', '=', 'synchronous_messages.STUDY_ROOM_ID');
+                           })
+                           ->where('study_room_access.LOGIC_CANCEL', '=', 0)
+                           ->where('synchronous_messages.STUDY_ROOM_ID', '=', $id_mentor)
+                           ->where('synchronous_messages.STUDY_ROOM_ACCES_ID', '=', $id_estudiante)
+                           ->select('synchronous_messages.id', 'synchronous_messages.SENDER', 'synchronous_messages.MESSAGE')
                            ->orderBy('synchronous_messages.created_at', 'ASC')
-                           ->limit(30)
+                           ->limit(1000)
                            ->get();
 
             $selected_user = DB::table ('users')
@@ -496,20 +502,31 @@ class UsersController extends Controller
             $mi_id = Auth::user()->id;
             $id_estudiante = 0;
             $id_mentor     = 0;
+            $id_canal      = 0;
 
             //Necesito el id del estudiante y del mentor en ambos casos
             if (Auth::user()->USER_TYPE == 1){ //Estudiante
                 $id_estudiante = $mi_id                  ;
                 $id_mentor     = $request->datos['id_chat'];
+                $id_canal      = $id_mentor;
 
                 $this->CreateSynchronousMessage($id_mentor, $id_estudiante, $request->datos['message']);
             }else if(Auth::user()->USER_TYPE == 2){ //Mentor
                 $id_mentor     = $mi_id;
                 $id_estudiante = $request->datos['id_chat'];
-
+                $id_canal      = $id_estudiante;
 
                 $this->CreateSynchronousMessage($id_mentor, $id_estudiante, $request->datos['message']);
             }
+
+            $id_mensaje = DB::table('synchronous_messages')
+                            ->max('id');
+            $message = [
+                'mensaje'    => $request->datos['message'],
+                'mi_id'      => Auth::user()->id          ,
+                'message_id' => $id_mensaje
+            ];
+            Event::dispatch(new NewMessageEvent($message, $id_canal));
 
             return response()->json(['success' => true,
                                      'mi_id'   => $mi_id]);
@@ -1074,5 +1091,7 @@ class UsersController extends Controller
 
         return openssl_encrypt($clave, 'aes-256-ecb', $key);
     }
-//--------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------+
+
+
 }

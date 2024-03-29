@@ -365,4 +365,64 @@ button.btnEmergente:hover {
     background-color: #0077b3;
 }
 
+/*Estilo panel de notificaciones*/
+div.pnlMensajeNuevo{
+    width : auto;
+    height: auto;
+
+    position: absolute;
+
+    bottom: 20px;
+    right : 20px;
+
+    background-color: #0099cc;
+
+    z-index: 10000;
+
+    box-shadow: 4px 4px 10px black;
+    transition: opacity 0.5s ease;
+    visibility: hidden;
+}
+
+div.pnlMensajeNuevoSuperior{
+    width: 100%;
+    height: auto;
+
+    display        : flex;
+    align-items    : center;
+    justify-content: right;
+
+    background-color: #0099cc;
+}
+
+div.btnCerrar{
+    width : auto;
+    height: auto;
+
+    padding-left: 10px;
+    padding-right: 10px;
+
+    background-color: #0099cc;
+    color: white;
+}
+
+div.btnCerrar:hover{
+    cursor: pointer;
+    background-color: #0077b3
+}
+
+div.pnlPrincipalMensajeNuevo{
+    color: black;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: bold;
+
+    background-color: white;
+
+
+    padding-bottom: 10px;
+    padding-left  : 10px;
+    padding-right : 10px;
+
+}
+
 

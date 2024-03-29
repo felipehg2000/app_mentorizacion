@@ -23,63 +23,53 @@ div.pnlChatIzq{
     border-right-width : 1px;
     border-bottom-width: 0px;
 
-    background-color: gray;
+    background-color: whitesmoke;
 }
 
-div.pnlBusquedaChatIzq{
-    display        : flex;
-    align-items    : center;
-    justify-content: left;
-    border             : solid     ;
-    border-top-width   : 0         ;
-    border-left-width  : 0         ;
-    border-right-width : 0         ;
-    border-bottom-width: 0         ;
-    border-color       : darkgray;
-    border-radius      : 20px      ;
+p.lblTituloChats{
+    font-weight: bolder;
+    color: black;
 
-    background-color: darkgray;
+    background-color: lightgray;
+    box-shadow: 0px 3px 3px gray;
 
-    padding-top   : 5px;
-    padding-bottom: 5px;
-    margin-top: 3px;
+    padding: 10px;
+
+    padding-left: 15%;
+    padding-top: 5%;
 }
 
 div.pnlContactosChatIzq{
     padding-top: 5px;
+
+
 }
 
 div.friend_card{
     height: 40px;
-    width : 100% ;
+    width : 100%;
 
-    display        : flex  ;
-    align-items    : center;
-    justify-content: center;
-
-}
-
-div.friend_card:hover{
-    background-color: lightgray;
-
-    cursor: pointer;
-}
-
-p.lblFriendCard{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: bold;
     color: black;
+
+    padding-left: 5%;
+
+    margin: 0;
+
+    align-self: center;
+    justify-content: center;
 }
 
-i{
-    margin-right: 1%;
+div.friend_card.selected {
+    background-color: gray;
+    color: white;
 }
 
-input.edtBusquedaChat{
-    background-color: darkgray;
-
-    border:solid;
-    border-color: darkgray;
+div.friend_card:hover{
+    background-color: gray;
+    color: white;
+    cursor: pointer;
 }
 
 input.edtBusquedaChat:focus{
@@ -109,25 +99,28 @@ div.pnlSuperiorChatDcha{
     width: 100%;
     height: 10%;
 
-    background-color: gray;
+    background-color: lightgray;
 
     display        : flex  ;
     align-items    : center;
-    justify-content: center;
+    justify-content: left;
 
-    border: solid;
-    border-color: rgba(107, 107, 107, 0.726);;
+    border             : solid;
+    border-color       : gray;
     border-top-width   : 0px;
     border-left-width  : 0px;
     border-right-width : 0px;
     border-bottom-width: 1px;
-
 }
 
 p.lblUsuSeleccionado{
     color: black;
+    font-weight: bold;
 
-    align-self: center;
+    margin-left  : 20px;
+    margin-right : 0px;
+    margin-top   : 0px;
+    margin-bottom: 0px;
 }
 
 div.pnlMensajes{
@@ -138,8 +131,6 @@ div.pnlMensajes{
 
     overflow-y: auto;
     scroll-snap-align: end;
-
-        background-image: linear-gradient(lightgray , white);
 }
 
 div.pnlMensajeUsuario{
@@ -161,23 +152,28 @@ div.pnlMensajeContacto {
 }
 
 p.mensajeUsuario{
-    border : 1px solid green;
-    border-radius: 25px;
+    margin-top: 3px;
+
+    border-radius: 10px;
     padding: 10px;
+
+    background-color: lightblue;
+
+    box-shadow: 4px 10px 4px black;
 }
 
 div.pnlEscritura{
     width : 100%;
     height: 10% ;
 
-    background-color: gray;
+    background-color: lightgray;
 
     display        : flex  ;
     align-items    : center;
     justify-content: center;
 
-    border: solid;
-    border-color: rgba(107, 107, 107, 0.726);;
+    border             : solid;
+    border-color       : gray;
     border-top-width   : 1px;
     border-left-width  : 0px;
     border-right-width : 0px;
@@ -185,9 +181,14 @@ div.pnlEscritura{
 }
 
 p.mensajeContacto{
-    border : 1px solid red;
-    border-radius: 25px;
+    margin-top: 3px;
+
+    border-radius: 10px;
     padding: 10px;
+
+    background-color: white;
+
+    box-shadow: 4px 10px 4px black;
 }
 
 div.pnlEscrituraMensajes{
@@ -205,7 +206,7 @@ input.edtMensajeCaht{
     height: 24px;
     width : 90%;
 
-    background-color: gray;
+    background-color: lightgray;
 
     border             : solid;
     border-left-width  : 0px  ;
@@ -228,7 +229,7 @@ input.edtMensajeCaht:focus{
 }
 
 button.btnEnviarMensaje{
-    background-color: gray;
+    background-color: lightgray;
     border: none;
 }
 
