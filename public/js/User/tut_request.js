@@ -63,7 +63,7 @@ function ClickDataTable(param_id_tut){
 }
 
 function CrearOModificarNuevaTutoria(){
-    var id = document.getElementById('id_tut').value;
+    var id = document.getElementById('id_tut').textContent;
     if (id == 'Texto oculto'){
         CrearNuevaTutoria();
     } else {
