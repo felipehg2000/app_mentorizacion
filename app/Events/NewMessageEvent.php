@@ -28,7 +28,6 @@ class NewMessageEvent implements ShouldBroadcast
     {
         $this->data          = $param_data;
         $this->id_canal     = $param_id_canal;
-        //$this->id_estudiante = $param_for_user_id;
     }
 
     /**
