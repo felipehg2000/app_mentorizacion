@@ -19,6 +19,8 @@
 @endif
 
 @section ('main')
+    <p id='tipo_usu' style="visibility: hidden">{{ $tipo_usu }}</p>
+
     <div class='pnlCopmpletoTut'>
         <div class='pnlSupTut'>
             <h2 id='tit_tut_access'> {{ $titulo }}</h2>
@@ -27,11 +29,11 @@
 
         <div class='pnlPrinTut'>
             <div class='pnlIzqTut'>
-                <textarea class='tuto'></textarea>
+                <textarea class='tuto' id='textAreaMentor' onkeydown="MentorPulsaTecla()"></textarea>
             </div>
 
             <div class='pnlDchaTut'>
-                <textarea class='tuto'></textarea>
+                <textarea class='tuto' id='textAreaEstudiante' onkeydown="EstudiantePulsaTecla()">Patatas fritas con chocolate</textarea>
             </div>
         </div>
 
