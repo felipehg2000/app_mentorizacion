@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TutUpdateEvent
+class TutUpdateEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -34,7 +34,7 @@ class TutUpdateEvent
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('tut_access_'.$this->id_canal),
+            new Channel('tut_access_'. $this->id_canal),
         ];
     }
 }
