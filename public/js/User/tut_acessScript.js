@@ -7,8 +7,9 @@ var pusher2 = new Pusher('7b7c6d7f8ba7188308b6', {
 document.addEventListener('DOMContentLoaded', function() {
     var id_channel = document.getElementById('id_tuto' ).textContent;
     var tipo_usu   = document.getElementById('tipo_usu').textContent;
+    var id_usuario = document.getElementById('id_user' ).textContent;
 
-    channel2 = pusher2.subscribe('tut_access_' + id_channel);
+    channel2 = pusher2.subscribe('tut_access_' + id_channel + id_usuario);
 
     channel2.bind('App\\Events\\TutUpdateEvent', function(data) {
         if (tipo_usu == '1') {

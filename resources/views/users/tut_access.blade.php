@@ -22,6 +22,7 @@
 @section ('main')
     <p id='tipo_usu' style="visibility: hidden">{{ $tipo_usu }}</p>
     <p id='id_tuto'  style="visibility: hidden">{{ $id_tuto  }}</p>
+    <p id='id_user'  style="visibility: hidden">{{ $id_user  }}</p>
 
     <div class='pnlCopmpletoTut'>
         <div class='pnlSupTut'>

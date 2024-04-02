@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Event;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-01 13:19:39
+ * @Last Modified time: 2024-04-02 19:19:50
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -648,6 +648,7 @@ class UsersController extends Controller
 //--------------------------------------------------------------------------------------------------
     public function tut_access(){
         $tipo_usu  = Auth::user()->USER_TYPE;
+        $id_user   = Auth::user()->id;
         $titulo    = '';
         $hora_tuto = '';
         $id_tuto   = '';
@@ -682,7 +683,7 @@ class UsersController extends Controller
                 $titulo = 'Acceso a la tutoría:';
             }
         }
-        return view('users.tut_access', compact('tipo_usu', 'titulo', 'id_tuto'));
+        return view('users.tut_access', compact('tipo_usu', 'titulo', 'id_tuto', 'id_user'));
     }
 
     public function send_text_store(Request $request){
@@ -690,7 +691,29 @@ class UsersController extends Controller
             return view('users.close');
         }
 
-        Event::dispatch(new TutUpdateEvent($request->texto, $request->id_channel));
+        if (Auth::user()->USER_TYPE == 1){ //Estudiante
+            //Coger el id del mentor
+
+            $id_usuario_contrario = DB::table('study_room_access')
+                                       ->where('STUDENT_ID', '=', Auth::user()->id)
+                                       ->select('STUDY_ROOM_ID')
+                                       ->first();
+
+            $id_usuario_contrario = $id_usuario_contrario->STUDY_ROOM_ID;
+        } else if (Auth::user()->USER_TYPE == 2) { //Mentor
+            //Coger el id del estudiante
+
+            $id_usuario_contrario = DB::table('tutoring')
+                                       ->where('id', '=', $request->id_channel)
+                                       ->select('STUDY_ROOM_ACCES_ID')
+                                       ->first();
+
+            $id_usuario_contrario = $id_usuario_contrario->STUDY_ROOM_ACCES_ID;
+        }
+
+        $id_canal = $request->id_channel . $id_usuario_contrario;
+
+        Event::dispatch(new TutUpdateEvent($request->texto, $id_canal));
     }
 
 //--------------------------------------------------------------------------------------------------
