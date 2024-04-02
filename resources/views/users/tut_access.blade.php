@@ -8,7 +8,8 @@
 @section('js')
     <script src="{{ asset('js/User/tut_acessScript.js') }}"></script>
     <script>
-        var url_close       = "{{ route('users.close') }}";
+        var url_send_text = "{{ route('users.send_text.store') }}"
+        var url_close     = "{{ route('users.close') }}";
     </script>
 @endsection
 
@@ -20,6 +21,7 @@
 
 @section ('main')
     <p id='tipo_usu' style="visibility: hidden">{{ $tipo_usu }}</p>
+    <p id='id_tuto'  style="visibility: hidden">{{ $id_tuto  }}</p>
 
     <div class='pnlCopmpletoTut'>
         <div class='pnlSupTut'>
@@ -33,7 +35,7 @@
             </div>
 
             <div class='pnlDchaTut'>
-                <textarea class='tuto' id='textAreaEstudiante' onkeydown="EstudiantePulsaTecla()">Patatas fritas con chocolate</textarea>
+                <textarea class='tuto' id='textAreaEstudiante' onkeydown="EstudiantePulsaTecla()"></textarea>
             </div>
         </div>
 
