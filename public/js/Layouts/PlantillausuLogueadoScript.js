@@ -1,9 +1,10 @@
 var channel;
+
 // Enable pusher logging - don't include this in production
 Pusher.logToConsole = true;
 
 var pusher = new Pusher('7b7c6d7f8ba7188308b6', {
-cluster: 'eu'
+    cluster: 'eu'
 });
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -231,6 +232,12 @@ function InicializarTemporizador(){
     setTimeout(function() {
         VisibilidadNotificacionNuevoMensaje(false);
     }, 4000); //Se ejecuta después de 4 segundos
+}
+
+function InicializarTemporizadorTutoria(){
+    setTimeout(function() {
+        VisibilidadNotificacionNuevoMensaje(false);
+    }, 500); //Se ejecuta medio segundo después
 }
 
 /**

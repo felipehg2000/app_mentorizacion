@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\TaskDataTable;
 use App\DataTables\TutoringDataTable;
 use App\Events\NewMessageEvent;
+use App\Events\TutUpdateEvent;
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Mentor;
@@ -31,7 +32,7 @@ use Illuminate\Support\Facades\Event;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-27 13:32:57
+ * @Last Modified time: 2024-04-02 19:19:50
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -647,15 +648,17 @@ class UsersController extends Controller
 //--------------------------------------------------------------------------------------------------
     public function tut_access(){
         $tipo_usu  = Auth::user()->USER_TYPE;
+        $id_user   = Auth::user()->id;
         $titulo    = '';
         $hora_tuto = '';
+        $id_tuto   = '';
 
         $fechaHoy = Carbon::now()->toDateString();
         $fechaManana = Carbon::tomorrow()->toDateString();
 
         if ($tipo_usu == 1) {
             $fecha_hora_tuto = DB::table('tutoring')
-                                  ->select('DATE')
+                                  ->select('DATE', 'id')
                                   ->where('STUDY_ROOM_ACCES_ID', '=', Auth::user()->id)
                                   ->where('STATUS', '=', '1')
                                   ->where('DATE', '>=', $fechaHoy)
@@ -663,7 +666,7 @@ class UsersController extends Controller
                                   ->first();
         } else if ($tipo_usu == 2) {
             $fecha_hora_tuto = DB::table('tutoring')
-                                  ->select('DATE')
+                                  ->select('DATE', 'id')
                                   ->where('STUDY_ROOM_ID', '=', Auth::user()->id)
                                   ->where('STATUS', '=', '1')
                                   ->where('DATE', '>=', $fechaHoy)
@@ -672,6 +675,7 @@ class UsersController extends Controller
         }
 
         if ($fecha_hora_tuto != NULL){
+            $id_tuto  = $fecha_hora_tuto->id;
             $horaTuto = Carbon::parse($fecha_hora_tuto->DATE)->format('H:i:s');
             $horaHoy  = Carbon::now();
 
@@ -679,7 +683,37 @@ class UsersController extends Controller
                 $titulo = 'Acceso a la tutoría:';
             }
         }
-        return view('users.tut_access', compact('tipo_usu', 'titulo'));
+        return view('users.tut_access', compact('tipo_usu', 'titulo', 'id_tuto', 'id_user'));
+    }
+
+    public function send_text_store(Request $request){
+        if(!Auth::check()){
+            return view('users.close');
+        }
+
+        if (Auth::user()->USER_TYPE == 1){ //Estudiante
+            //Coger el id del mentor
+
+            $id_usuario_contrario = DB::table('study_room_access')
+                                       ->where('STUDENT_ID', '=', Auth::user()->id)
+                                       ->select('STUDY_ROOM_ID')
+                                       ->first();
+
+            $id_usuario_contrario = $id_usuario_contrario->STUDY_ROOM_ID;
+        } else if (Auth::user()->USER_TYPE == 2) { //Mentor
+            //Coger el id del estudiante
+
+            $id_usuario_contrario = DB::table('tutoring')
+                                       ->where('id', '=', $request->id_channel)
+                                       ->select('STUDY_ROOM_ACCES_ID')
+                                       ->first();
+
+            $id_usuario_contrario = $id_usuario_contrario->STUDY_ROOM_ACCES_ID;
+        }
+
+        $id_canal = $request->id_channel . $id_usuario_contrario;
+
+        Event::dispatch(new TutUpdateEvent($request->texto, $id_canal));
     }
 
 //--------------------------------------------------------------------------------------------------
