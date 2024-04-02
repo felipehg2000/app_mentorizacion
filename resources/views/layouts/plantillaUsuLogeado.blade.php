@@ -7,6 +7,10 @@
 
     <!--ESTILOS-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.0/css/dataTables.bootstrap5.css">
+
     <link href="{{ asset('css/plantilaUsuLogueadoStyle.css') }}" rel="stylesheet">
 
     <!--YAJRA STYLE-->
@@ -14,31 +18,35 @@
     @yield('style')
 
     <!--JAVA SCRIPTS-->
+        <!--Biblioteca pusher-->
+    <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/Layouts/PlantillausuLogueadoScript.js') }}"></script>
 
     <!--YAJRA STYLE-->
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
     <script>
-        var csrfToken                  = '{{ csrf_token() }}';
-        var url_tablon_completo        = "#";
-        var url_tareas_completadas     = "#";
-        var url_tareas_a_completar     = "#";
-        var url_chats_privados         = "{{route('users.sync_chat')}}";
-        var url_informacion            = "#";
-        var url_solicitudes            = "#";
-        var url_acceso_a_tutoria       = "#";
-        var url_amigos_actuales        = "{{route('users.actual_friends')}}";
-        var url_solicitudes_de_amistad = "{{route('users.friendship')}}";
-        var url_modificar_mis_datos    = "{{route('users.modify')}}";
-        var url_eliminar_mi_cuenta     = "{{route('users.delete')}}";
-        var url_cerrar_sesion          = "{{route('users.close')}}";
+        var csrfToken                  = '{{ csrf_token()                  }}';
+        var url_tablon_completo        = "{{ route('users.task_board'    ) }}";
+        var url_tareas_completadas     = "{{ route('users.done_tasks'    ) }}";
+        var url_tareas_a_completar     = "{{ route('users.to_do_tasks'   ) }}";
+        var url_chats_privados         = "{{ route('users.sync_chat'     ) }}";
+        var url_solicitudes            = "{{ route('users.tut_request'   ) }}";
+        var url_acceso_a_tutoria       = "{{ route('users.tut_access'    ) }}";
+        var url_amigos_actuales        = "{{ route('users.actual_friends') }}";
+        var url_solicitudes_de_amistad = "{{ route('users.friendship'    ) }}";
+        var url_informacion            = "{{ route('users.tutorial'      ) }}";
+        var url_novedades              = "{{ route('users.news'          ) }}";
+        var url_modificar_mis_datos    = "{{ route('users.modify'        ) }}";
+        var url_eliminar_mi_cuenta     = "{{ route('users.delete'        ) }}";
+        var url_cerrar_sesion          = "{{ route('users.close'         ) }}";
+
+        var url_datos_inicio           = "{{ route('users.info_inicial.store') }}";
     </script>
 
     @yield('js')
 </head>
 <body>
-
     <!--HEADER-->
     <!--Parte de la navegación-->
     <nav>
@@ -57,16 +65,19 @@
                     <div class="submenu" id="submenu_3" onclick="redirection(3)">Tareas a completar</div>
 
                 <div class="menu">Chats               </div>
-                    <div class="submenu" id="submenu_4" onclick="redirection(4)">Cats privados</div>
+                    <div class="submenu" id="submenu_4" onclick="redirection(4)">Chats privados</div>
 
                 <div class="menu">Tutorías                  </div>
-                    <div class="submenu" id="submenu_5" onclick="redirection(5)">Información        </div>
                     <div class="submenu" id="submenu_6" onclick="redirection(6)">Solicitudes        </div>
                     <div class="submenu" id="submenu_7" onclick="redirection(7)">Acceso a la tutoría</div>
 
-                <div class="menu">Gestión de amistades         </div>
-                    <div class="submenu" id="submenu_8" onclick="redirection(8)">Amigos actuales       </div>
-                    <div class="submenu" id="submenu_9" onclick="redirection(9)">Solicitudes de amistad</div>
+                <div class="menu">Sala de estudios         </div>
+                    <div class="submenu" id="submenu_8" onclick="redirection(8)">Integrantes       </div>
+                    <div class="submenu" id="submenu_9" onclick="redirection(9)">Solicitudes    </div>
+
+                <div class="menu">Guías de uso</div>
+                    <div class="submenu" id="submenu_5"  onclick="redirection(5)">Primeros pasos        </div>
+                    <div class="submenu" id="submenu_13" onclick="redirection(13)">Novedades        </div>
 
                 <div class="menu">Gestión de usuario        </div>
                     <div class="submenu" id="submenu_10" onclick="redirection(10)">Modificar mis datos </div>
@@ -75,6 +86,14 @@
             </div>
             <!--Apartado del resto de la pantalla-->
             <div class="pnlRight">
+                <div class='pnlCarga' id='pnlCarga'>
+                    <i class="fa-li fa fa-spinner fa-spin"></i>
+                </div>
+
+                <div class='pnlCubierta' id='pnlCubierta'>
+                    <div class='pnlCubiertaMensaje' id="pnlCubiertaMensaje"></div>
+                </div>
+
                 @yield('main')
             </div>
         </div>
@@ -118,7 +137,19 @@
             </div>
         </div>
 
+        <div class='pnlMensajeNuevo' id='pnlNotificacionMensajeNuevo'>
+            <div class='pnlMensajeNuevoSuperior'>
+                <div class='btnCerrar' onclick="VisibilidadNotificacionNuevoMensaje(false)">x</div>
+            </div>
+
+            <div class='pnlPrincipalMensajeNuevo'>
+                Nuevo mensaje del chat
+            </div>
+        </div>
+
         @yield('panelesEmergentes')
     </div>
+
+    @stack('scripts_yajra')
 </body>
 </html>

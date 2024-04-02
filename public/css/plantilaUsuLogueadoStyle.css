@@ -124,17 +124,91 @@ div.pnlRight{
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+div.pnlCarga{
+    position: absolute;
+
+    width : 80%;
+    height: 100%;
+
+    top  : 0;
+    right: 0;
+
+    background-color: white;
+    overflow        : hidden;
+    visibility      : visible;
+
+    z-index: 1000;
+
+    display        : flex  ;
+    justify-content: center;
+    align-items    : center;
+}
+.fa-spinner {
+    font-size: 48px;
+
+    position: relative;
+}
+
+div.pnlCubierta{
+    position: absolute;
+
+    width : 80%;
+    height: 100%;
+
+    top: 0;
+    right: 0;
+
+    background-image : url("img_cubierta.webp");
+    background-repeat: no-repeat;
+    background-size  : cover;
+
+    overflow: hidden;
+
+    z-index: 10000;
+
+    visibility: hidden;
+
+    display        : flex  ;
+    justify-content: center;
+    align-items    : center;
+}
+
+div.pnlCubiertaMensaje{
+    width  : 30%;
+    padding: 20px;
+
+    position: relative;
+
+    color       : white;
+    font-weight : bold;
+    text-align  : center;
+
+    background-color: rgba(0,0,0, 0.4); /* Black w/opacity/see-through */
+
+    border      : solid;
+    border-color: white;
+    border-width: 3px;
+
+    z-index: 2;
+
+    visibility: hidden;
+}
 /*Estilo para oscurecer la pantalla excepto la navegación*/
 div.pnlOscurecer{
     width : 100vw;
-    height: 93vh;
+    height: 100vh;
 
+    top: 0;
+    left: 0;
     position: absolute;
 
     background-color: black;
     opacity         : 0.2;
 
     visibility: hidden;
+
+    z-index: 100;
 }
 /*Estilo para la ventana emergente*/
 div.pnlEmergente{
@@ -151,11 +225,20 @@ div.pnlEmergente{
     border-color: #0099cc;
 
     visibility: hidden;
+
+    z-index: 290;
 }
 
 div.pnlRespuestaEmergente{
     width : 30%;
     height: 30%;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    margin: auto;
 
     position: absolute;
 
@@ -167,25 +250,24 @@ div.pnlRespuestaEmergente{
     border-color: red;
 
     visibility: hidden;
+
+    z-index: 300;
 }
 
 
 div.pnlEmergenteTitulo{
-    width : 25%;
-    height: 20%;
+    width : max-content;
+    height: 50px;
 
     background-color: #0099cc;
 
     margin-left : 10%;
-    margin-top  : -5%;
+    margin-top  : -2%;
 
-    border       : solid;
-    border-width : 1px;
-    border-color : black;
     border-radius: 10%;
 
-    display    : flex;
-    align-items: center;
+    display        : flex  ;
+    align-items    : center;
 }
 
 i {
@@ -193,7 +275,10 @@ i {
 }
 
 p.tituloEmergente{
-    margin-left: 15px;
+    margin-left  : 15px;
+    margin-right : 20px;
+    margin-top   : 100% ;
+    margin-bottom: 100% ;
 
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-size  : 20px;
@@ -260,6 +345,8 @@ button.btnEmergente{
 
     margin-left: 5%;
     margin-right: 5%;
+    margin-top: 50%;
+    margin-bottom: 50%;;
 
     border       : none;
     border-radius: 5px;
@@ -276,6 +363,66 @@ button.btnEmergente{
 
 button.btnEmergente:hover {
     background-color: #0077b3;
+}
+
+/*Estilo panel de notificaciones*/
+div.pnlMensajeNuevo{
+    width : auto;
+    height: auto;
+
+    position: absolute;
+
+    bottom: 20px;
+    right : 20px;
+
+    background-color: #0099cc;
+
+    z-index: 10000;
+
+    box-shadow: 4px 4px 10px black;
+    transition: opacity 0.5s ease;
+    visibility: hidden;
+}
+
+div.pnlMensajeNuevoSuperior{
+    width: 100%;
+    height: auto;
+
+    display        : flex;
+    align-items    : center;
+    justify-content: right;
+
+    background-color: #0099cc;
+}
+
+div.btnCerrar{
+    width : auto;
+    height: auto;
+
+    padding-left: 10px;
+    padding-right: 10px;
+
+    background-color: #0099cc;
+    color: white;
+}
+
+div.btnCerrar:hover{
+    cursor: pointer;
+    background-color: #0077b3
+}
+
+div.pnlPrincipalMensajeNuevo{
+    color: black;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-weight: bold;
+
+    background-color: white;
+
+
+    padding-bottom: 10px;
+    padding-left  : 10px;
+    padding-right : 10px;
+
 }
 
 

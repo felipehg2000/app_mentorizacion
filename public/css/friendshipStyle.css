@@ -2,6 +2,14 @@ body {
     background-color: rgb(184, 184, 184);
 }
 
+h2{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size  : 25px;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
 div.pnlPrincipalFriendship {
     display  : flex;
     flex-wrap: wrap;
@@ -56,7 +64,7 @@ div.btnFollow{
 }
 
 button.btnFollow{
-    width   : 30%;
+    width   : max-content;
     padding: 10px;
 
     border       : none;

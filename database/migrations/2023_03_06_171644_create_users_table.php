@@ -4,7 +4,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-14 20:19:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2023-05-15 20:40:04
+ * @Last Modified time: 2024-03-15 12:14:53
  * @Description: Migración completa para la base de datos de la primera versión de la aplicación mentoring, en la primera modificación añadiremos
  *               los datos respectivos al usuario.
  */
@@ -157,7 +157,8 @@ return new class extends Migration{
         Schema::create('TASKS', function(Blueprint $table){
             $table->id                  ();
             $table->unsignedBigInteger  ('STUDY_ROOM_ID');
-            $table->text                ('STATEMENT'    );
+            $table->string              ('TASK_TITLE'   );
+            $table->text                ('DESCRIPTION'  );
             $table->dateTime            ('LAST_DAY'     );
             $table->timestamps          ();
 
@@ -173,8 +174,7 @@ return new class extends Migration{
         Schema::create('ANSWERS', function(Blueprint $table){
             $table->unsignedBigInteger('TASK_ID'            );
             $table->unsignedBigInteger('STUDY_ROOM_ACCES_ID');
-            $table->text              ('TYPE_OF_DOCUMENT'   );
-            $table->binary            ('DOCUMENT'           );
+            $table->text              ('NAME'               );
             $table->timestamps        ();
 
             $table->primary('TASK_ID', 'STUDY_ROOM_ACCES_ID');
@@ -208,14 +208,14 @@ return new class extends Migration{
      * Borra la migración a la base de datos completamente.
      */
     public function down(): void{
+        Schema::dropIfExists('FRIEND_REQUESTS'      );
+        Schema::dropIfExists('INHERITANCE_USERS'    );
         Schema::dropIfExists('TUTORING'             );
         Schema::dropIfExists('ANSWERS'              );
         Schema::dropIfExists('TASKS'                );
         Schema::dropIfExists('SYNCHRONOUS_MESSAGES' );
         Schema::dropIfExists('STUDY_ROOM_ACCES'     );
         Schema::dropIfExists('STUDY_ROOMS'          );
-        Schema::dropIfExists('FRIEND_REQUESTS'      );
-        Schema::dropIfExists('INHERITANCE_USERS'    );
         Schema::dropIfExists('MENTORS'              );
         Schema::dropIfExists('STUDENTS'             );
         Schema::dropIfExists('USERS'                );

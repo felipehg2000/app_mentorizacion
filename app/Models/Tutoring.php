@@ -9,6 +9,7 @@ class Tutoring extends Model
 {
     use HasFactory;
 
+    protected $table = 'TUTORING';
     protected $fillable = ['study_room_id'      ,
                            'study_room_acces_id',
                            'date'               ,

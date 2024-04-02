@@ -39,7 +39,12 @@ class StudentsController extends Controller{
             $this->convertToPhoto($user->IMAGE, $user->USER);
         }
 
-        return view ('students.friendship', compact('users'));
+        $titulo = '';
+        if (!$users->isEmpty()){
+            $titulo = 'Solicitudes de amistad:';
+        }
+
+        return view ('students.friendship', compact('users', 'titulo'));
     }
 //----------------------------------------- ---------------------------------------------------------
     /**
@@ -82,12 +87,12 @@ class StudentsController extends Controller{
      */
     public function actual_friends(){
         //Buscar los usuarios relacionados con nosotros
-        $result_users = DB::table('USERS')
-                          ->join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.MENTOR_ID', '=', 'USERS.ID')
-                          ->where('FRIEND_REQUESTS.STUDENT_ID', '=', Auth::user()->id)
-                          ->where('FRIEND_REQUESTS.STATUS', '=', 2)
-                          ->select('USERS.*')
-                          ->get();
+        $result_users = DB::table('users')
+                           ->join('study_room_access', 'users.id', '=', 'study_room_access.STUDY_ROOM_ID')
+                           ->where('study_room_access.STUDENT_ID', '=', Auth::user()->id)
+                           ->where('study_room_access.LOGIC_CANCEL', '=', 0)
+                           ->select('users.*')
+                           ->get();
         return view('students.actual_friends', compact('result_users'));
     }
     public function actual_friends_store(Request $request){
