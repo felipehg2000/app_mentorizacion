@@ -123,9 +123,6 @@ function ModificarTutoria(param_id){
     if (date == '' || hourInput == ''){
         texto = 'Para realizar esta acción primero tiene que rellenar todos los campos';
         datosCorrectos = false;
-    } else if (date <= fecha_hoy){
-        texto = 'La fecha introducida debe ser posterior a la fecha actual';
-        datosCorrectos = false;
     }
 
     if (!datosCorrectos){
