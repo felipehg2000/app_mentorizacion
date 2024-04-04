@@ -2,9 +2,9 @@ div.pnlCopmpletoTut{
     background-color: white;
 
     height: 100%;
-    width: 100%;
+    width: 80%;
 
-    position:relative;
+    position:absolute;
     overflow: hidden;
 
     top: 0;
@@ -13,7 +13,7 @@ div.pnlCopmpletoTut{
 
 div.pnlSupTut{
     background-color: white;
-    height: 20%;
+    height: 6%;
     width: 100%;
 
     margin-top: 10px;
@@ -23,7 +23,7 @@ div.pnlSupTut{
 div.pnlPrinTut{
     background-color: white;
 
-    height: 75%;
+    height: 90%;
     width: 100%;
 
     position: absolute;
@@ -45,6 +45,8 @@ div.pnlIzqTut{
     height: auto;
 
     overflow: hidden;
+
+    margin: 5px;
 }
 
 div.pnlDchaTut{
@@ -56,15 +58,20 @@ div.pnlDchaTut{
     height: auto;
 
     overflow: hidden;
+
+    margin: 5px;
 }
 
-textarea.tuto {
-    height: 100%;
+textarea#textAreaMentor, textarea#textAreaEstudiante  {
+    height: 90%;
     width: 90%;
+
     box-shadow: 4px 4px 10px black;
+
+    margin-top: -20px;
 }
 
-div.pnlPizarra{
+/*div.pnlPizarra{
     background-color: white;
 
     height: 75%;

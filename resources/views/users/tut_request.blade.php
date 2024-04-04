@@ -50,7 +50,7 @@
         <label for='input_hora'>Hora</label><br>
         <input id='input_hora' type='time' placeholder="Hora">
 
-        <label for="input_estado" id="lbl_study_area">Estado</label>                                                                        <br>
+        <label for="input_estado" id="lbl_study_area">Estado</label><br>
         <select id="input_estado">
             <option value="0">En tratmite</option>
             <option value="1">Aceptada   </option>

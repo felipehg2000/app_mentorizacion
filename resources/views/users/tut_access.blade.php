@@ -27,22 +27,24 @@
     <div class='pnlCopmpletoTut'>
         <div class='pnlSupTut'>
             <h2 id='tit_tut_access'> {{ $titulo }}</h2>
-            <button class='btn_create' id='btnPizarra' onclick="ActivarPizarraClick()">Activar Pizarra</button>
+            <!--<button class='btn_create' id='btnPizarra' onclick="ActivarPizarraClick()">Activar Pizarra</button>-->
         </div>
 
         <div class='pnlPrinTut'>
             <div class='pnlIzqTut'>
+                <p>Area de texto Mentor</p>
                 <textarea class='tuto' id='textAreaMentor' onkeydown="MentorPulsaTecla()"></textarea>
             </div>
 
             <div class='pnlDchaTut'>
+                <p>Area de texto Estudiante</p>
                 <textarea class='tuto' id='textAreaEstudiante' onkeydown="EstudiantePulsaTecla()"></textarea>
             </div>
         </div>
 
-        <div class='pnlPizarra' id='pnlPizarra'>
+        <!--<div class='pnlPizarra' id='pnlPizarra'>
 
-        </div>
+        </div>-->
 
     </div>
 @endsection

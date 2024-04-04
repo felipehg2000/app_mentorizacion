@@ -2,7 +2,7 @@ $(document).ready(function(){
     let dataTable = new DataTable('tutoring_table');
 });
 
-function MostrarNewTutoring(param_tipo_usuario, param_tutoring_id){
+function MostrarNewTutoring(param_tipo_usuario){
     if (param_tipo_usuario == 1) {
         MostrarPanel(false, true);
     } else if (param_tipo_usuario == 2) {
@@ -33,7 +33,7 @@ function MostrarTabla(){
 }
 
 function ClickDataTable(param_id_tut){
-    document.getElementById('id_tut').value = param_id_tut;
+    document.getElementById('id_tut').textContent = param_id_tut;
 
     var data = {
         _token : csrfToken,
@@ -122,9 +122,6 @@ function ModificarTutoria(param_id){
     var datosCorrectos = true;
     if (date == '' || hourInput == ''){
         texto = 'Para realizar esta acción primero tiene que rellenar todos los campos';
-        datosCorrectos = false;
-    } else if (date <= fecha_hoy){
-        texto = 'La fecha introducida debe ser posterior a la fecha actual';
         datosCorrectos = false;
     }
 
