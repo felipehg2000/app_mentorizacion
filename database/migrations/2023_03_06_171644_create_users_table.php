@@ -4,7 +4,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-14 20:19:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-15 12:14:53
+ * @Last Modified time: 2024-04-07 23:33:53
  * @Description: Migración completa para la base de datos de la primera versión de la aplicación mentoring, en la primera modificación añadiremos
  *               los datos respectivos al usuario.
  */
@@ -35,9 +35,10 @@ return new class extends Migration{
             $table->string       ('USER'       , 30     )->unique  ();
             $table->text         ('PASSWORD'            );
             $table->boolean      ('USER_TYPE'           );
-            $table->integer      ('STUDY_AREA'          );
+            $table->integer      ('STUDY_AREA'          )->default(0);
             $table->text         ('DESCRIPTION'         )->nullable();
             $table->binary       ('IMAGE'               )->default($this->imageToBinary('photos/default_user_image.png'));
+            $table->boolean      ('BANNED'              )->default(0);
             $table->rememberToken(                      );//en caso de que el usuario decida tener la sesión abierta se guardará un token
             $table->timestamps   (                      );
         });
