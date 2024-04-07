@@ -11,7 +11,7 @@ use App\Http\Controllers\StudentsController;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:03:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-01 11:57:34
+ * @Last Modified time: 2024-04-07 23:11:10
  * @Description: De este archivo se leerán las rutas a las que el usuario pueda acceder, es decir, el usuario solo puede acceder a las rutas que especifiquemos aquí.
  *               Como buena práctica hay que darle nombre a cada una de las rutas, para que si una de estas cambie no haya que cambiar todos los lugares donde las referenciemos,
  *               para esto usaremos la función name.
@@ -73,8 +73,14 @@ Route::controller(UsersController::class)->group(function(){
     Route::get  ('users/delete'         , [UsersController::class, 'delete'                 ])->name('users.delete'                 );
     Route::post ('users/delete'         , [UsersController::class, 'delete_store'           ])->name('users.delete.store'           );
 
-    Route::get  ('users/close'          , [UsersController::class, 'close'                  ])->name('users.close'                  );
+    Route::get  ('users/block_mentores' , [UsersController::class, 'block_mentores'         ])->name('admin.block_mentores'         );
+    Route::get  ('users/block_students' , [UsersController::class, 'block_students'         ])->name('admin.block_students'         );
+    Route::post ('users/bann_people'    , [UsersController::class, 'bann_people_store'      ])->name('admin.bann_people.store'      );
 
+    Route::get  ('users/admin_tut'      , [UsersController::class, 'admin_tut'              ])->name('admin.tutorial'               );
+    Route::get  ('users/admin_news'     , [UsersController::class, 'admin_news'             ])->name('admin.news'                   );
+
+    Route::get  ('users/close'          , [UsersController::class, 'close'                  ])->name('users.close'                  );
 });
 
 Route::controller(MentorsController::class)->group(function(){
