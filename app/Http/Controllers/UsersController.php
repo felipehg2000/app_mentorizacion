@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Event;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-07 23:32:21
+ * @Last Modified time: 2024-04-08 00:15:59
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -139,6 +139,74 @@ class UsersController extends Controller
         }
 
         return view('admins.news');
+    }
+
+    public function create_admin(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+
+        return view('admins.create');
+    }
+
+    public function modify_admin(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('admins.modify');
+    }
+
+    public function delete_admins(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $dataTable = new UsersDataTable();
+        if (request()->ajax()){
+            $query = DB::table('users')
+                        ->where('USER_TYPE', '=', 3)
+                        ->where('id', '!=', Auth::user()->id)
+                        ->select('*');
+
+            $action_code = '<a onclick="AdminClickTable({{ $model->id }})">
+                                <i class="fa fa-trash" style="font-size:16px;color:red;margin-left: -2px"></i>
+                            </a>';
+
+            return DataTables::of($query)
+                              ->editColumn('BANNED', function($query){
+                                    if($query->BANNED == 0) {
+                                        return 'No baneado';
+                                    } else if($query->BANNED == 1) {
+                                        return 'Baneado';
+                                    }
+                                })
+                              ->addColumn('action', $action_code)
+                              ->rawColumns(['action'])
+                              ->toJson();
+        }
+
+        return $dataTable->render('admins.delete');
+    }
+
+    public function delete_admins_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        if (Auth::user()->id == $request->id){
+            return response()->json(['success' => false]);
+        }
+
+        $user = User::find($request->id);
+
+        if ($user){
+            $user->delete();
+            return response()->json(['success' => true]);
+        } else{
+            return response()->json(['success' => false]);
+        }
     }
 
 //--------------------------------------------------------------------------------------------------
@@ -941,10 +1009,6 @@ class UsersController extends Controller
                     'description' => Auth::user()->DESCRIPTION
                     ];
 
-            if (Auth::user()->USER_TYPE == 3){
-                return view('admins.modify');
-            }
-
             if (Auth::user()->USER_TYPE == 1) { //Estudiante
                 $student_data = Student::find(Auth::user()->id);
 
@@ -1078,13 +1142,11 @@ class UsersController extends Controller
 
                 $data['company'] = $mentor_data->COMPANY;
                 $data['job'    ] = $mentor_data->JOB    ;
-            }
 
-            if (Auth::user()->USER_TYPE == 3){
-                return view('admins.delete');
             }
 
             return view('users.delete', ['data' => $data]);
+
         }else {
             return view('users.close');
         }
