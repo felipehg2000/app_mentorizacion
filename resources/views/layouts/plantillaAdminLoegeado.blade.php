@@ -3,7 +3,7 @@
 <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <title>@yield('title')</title>
+    <title>Administrador</title>
 
     <!--ESTILOS-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -32,8 +32,9 @@
         var url_bloquear_estudiantes   = "{{ route('admin.block_students') }}"
         var url_primeros_pasos         = "{{ route('admin.tutorial'      ) }}";
         var url_novedades              = "{{ route('admin.news'          ) }}";
-        var url_modificar_mis_datos    = "{{ route('users.modify'        ) }}";
-        var url_eliminar_mi_cuenta     = "{{ route('users.delete'        ) }}";
+        var url_create_admin           = "{{ route('admin.create'        ) }}";
+        var url_modificar_mis_datos    = "{{ route('admin.modify'        ) }}";
+        var url_eliminar_mi_cuenta     = "{{ route('admin.delete'        ) }}";
         var url_cerrar_sesion          = "{{ route('users.close'         ) }}";
 
         var url_datos_inicio           = "{{ route('users.info_inicial.store') }}";
@@ -63,6 +64,7 @@
                     <div class="submenu" id="submenu_4" onclick="redirection(4)">Novedades     </div>
 
                 <div class="menu">Gestión de usuario        </div>
+                    <div class="submenu" id="submenu_8" onclick="redirection(8)">Crear administrador </div>
                     <div class="submenu" id="submenu_5" onclick="redirection(5)">Modificar mis datos </div>
                     <div class="submenu" id="submenu_6" onclick="redirection(6)">Eliminar cuentas    </div>
                     <div class="submenu" id="submenu_7" onclick="redirection(7)">Cerrar sesión       </div>
