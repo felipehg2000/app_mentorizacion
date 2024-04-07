@@ -13,7 +13,6 @@
 @endsection
 
 @section ('main')
-<p style="visibility: hidden">{{$tipo_usu = 1}}<
     <div class="container">
         <div class="card">
             <div class="card-header">Usuarios:</div>
