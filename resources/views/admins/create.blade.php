@@ -12,7 +12,7 @@
 @section ('main')
 <div class= "pnlInferiorEspecifico">
     <br>
-    <h2 class="SubtituloApartado">Modifcar mis datos</h2><br>
+    <h2 class="SubtituloApartado">Crear usuario</h2><br>
 
     <label for="name">Nombre:* </label><br>
     <input type="text" id="name" name="name"><br>
@@ -37,6 +37,6 @@
 </div>
 
 <div class='PanelBotones'>
-        <button class='btn_create' type="submit">Modificar</button><br>
+        <button class='btn_create' type="submit">Crear </button><br>
 </div>
 @endsection
