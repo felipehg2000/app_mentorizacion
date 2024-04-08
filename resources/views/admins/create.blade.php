@@ -5,8 +5,10 @@
 @endsection
 
 @section('js')
-    <script src="{{ asset('js/User/done_tasksScript.js') }}"></script>
-
+<script src="{{ asset('js/Admins/create_modifyAdminsScript.js') }}"></script>
+    <script>
+        var url_create_admin_store = "{{ route('admin.create.store') }}";
+    </script>
 @endsection
 
 @section ('main')
@@ -37,6 +39,6 @@
 </div>
 
 <div class='PanelBotones'>
-        <button class='btn_create' type="submit">Crear </button><br>
+        <button class='btn_create' type="submit" onclick='CrearYModificarAdmins()'>Crear </button><br>
 </div>
 @endsection
