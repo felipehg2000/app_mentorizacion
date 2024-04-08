@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Event;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-08 00:15:59
+ * @Last Modified time: 2024-04-08 10:06:42
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -146,8 +146,29 @@ class UsersController extends Controller
             return view('users.close');
         }
 
-
         return view('admins.create');
+    }
+
+    public function create_admin_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $new_admin = new User();
+
+        $new_admin->name        = $request->nombre   ;
+        $new_admin->surname     = $request->apellidos;
+        $new_admin->email       = $request->email    ;
+        $new_admin->user        = $request->usuario  ;
+        $new_admin->password    = self::cifrate_private_key ($request->password);
+        $new_admin->user_type   = 3;
+        $new_admin->study_area  = 0;
+        $new_admin->description = $request->description;
+        $new_admin->banned      = 0;
+
+        $new_admin->save();
+
+        return response()->json(['success' => true]);
     }
 
     public function modify_admin(){
@@ -155,7 +176,38 @@ class UsersController extends Controller
             return view('users.close');
         }
 
-        return view('admins.modify');
+        $admin = [
+            'name'        => Auth::user()->NAME        ,
+            'surname'     => Auth::user()->SURNAME     ,
+            'email'       => Auth::user()->EMAIL       ,
+            'user'        => Auth::user()->USER        ,
+            'description' => Auth::user()->DESCRIPTION
+            ];
+
+        return view('admins.modify', ['admin' => $admin]);
+    }
+
+    public function modify_admin_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $admin = User::find(Auth::user()->id);
+
+        if ($admin){
+            $admin->name        = $request->nombre   ;
+            $admin->surname     = $request->apellidos;
+            $admin->email       = $request->email    ;
+            $admin->user        = $request->usuario  ;
+            $admin->password    = self::cifrate_private_key ($request->password);
+            $admin->description = $request->description;
+
+            $admin->save();
+
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false]);
+        }
     }
 
     public function delete_admins(){
