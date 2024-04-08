@@ -43,6 +43,9 @@ function redirection(index) {
         case 8:
             window.location.href = url_create_admin;
             break;
+        case 9:
+            window.location.href = url_bloquear_admins;
+            break;
     }
 }
 
@@ -69,6 +72,11 @@ function CambiarOpcionDeColoresYMostrarCubierta(){
         id_elemento = "submenu_7";
     }else if (url_actual == url_create_admin){
         id_elemento = "submenu_8";
+        if (admin_id != 1){
+            mostrarCubierta = true;
+        }
+    }else if(url_actual == url_bloquear_admins){
+        id_elemento = "submenu_9";
         if (admin_id != 1){
             mostrarCubierta = true;
         }

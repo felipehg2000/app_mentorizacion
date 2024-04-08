@@ -29,7 +29,8 @@
         var csrfToken                  = '{{ csrf_token()                  }}';
 
         var url_bloquear_mentores      = "{{ route('admin.block_mentores') }}";
-        var url_bloquear_estudiantes   = "{{ route('admin.block_students') }}"
+        var url_bloquear_estudiantes   = "{{ route('admin.block_students') }}";
+        var url_bloquear_admins        = "{{ route('admin.block_admins'  ) }}";
         var url_primeros_pasos         = "{{ route('admin.tutorial'      ) }}";
         var url_novedades              = "{{ route('admin.news'          ) }}";
         var url_create_admin           = "{{ route('admin.create'        ) }}";
@@ -56,8 +57,9 @@
             <!--Apartado del menú-->
             <div class="pnlLeft">
                 <div class="menu">Bloquear cuentas      </div>
-                    <div class="submenu" id="submenu_1" onclick="redirection(1)">Bloquear mentores   </div>
-                    <div class="submenu" id="submenu_2" onclick="redirection(2)">Bloquear estudiantes</div>
+                    <div class="submenu" id="submenu_1" onclick="redirection(1)">Bloquear mentores       </div>
+                    <div class="submenu" id="submenu_2" onclick="redirection(2)">Bloquear estudiantes    </div>
+                    <div class="submenu" id="submenu_9" onclick="redirection(9)">Bloquear administradores</div>
 
                 <div class="menu">Guías de uso</div>
                     <div class="submenu" id="submenu_3" onclick="redirection(3)">Primeros pasos</div>
