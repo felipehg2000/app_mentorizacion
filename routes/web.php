@@ -81,8 +81,10 @@ Route::controller(UsersController::class)->group(function(){
     Route::get  ('users/admin_news'     , [UsersController::class, 'admin_news'             ])->name('admin.news'                   );
 
     Route::get  ('users/create_admin'   , [UsersController::class, 'create_admin'           ])->name('admin.create'                 );
+    Route::post  ('users/create_admin'  , [UsersController::class, 'create_admin_store'     ])->name('admin.create.store'           );
 
     Route::get  ('users/modify_admin'   , [UsersController::class, 'modify_admin'           ])->name('admin.modify'                 );
+    Route::post ('users/modify_admin'   , [UsersController::class, 'modify_admin_store'     ])->name('admin.modify.store'           );
 
     Route::get  ('users/delete_admins'  , [UsersController::class, 'delete_admins'          ])->name('admin.delete'                 );
     Route::post ('users/delete_admins'  , [UsersController::class, 'delete_admins_store'    ])->name('admin.delete.store'           );
