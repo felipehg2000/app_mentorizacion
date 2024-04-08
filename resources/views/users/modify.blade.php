@@ -1,6 +1,6 @@
 @extends('layouts.plantillaUsuLogeado')
 @section('style')
-    <link rel="stylesheet" href="{{ asset('css/formsSimpleStyle.css') }}"
+    <link rel="stylesheet" href="{{ asset('css/formsSimpleStyle.css') }}">
 @endsection
 @section('title', 'Modificar datos')
 
@@ -63,7 +63,7 @@
 
                 <label for="duration">Duración: </label><br>
                 <input type="number" min="1" max="10" id="duration" value="{{ $data['duration'] }}">   <br>
-            @else
+            @elseif ($data['tipousuario'] == 2)
                 <h2>Datos especificos de los mentores:</h2><br>
 
                 <label for="company">Empresa: </label><br>

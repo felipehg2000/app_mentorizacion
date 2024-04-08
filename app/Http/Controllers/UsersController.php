@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\TaskDataTable;
 use App\DataTables\TutoringDataTable;
+use App\DataTables\UsersDataTable;
 use App\Events\NewMessageEvent;
 use App\Events\TutUpdateEvent;
 use App\Models\User;
@@ -21,8 +22,6 @@ use App\Models\Tutoring;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use DateTime;
-use Illuminate\Support\Facades\Route;
-use Yajra\DataTables\Contracts\DataTable;
 use Yajra\DataTables\DataTables;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -32,7 +31,7 @@ use Illuminate\Support\Facades\Event;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-02 19:19:50
+ * @Last Modified time: 2024-04-08 11:19:41
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -43,6 +42,259 @@ use Illuminate\Support\Facades\Event;
 
 class UsersController extends Controller
 {
+//--------------------------------------------------------------------------------------------------
+    public function block_mentores(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $dataTable = new UsersDataTable();
+        if (request()->ajax()){
+            $query = DB::table('users')
+                        ->where('USER_TYPE', '=', 2)
+                        ->select('*');
+
+            $action_code = '<a onclick="AdminClickTable({{ $model->id }})">
+                                <i class="fa fa-ban" style="font-size:16px;color:red;margin-left: -2px"></i>
+                            </a>';
+
+            return DataTables::of($query)
+                              ->editColumn('BANNED', function($query){
+                                  if($query->BANNED == 0) {
+                                      return 'No baneado';
+                                  } else if($query->BANNED == 1) {
+                                      return 'Baneado';
+                                  }
+                              })
+                              ->addColumn('action', $action_code)
+                              ->rawColumns(['action'])
+                              ->toJson();
+        }
+
+        return $dataTable->render('admins.block_users');
+    }
+
+    public function block_students(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $dataTable = new UsersDataTable();
+        if (request()->ajax()){
+            $query = DB::table('users')
+                        ->where('USER_TYPE', '=', 1)
+                        ->select('*');
+
+            $action_code = '<a onclick="AdminClickTable({{ $model->id }})">
+                                <i class="fa fa-ban" style="font-size:16px;color:red;margin-left: -2px"></i>
+                            </a>';
+
+            return DataTables::of($query)
+                              ->editColumn('BANNED', function($query){
+                                    if($query->BANNED == 0) {
+                                        return 'No baneado';
+                                    } else if($query->BANNED == 1) {
+                                        return 'Baneado';
+                                    }
+                                })
+                              ->addColumn('action', $action_code)
+                              ->rawColumns(['action'])
+                              ->toJson();
+        }
+
+        return $dataTable->render('admins.block_users');
+    }
+
+    public function block_admins(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $dataTable = new UsersDataTable();
+        if (request()->ajax()){
+            $query = DB::table('users')
+                        ->where('USER_TYPE', '=', 3)
+                        ->where('id' , '!=', Auth::user()->id)
+                        ->select('*');
+
+            $action_code = '<a onclick="AdminClickTable({{ $model->id }})">
+                                <i class="fa fa-ban" style="font-size:16px;color:red;margin-left: -2px"></i>
+                            </a>';
+
+            return DataTables::of($query)
+                              ->editColumn('BANNED', function($query){
+                                    if($query->BANNED == 0) {
+                                        return 'No baneado';
+                                    } else if($query->BANNED == 1) {
+                                        return 'Baneado';
+                                    }
+                                })
+                              ->addColumn('action', $action_code)
+                              ->rawColumns(['action'])
+                              ->toJson();
+        }
+
+        return $dataTable->render('admins.block_users');
+    }
+
+    public function bann_people_store(Request $request){
+
+        if(!Auth::check()){
+            return view('users.close');
+        }
+
+        $user_id = $request->id;
+
+        $usuario = User::where('id', $user_id)->first();
+
+        if ($usuario->BANNED == 0){
+            $usuario->BANNED = 1;
+        } else if($usuario->BANNED == 1){
+            $usuario->BANNED = 0;
+        }
+
+        $usuario->save();
+        return response()->json(['success' => true]);
+    }
+
+    public function admin_tut(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('admins.tutorial');
+    }
+
+    public function admin_news(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('admins.news');
+    }
+
+    public function create_admin(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('admins.create');
+    }
+
+    public function create_admin_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $new_admin = new User();
+
+        $new_admin->name        = $request->nombre   ;
+        $new_admin->surname     = $request->apellidos;
+        $new_admin->email       = $request->email    ;
+        $new_admin->user        = $request->usuario  ;
+        $new_admin->password    = self::cifrate_private_key ($request->password);
+        $new_admin->user_type   = 3;
+        $new_admin->study_area  = 0;
+        $new_admin->description = $request->description;
+        $new_admin->banned      = 0;
+
+        $new_admin->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function modify_admin(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $admin = [
+            'name'        => Auth::user()->NAME        ,
+            'surname'     => Auth::user()->SURNAME     ,
+            'email'       => Auth::user()->EMAIL       ,
+            'user'        => Auth::user()->USER        ,
+            'description' => Auth::user()->DESCRIPTION
+            ];
+
+        return view('admins.modify', ['admin' => $admin]);
+    }
+
+    public function modify_admin_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $admin = User::find(Auth::user()->id);
+
+        if ($admin){
+            $admin->name        = $request->nombre   ;
+            $admin->surname     = $request->apellidos;
+            $admin->email       = $request->email    ;
+            $admin->user        = $request->usuario  ;
+            if ($request->password != ""){
+                $admin->password    = self::cifrate_private_key ($request->password);
+            }
+            $admin->description = $request->description;
+
+            $admin->save();
+
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function delete_admins(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $dataTable = new UsersDataTable();
+        if (request()->ajax()){
+            $query = DB::table('users')
+                        ->where('USER_TYPE', '=', 3)
+                        ->where('id', '!=', Auth::user()->id)
+                        ->select('*');
+
+            $action_code = '<a onclick="AdminClickTable({{ $model->id }})">
+                                <i class="fa fa-trash" style="font-size:16px;color:red;margin-left: -2px"></i>
+                            </a>';
+
+            return DataTables::of($query)
+                              ->editColumn('BANNED', function($query){
+                                    if($query->BANNED == 0) {
+                                        return 'No baneado';
+                                    } else if($query->BANNED == 1) {
+                                        return 'Baneado';
+                                    }
+                                })
+                              ->addColumn('action', $action_code)
+                              ->rawColumns(['action'])
+                              ->toJson();
+        }
+
+        return $dataTable->render('admins.delete');
+    }
+
+    public function delete_admins_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        if (Auth::user()->id == $request->id){
+            return response()->json(['success' => false]);
+        }
+
+        $user = User::find($request->id);
+
+        if ($user){
+            $user->delete();
+            return response()->json(['success' => true]);
+        } else{
+            return response()->json(['success' => false]);
+        }
+    }
+
 //--------------------------------------------------------------------------------------------------
     /**
      * Iniciar sesión
@@ -65,6 +317,10 @@ class UsersController extends Controller
         $user          = User::where('user', $request->user)->where('password', $clave_cifrada)->first();
 
         if ($user != NULL) {
+            if ($user->BANNED == 1) {
+                return view('users.banned');
+            }
+
             Auth::login($user);
             if ($user->USER_TYPE == 1){
                 $controlador_estudiante = new StudentsController();
@@ -72,15 +328,17 @@ class UsersController extends Controller
 
                 return $vista_estudiante;
             }
-            else{
+            else if($user->USER_TYPE == 2){
                 $controlador_mentores = new MentorsController();
                 $vista_mentor = $controlador_mentores->index();
 
                 return $vista_mentor;
+            } else if($user->USER_TYPE == 3) {
+                return view('admins.news');
             }
         }
         else{
-        return redirect()->back()->withErrors(['message' => 'El correo electrónico o la contraseña son incorrectos.']);
+            return redirect()->back()->withErrors(['message' => 'El correo electrónico o la contraseña son incorrectos.']);
         }
     }
 
@@ -111,6 +369,9 @@ class UsersController extends Controller
             } else {
                 $tiene_sala_estudio = true;
             }
+        } else if (Auth::user()->USER_TYPE == 3){
+            return response()->json(['success'  => true,
+                                     'admin_id' => Auth::user()->id]);
         }
 
         return response()->json(['success'            => true,
@@ -970,9 +1231,11 @@ class UsersController extends Controller
 
                 $data['company'] = $mentor_data->COMPANY;
                 $data['job'    ] = $mentor_data->JOB    ;
+
             }
 
             return view('users.delete', ['data' => $data]);
+
         }else {
             return view('users.close');
         }
@@ -1036,6 +1299,7 @@ class UsersController extends Controller
         $user->user_type   = $_POST["tipousuario"];
         $user->study_area  = $_POST["campoestudio"];
         $user->description = $request->description;
+        $user->banned      = 0;
 
         return $user;
     }
@@ -1125,7 +1389,5 @@ class UsersController extends Controller
 
         return openssl_encrypt($clave, 'aes-256-ecb', $key);
     }
-//--------------------------------------------------------------------------------------------------+
-
-
+//--------------------------------------------------------------------------------------------------
 }

@@ -11,7 +11,7 @@ use App\Http\Controllers\StudentsController;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:03:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-01 11:57:34
+ * @Last Modified time: 2024-04-08 11:17:54
  * @Description: De este archivo se leerán las rutas a las que el usuario pueda acceder, es decir, el usuario solo puede acceder a las rutas que especifiquemos aquí.
  *               Como buena práctica hay que darle nombre a cada una de las rutas, para que si una de estas cambie no haya que cambiar todos los lugares donde las referenciemos,
  *               para esto usaremos la función name.
@@ -73,8 +73,24 @@ Route::controller(UsersController::class)->group(function(){
     Route::get  ('users/delete'         , [UsersController::class, 'delete'                 ])->name('users.delete'                 );
     Route::post ('users/delete'         , [UsersController::class, 'delete_store'           ])->name('users.delete.store'           );
 
-    Route::get  ('users/close'          , [UsersController::class, 'close'                  ])->name('users.close'                  );
+    Route::get  ('users/block_mentores' , [UsersController::class, 'block_mentores'         ])->name('admin.block_mentores'         );
+    Route::get  ('users/block_students' , [UsersController::class, 'block_students'         ])->name('admin.block_students'         );
+    Route::get  ('users/block_admins'   , [UsersController::class, 'block_admins'           ])->name('admin.block_admins'           );
+    Route::post ('users/bann_people'    , [UsersController::class, 'bann_people_store'      ])->name('admin.bann_people.store'      );
 
+    Route::get  ('users/admin_tut'      , [UsersController::class, 'admin_tut'              ])->name('admin.tutorial'               );
+    Route::get  ('users/admin_news'     , [UsersController::class, 'admin_news'             ])->name('admin.news'                   );
+
+    Route::get  ('users/create_admin'   , [UsersController::class, 'create_admin'           ])->name('admin.create'                 );
+    Route::post  ('users/create_admin'  , [UsersController::class, 'create_admin_store'     ])->name('admin.create.store'           );
+
+    Route::get  ('users/modify_admin'   , [UsersController::class, 'modify_admin'           ])->name('admin.modify'                 );
+    Route::post ('users/modify_admin'   , [UsersController::class, 'modify_admin_store'     ])->name('admin.modify.store'           );
+
+    Route::get  ('users/delete_admins'  , [UsersController::class, 'delete_admins'          ])->name('admin.delete'                 );
+    Route::post ('users/delete_admins'  , [UsersController::class, 'delete_admins_store'    ])->name('admin.delete.store'           );
+
+    Route::get  ('users/close'          , [UsersController::class, 'close'                  ])->name('users.close'                  );
 });
 
 Route::controller(MentorsController::class)->group(function(){
