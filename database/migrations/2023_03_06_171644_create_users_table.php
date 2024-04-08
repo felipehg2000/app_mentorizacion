@@ -4,7 +4,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-14 20:19:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-07 23:33:53
+ * @Last Modified time: 2024-04-08 10:38:28
  * @Description: Migración completa para la base de datos de la primera versión de la aplicación mentoring, en la primera modificación añadiremos
  *               los datos respectivos al usuario.
  */
@@ -12,6 +12,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration{
     /**
@@ -42,6 +43,19 @@ return new class extends Migration{
             $table->rememberToken(                      );//en caso de que el usuario decida tener la sesión abierta se guardará un token
             $table->timestamps   (                      );
         });
+
+        // Insertamos el admin inicial en la tabla de usuarios
+        DB::table('USERS')->insert([
+            'NAME'        => 'admin',
+            'SURNAME'     => 'admin',
+            'EMAIL'       => 'admin',
+            'USER'        => 'admin',
+            'PASSWORD'    => 'G/mHIcX5C3Ex2kXgMVO50Q==',
+            'USER_TYPE'   => 3,
+            'DESCRIPTION' => 'admin',
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
 
         /**
          * TABLA STUDENTS
@@ -215,7 +229,7 @@ return new class extends Migration{
         Schema::dropIfExists('ANSWERS'              );
         Schema::dropIfExists('TASKS'                );
         Schema::dropIfExists('SYNCHRONOUS_MESSAGES' );
-        Schema::dropIfExists('STUDY_ROOM_ACCES'     );
+        Schema::dropIfExists('STUDY_ROOM_ACCESS'    );
         Schema::dropIfExists('STUDY_ROOMS'          );
         Schema::dropIfExists('MENTORS'              );
         Schema::dropIfExists('STUDENTS'             );
