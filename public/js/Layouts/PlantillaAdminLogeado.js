@@ -1,9 +1,20 @@
+var admin_id = 0;
+
 document.addEventListener('DOMContentLoaded', function() {
     var data = {
         _token : csrfToken,
     }
 
-    CambiarOpcionDeColoresYMostrarCubierta();
+    $.ajax({
+        url   : url_datos_inicio,
+        method: 'POST',
+        data  : data
+    }).done(function(respuesta){
+        if(respuesta.success){
+            admin_id = respuesta.admin_id;
+            CambiarOpcionDeColoresYMostrarCubierta();
+        }
+    });
 })
 
 function redirection(index) {
@@ -36,6 +47,7 @@ function redirection(index) {
 }
 
 function CambiarOpcionDeColoresYMostrarCubierta(){
+    var mostrarCubierta = false;
     var url_actual = window.location.href;
 
     if (url_actual == url_bloquear_mentores){
@@ -50,16 +62,34 @@ function CambiarOpcionDeColoresYMostrarCubierta(){
         id_elemento = "submenu_5";
     }else if (url_actual == url_eliminar_mi_cuenta){
         id_elemento = "submenu_6";
+        if (admin_id != 1){
+            mostrarCubierta = true;
+        }
     }else if (url_actual == url_cerrar_sesion){
         id_elemento = "submenu_7";
     }else if (url_actual == url_create_admin){
-        id_elemento = "submenu_8"
+        id_elemento = "submenu_8";
+        if (admin_id != 1){
+            mostrarCubierta = true;
+        }
     }
 
     if (id_elemento != '') {
         document.getElementById(id_elemento).style.backgroundColor= "white";
         document.getElementById(id_elemento).style.color          = "black";
         document.getElementById(id_elemento).style.fontWeight     = "bold" ;
+    }
+
+    if (mostrarCubierta){
+        document.getElementById('pnlCubierta'       ).style.visibility = 'visible';
+        document.getElementById('pnlCubiertaMensaje').style.visibility = 'visible';
+
+        var mensaje = 'A esta opción solo puede acceder el superadmin';
+        document.getElementById('pnlCubiertaMensaje').textContent = mensaje;
+
+    } else {
+        document.getElementById('pnlCubierta'       ).style.visibility = 'hidden';
+        document.getElementById('pnlCubiertaMensaje').style.visibility = 'hidden';
     }
 
     document.getElementById('pnlCarga').style.visibility = 'hidden';
