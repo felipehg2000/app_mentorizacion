@@ -64,3 +64,11 @@ function CambiarOpcionDeColoresYMostrarCubierta(){
 
     document.getElementById('pnlCarga').style.visibility = 'hidden';
 }
+
+function aceptarPnlRespuestaEmergente(){
+    document.getElementById("pnlOscurecer"            ).style.visibility = "hidden" ;
+    document.getElementById("pnlRespuestaEmergente"   ).style.visibility = "hidden" ;
+    document.getElementById('btnAceptarEmergente'     ).style.visibility = "visible";
+
+    document.getElementById('btnCancelarEmergente').innerText = "Cancelar" ;
+}
