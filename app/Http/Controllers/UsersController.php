@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Event;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-08 10:06:42
+ * @Last Modified time: 2024-04-08 10:24:19
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -199,7 +199,9 @@ class UsersController extends Controller
             $admin->surname     = $request->apellidos;
             $admin->email       = $request->email    ;
             $admin->user        = $request->usuario  ;
-            $admin->password    = self::cifrate_private_key ($request->password);
+            if ($request->password != ""){
+                $admin->password    = self::cifrate_private_key ($request->password);
+            }
             $admin->description = $request->description;
 
             $admin->save();
