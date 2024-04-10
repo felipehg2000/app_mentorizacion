@@ -35,6 +35,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 InicializarTemporizador();
             });
 
+            if (respuesta.new_messages){
+                document.getElementById('notification_4').style.visibility = 'visible';
+            }
+
+            if (respuesta.new_friend_requests){
+                document.getElementById('notification_9').style.visibility = 'visible';
+            }
+
+            if (respuesta.new_tasks){
+                document.getElementById('notification_1').style.visibility = 'visible';
+            }
+
+            if (respuesta.new_answer){
+                document.getElementById('notification_1').style.visibility = 'visible';
+            }
+
+            if (respuesta.new_tutoring){
+                document.getElementById('notification_6').style.visibility = 'visible';
+            }
+
             CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.num_alumnos);
         } else {
             window.location.href = url_close;
