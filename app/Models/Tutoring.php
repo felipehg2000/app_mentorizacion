@@ -13,5 +13,7 @@ class Tutoring extends Model
     protected $fillable = ['study_room_id'      ,
                            'study_room_acces_id',
                            'date'               ,
-                           'status'             ];
+                           'status'             ,
+                           'seen_by_mentor'     ,
+                           'seen_by_student'];
 }
