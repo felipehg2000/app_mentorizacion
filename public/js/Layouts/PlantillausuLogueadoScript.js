@@ -123,15 +123,19 @@ function aceptarPnlRespuestaEmergente(){
 function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sala_estudio, param_num_alumnos){
     var url_actual            = window.location.href;
     var id_elemento           = ''   ;
+    var id_div_notificacion   = ''   ;
     var mostrarCubierta       = false;
     var mensajeMuchosAlumnos  = false;
     var mensajeYaSalaEstudio  = false;
     var mensajeAmigosActuales = false;
     var mensajeNoHora         = false;
     var mensajeNoUsuarios     = false;
+    var url_opcion_seleccionada = "";
 
     if (url_actual == url_tablon_completo){
         id_elemento = "submenu_1";
+        url_opcion_seleccionada = url_task_saw;
+        id_div_notificacion = "notification_1";
         if (param_user_type == 1 && !param_tiene_sala_estudio){
             mostrarCubierta = true;
         }
@@ -154,6 +158,8 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         id_elemento = "submenu_5";
     }else if (url_actual == url_solicitudes){
         id_elemento = "submenu_6";
+        id_div_notificacion = "notification_6";
+        url_opcion_seleccionada = url_tut_saw;
         if ((param_user_type == 1 && !param_tiene_sala_estudio) || (param_user_type == 2 && !param_tiene_sala_estudio)){
             mostrarCubierta = true;
         }
@@ -173,6 +179,8 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         }
     }else if (url_actual == url_solicitudes_de_amistad){
         id_elemento = "submenu_9";
+        id_div_notificacion = "notification_9";
+        url_opcion_seleccionada = url_friend_req_saw;
         if (param_user_type == 1 && param_tiene_sala_estudio){
             mostrarCubierta = true;
             mensajeYaSalaEstudio = true;
@@ -235,6 +243,22 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
     } else {
         document.getElementById('pnlCubierta'       ).style.visibility = 'hidden';
         document.getElementById('pnlCubiertaMensaje').style.visibility = 'hidden';
+    }
+
+    if (url_opcion_seleccionada != ""){
+        var data = {
+            _token : csrfToken,
+        }
+
+        $.ajax({
+            url   : url_opcion_seleccionada,
+            method: 'POST',
+            data  : data
+        }).done(function(respuesta){
+            if(respuesta.success){
+                document.getElementById(id_div_notificacion).style.visibility = 'hidden';
+            }
+        });
     }
 
     document.getElementById('pnlCarga').style.visibility = 'hidden';

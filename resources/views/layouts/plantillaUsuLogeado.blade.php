@@ -41,7 +41,13 @@
         var url_eliminar_mi_cuenta     = "{{ route('users.delete'        ) }}";
         var url_cerrar_sesion          = "{{ route('users.close'         ) }}";
 
-        var url_datos_inicio           = "{{ route('users.info_inicial.store') }}";
+        var url_datos_inicio           = "{{ route('users.info_inicial.store'               ) }}";
+        var url_friend_req_saw         = "{{ route('users.FriendRequestsSaw'                ) }}";
+        var url_sync_message_saw       = "{{ route('users.SynchronousMessagesSaw'           ) }}";
+        var url_tut_saw                = "{{ route('users.TutoringSaw'                      ) }}";
+        var url_tut_mod_not            = "{{ route('users.TutoringModificationsNotification') }}";
+        var url_task_saw               = "{{ route('users.TasksSaw'                         ) }}";
+        var url_answer_saw             = "{{ route('users.AnswersSaw'                       ) }}";
     </script>
 
     @yield('js')
