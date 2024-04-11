@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Seen_task;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -64,6 +65,7 @@ class MentorsController extends Controller{
               ->update(['STATUS' => 2]);
 
               $this->CreateStudyRoomAcces($student_id, $mentor_id);
+              $this->CreateSeenTasks($student_id);
 
         }else if ($request->respuesta == "DENEGAR"){
             //Borrar petición
@@ -143,5 +145,25 @@ class MentorsController extends Controller{
         $new_node->logic_cancel  = '0'               ;
 
         $new_node->save();
+    }
+
+    private function CreateSeenTasks($param_student_id){
+        if (Auth::user()->USER_TYPE == 2){
+            //Buscamos los estudiantes de la sala de estudios
+            $tasksIds = DB::table('tasks')
+                           ->where('STUDY_ROOM_ID', '=', Auth::user()->id)
+                           ->select('id')
+                           ->get();
+
+            foreach($tasksIds as $id) {
+                $nuevo_nodo = new Seen_task();
+
+                $nuevo_nodo->task_id = $id->id;
+                $nuevo_nodo->user_id = $param_student_id;
+                $nuevo_nodo->seen_task = 0;
+
+                $nuevo_nodo->save();
+            }
+        }
     }
 }
