@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
         data  : data
     }).done(function(respuesta){
         if(respuesta.success){
+            //Tiene que ir antes de la función CambiarOpcionDeColoresYMostrarCubierta, en esta función se esconde en caso de que entremos en esta opción
+            if (respuesta.new_report_request){
+                document.getElementById('notification_10').style.visibility = 'visible';
+            }
+
             admin_id = respuesta.admin_id;
             CambiarOpcionDeColoresYMostrarCubierta();
         }
@@ -46,6 +51,8 @@ function redirection(index) {
         case 9:
             window.location.href = url_bloquear_admins;
             break;
+        case 10:
+            window.location.href = url_reports;
     }
 }
 
@@ -80,6 +87,22 @@ function CambiarOpcionDeColoresYMostrarCubierta(){
         if (admin_id != 1){
             mostrarCubierta = true;
         }
+    }else if(url_actual == url_reports){
+        id_elemento = "submenu_10";
+
+        var data = {
+            _token : csrfToken,
+        }
+
+        $.ajax({
+            url   : url_report_saw,
+            method: 'POST',
+            data  : data
+        }).done(function(respuesta){
+            if(respuesta.success){
+                document.getElementById('notification_10').style.visibility = 'hidden';
+            }
+        });
     }
 
     if (id_elemento != '') {
