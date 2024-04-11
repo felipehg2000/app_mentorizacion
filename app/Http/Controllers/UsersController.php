@@ -40,7 +40,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-11 19:19:51
+ * @Last Modified time: 2024-04-11 21:09:07
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -759,9 +759,12 @@ class UsersController extends Controller
                                ->select('NAME', 'SURNAME')
                                ->first();
 
-            return response()->json(['success'    => true      ,
-                                     'data'       => $resultado,
-                                     'selec_user' => $selected_user]);
+            $this->SynchronousMessagesSaw($request->contact_id);
+
+            return response()->json(['success'       => true      ,
+                                     'data'          => $resultado,
+                                     'selec_user'    => $selected_user,
+                                     'new_sync_chat' => $this->NotSeenSynchronousMessages()]);
 
         }else{
             return response()->json(['success' => false]);
@@ -1357,6 +1360,12 @@ class UsersController extends Controller
         $sync_message->sender              = Auth::user()->id          ;
         $sync_message->message             = $param_message            ;
 
+        if (Auth::user()->USER_TYPE == 1){
+            $sync_message->seen_by_student = 1;
+        } else if (Auth::user()->USER_TYPE == 2) {
+            $sync_message->seen_by_mentor = 1;
+        }
+
         $sync_message->save();
     }
 //--------------------------------------------------------------------------------------------------
@@ -1370,6 +1379,25 @@ class UsersController extends Controller
         $task->created_at    = $param_fecha_creacion;
 
         $task->save();
+
+        if (Auth::user()->USER_TYPE == 2){
+            //Buscamos los estudiantes de la sala de estudios
+            $studentIds = DB::table('study_room_access')
+                            ->where('STUDY_ROOM_ID', '=', Auth::user()->id)
+                            ->select('STUDENT_ID')
+                            ->get();
+
+            foreach($studentIds as $id) {
+                $nuevo_nodo = new Seen_task();
+
+                $nuevo_nodo->task_id = $task->id;
+                $nuevo_nodo->user_id = $id->STUDENT_ID;
+                $nuevo_nodo->seen_task = 0;
+
+                $nuevo_nodo->save();
+            }
+        }
+
     }
 //--------------------------------------------------------------------------------------------------
     private function CreateTutoring($param_study_room_id, $param_study_room_acces_id, $param_date, $param_status){
@@ -1379,6 +1407,7 @@ class UsersController extends Controller
         $tutoring->study_room_acces_id = $param_study_room_acces_id;
         $tutoring->date                = $param_date;
         $tutoring->status              = $param_status;
+        $tutoring->seen_by_student      = 1;
 
         $tutoring->save();
     }
@@ -1438,12 +1467,12 @@ class UsersController extends Controller
 
         if (Auth::user()->USER_TYPE == 1){
             $ret_cantidad = Synchronous_message::where('study_room_acces_id', '=', Auth::user()->id)
-            ->where('seen_by_student', '=', 0)
-            ->count();
+                                                ->where('seen_by_student', '=', 0)
+                                                ->count();
         } else if (Auth::user()->USER_TYPE == 2){
             $ret_cantidad = Synchronous_message::where('study_room_id', '=', Auth::user()->id)
-            ->where('seen_by_mentor', '=', 0)
-            ->count();
+                                                ->where('seen_by_mentor', '=', 0)
+                                                ->count();
         }
 
         if ($ret_cantidad > 0){
@@ -1478,11 +1507,11 @@ class UsersController extends Controller
         $ret_cantidad = 0;
 
         if (Auth::user()->USER_TYPE == 1){
-            $ret_cantidad = Seen_task::where('user_id', '=', 2)
+            $ret_cantidad = Seen_task::where('user_id', '=', Auth::user()->id)
             ->where('seen_task', '=', 0)
             ->count();
         } else if (Auth::user()->USER_TYPE == 2){
-            $ret_cantidad = Seen_task::where('user_id', '=', 2)
+            $ret_cantidad = Seen_task::where('user_id', '=', Auth::user()->id)
             ->where('seen_task', '=', 0)
             ->count();
         }
@@ -1539,18 +1568,18 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function SynchronousMessagesSaw(Request $request){
+    private function SynchronousMessagesSaw($id_user){
         if (!Auth::check()){
             return view('users.close');
         }
 
         if (Auth::user()->USER_TYPE == 1) {
             Synchronous_message::where('seen_by_student', '=', 0)
-                               ->where('study_room_id', '=', $request->id_mentor)
+                               ->where('study_room_id', '=', $id_user)
                                ->update(['seen_by_student' => 1]);
         }else if(Auth::user()->USER_TYPE == 2) {
             Synchronous_message::where('seen_by_mentor', '=', 0)
-                               ->where('study_room_acces_id', '=', $request->id_estudiante)
+                               ->where('study_room_acces_id', '=', $id_user)
                                ->update(['seen_by_mentor' => 1]);
         }
 
@@ -1596,7 +1625,6 @@ class UsersController extends Controller
 
         Seen_task::where('SEEN_TASK', '=', 0)
                  ->where('USER_ID', '=', Auth::user()->id)
-                 ->where('TASK_ID', '=', $request->id_tarea)
                  ->update(['SEEN_TASK' => 1]);
 
         return response()->json(['success' => true]);

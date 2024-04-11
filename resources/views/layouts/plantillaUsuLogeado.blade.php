@@ -43,7 +43,6 @@
 
         var url_datos_inicio           = "{{ route('users.info_inicial.store'               ) }}";
         var url_friend_req_saw         = "{{ route('users.FriendRequestsSaw'                ) }}";
-        var url_sync_message_saw       = "{{ route('users.SynchronousMessagesSaw'           ) }}";
         var url_tut_saw                = "{{ route('users.TutoringSaw'                      ) }}";
         var url_tut_mod_not            = "{{ route('users.TutoringModificationsNotification') }}";
         var url_task_saw               = "{{ route('users.TasksSaw'                         ) }}";

@@ -11,7 +11,7 @@ use App\Http\Controllers\StudentsController;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:03:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-11 18:59:18
+ * @Last Modified time: 2024-04-11 20:00:37
  * @Description: De este archivo se leerán las rutas a las que el usuario pueda acceder, es decir, el usuario solo puede acceder a las rutas que especifiquemos aquí.
  *               Como buena práctica hay que darle nombre a cada una de las rutas, para que si una de estas cambie no haya que cambiar todos los lugares donde las referenciemos,
  *               para esto usaremos la función name.
@@ -32,7 +32,6 @@ Route::controller(UsersController::class)->group(function(){
     Route::post ('users/info_inicial'   , [UsersController::class, 'info_inicial_store'                    ])->name('users.info_inicial.store'               );
     Route::post ('users/rep_req_saw'    , [UsersController::class, 'ReportRequestSaw'                      ])->name('admin.ReportRequestSaw'                 );
     Route::post ('users/friend_req_saw' , [UsersController::class, 'FriendRequestsSaw'                     ])->name('users.FriendRequestsSaw'                );
-    Route::post ('users/sync_mess_saw'  , [UsersController::class, 'SynchronousMessagesSaw'                ])->name('users.SynchronousMessagesSaw'           );
     Route::post ('users/tutoring_saw'   , [UsersController::class, 'TutoringSaw'                           ])->name('users.TutoringSaw'                      );
     Route::post ('users/tut_modify_not' , [UsersController::class, 'TutoringModificationsNotification'     ])->name('users.TutoringModificationsNotification');
     Route::post ('users/task_saw'       , [UsersController::class, 'TasksSaw'                              ])->name('users.TasksSaw'                         );

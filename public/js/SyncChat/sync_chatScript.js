@@ -28,10 +28,15 @@ function chat_selected(id_chat){
             document.getElementById('lblUsuSeleccionado')   .textContent = respuesta.selec_user.NAME + ' ' + respuesta.selec_user.SURNAME;
             document.getElementById('lblIdChatSeleccionado').textContent = id_chat;
 
-            document.getElementById('pnlSobreponerChatDcha').style.visibility = 'hidden' ;
-            document.getElementById('pnlChatDcha'          ).style.visibility = 'visible';
-            scrollAlFinal();
+            document.getElementById('pnlSobreponerChatDcha'   ).style.visibility = 'hidden' ;
+            document.getElementById('pnlChatDcha'             ).style.visibility = 'visible';
+            document.getElementById('chat_notification_' + id_chat).style.visibility = 'hidden' ;
 
+            if (!respuesta.new_sync_chat) {
+                document.getElementById('notification_4').style.visibility = 'hidden';
+            }
+
+            scrollAlFinal();
         }else {
             window.location.href = url_close;
         }

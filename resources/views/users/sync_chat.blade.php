@@ -28,6 +28,7 @@
                 @foreach ($mis_amigos as $friend)
                     <div class='friend_card' onclick="chat_selected({{ $friend->id }})" id='friend_card_hidden_{{$friend->id}}'>
                         {{ $friend->NAME }} {{ $friend->SURNAME}}
+                        <div class='notification' id='chat_notification_{{ $friend->id }}'></div>
                     </div>
                 @endforeach
             </div>
