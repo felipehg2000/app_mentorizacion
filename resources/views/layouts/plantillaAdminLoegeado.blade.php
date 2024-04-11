@@ -59,7 +59,7 @@
             <!--Apartado del menú-->
             <div class="pnlLeft">
                 <div class="menu">Solicitudes de report      </div>
-                    <div class="submenu" id="submenu_10" onclick="redirection(10)">Reports<div class='notification' id='notification_10'></div></div>
+                    <div class="submenu" id="submenu_10" onclick="redirection(10)">Informes de usuarios<div class='notification' id='notification_10'></div></div>
 
                 <div class="menu">Bloquear cuentas      </div>
                     <div class="submenu" id="submenu_1" onclick="redirection(1)">Bloquear mentores       </div>
