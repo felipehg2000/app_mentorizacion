@@ -95,7 +95,7 @@ class MentorsController extends Controller{
         return view('mentors.actual_friends', compact('result_users'));
     }
     public function actual_friends_store(Request $request){
-        $student_id = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
+        $student_id = $request->id_user;
         $mentor_id  = Auth::user()->id;
         DB::table('FRIEND_REQUESTS')
           ->where('STUDENT_ID', '=', $student_id)
@@ -106,7 +106,7 @@ class MentorsController extends Controller{
           ->where('student_id', $student_id)
           ->update(['logic_cancel' => '1']);
 
-        return back();
+        return response()->json(['success' => true]);
     }
     //--------------------------------------------------------------------------------------------------
     /**
