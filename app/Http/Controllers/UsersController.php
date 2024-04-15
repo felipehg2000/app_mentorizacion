@@ -40,7 +40,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-15 11:01:50
+ * @Last Modified time: 2024-04-15 12:30:23
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -373,11 +373,24 @@ class UsersController extends Controller
             return response()->json(['success' => false]);
         }
         $num_estudiantes = 0;
+        $tiene_solicitudes  = false;
         if (Auth::user()->USER_TYPE == 1){
             $num_salas_estudio = DB::table('study_room_access')
                                     ->where('STUDENT_ID'  , '=', Auth::user()->id)
                                     ->where('LOGIC_CANCEL', '=', 0)
                                     ->count();
+
+            $friendRequests = DB::table('friend_requests')
+                                 ->where('STUDENT_ID', '=', 3)
+                                 ->where(function($query) {
+                                     $query->where('STATUS', '=', 1)
+                                             ->orWhere('STATUS', '=', 2);
+                                 })
+                                 ->count();
+
+            if ($friendRequests != 0){
+                $tiene_solicitudes = true;
+            }
 
             if ($num_salas_estudio == 0){
                 $tiene_sala_estudio = false;
@@ -410,7 +423,8 @@ class UsersController extends Controller
                                  'new_friend_requests' => $this->NotSeenFriendRequests()     ,
                                  'new_tasks'           => $this->NotSeenTasks()              ,
                                  'new_answer'          => $this->NotSeenAnswers()            ,
-                                 'new_tutoring'        => $this->NotSeenTutoring()]);
+                                 'new_tutoring'        => $this->NotSeenTutoring()           ,
+                                 'solicitud_mandada'   => $tiene_solicitudes]);
     }
 
 //--------------------------------------------------------------------------------------------------

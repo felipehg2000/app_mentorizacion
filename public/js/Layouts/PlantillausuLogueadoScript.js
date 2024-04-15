@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('notification_6').style.visibility = 'visible';
             }
 
-            CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.num_alumnos);
+            CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.num_alumnos, respuesta.solicitud_mandada);
         } else {
             window.location.href = url_close;
         }
@@ -120,16 +120,17 @@ function aceptarPnlRespuestaEmergente(){
     document.getElementById('btnCancelarEmergente').innerText = "Cancelar" ;
 }
 
-function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sala_estudio, param_num_alumnos){
-    var url_actual            = window.location.href;
-    var id_elemento           = ''   ;
-    var id_div_notificacion   = ''   ;
-    var mostrarCubierta       = false;
-    var mensajeMuchosAlumnos  = false;
-    var mensajeYaSalaEstudio  = false;
-    var mensajeAmigosActuales = false;
-    var mensajeNoHora         = false;
-    var mensajeNoUsuarios     = false;
+function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sala_estudio, param_num_alumnos, param_solicitud_mandada){
+    var url_actual              = window.location.href;
+    var id_elemento             = ''   ;
+    var id_div_notificacion     = ''   ;
+    var mostrarCubierta         = false;
+    var mensajeMuchosAlumnos    = false;
+    var mensajeYaSalaEstudio    = false;
+    var mensajeAmigosActuales   = false;
+    var mensajeNoHora           = false;
+    var mensajeNoUsuarios       = false;
+    var mensajeSolicitudMandada = false;
     var url_opcion_seleccionada = "";
 
     if (url_actual == url_tablon_completo){
@@ -185,6 +186,10 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
             mostrarCubierta = true;
             mensajeYaSalaEstudio = true;
         }
+        if (param_user_type == 1 && param_solicitud_mandada){
+            mostrarCubierta = true;
+            mensajeSolicitudMandada = true;
+        }
         if (param_user_type == 2 && param_num_alumnos == 5){
             mostrarCubierta = true;
             mensajeMuchosAlumnos = true;
@@ -221,6 +226,8 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
                 mensaje = 'Para acceder a una tutoría debe tenerla programada, que esté aceptada y que sea la hora de la tutoría o una hora posterior a la concretada.';
             }else if (mensajeNoUsuarios){
                 mensaje = 'No tiene ninguna solicitud pendiente.';
+            }else if (param_solicitud_mandada){
+                mensaje = 'Tiene una solicitud de amistad mandada y pendiente, no puede mandar más solicitudes de amsitad';
             }else{
                 mensaje = 'Debe pertenecer a una sala de estudio para acceder a esta opción.';
             }
