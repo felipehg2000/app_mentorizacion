@@ -88,3 +88,85 @@ small{
     color: red;
     text-align:center;
 }
+
+div.PanelBotones{
+    height: auto;
+    width : 100%;
+
+    display: flex;
+    justify-content: space-evenly;
+
+    margin-top: -2.2%;
+}
+
+button.btn_create{
+    margin-left  : 40%;
+    margin-right : 40%;
+    margin-bottom: 10px;
+
+    width   : auto;
+    padding : 10px;
+
+    border       : none;
+    border-radius: 5px;
+
+    background-color: #0099cc;
+    color           : #fff;
+    font-size       : 16px;
+
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+button.btn_create:hover {
+    background-color: #0077b3;
+}
+
+/*Usar cuando haya más de un botón create*/
+button.btn_create_multiple{
+    margin-bottom: 10px;
+
+    width   : auto;
+    padding : 10px;
+
+    border       : none;
+    border-radius: 5px;
+
+    background-color: #0099cc;
+    color           : #fff;
+    font-size       : 16px;
+
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+button.btn_create_multiple:hover {
+    background-color: #0077b3;
+}
+
+button.btnEmergenteAceptarDelete{
+    margin-bottom: 10px;
+
+    width   : auto;
+    padding : 10px;
+
+    border       : none;
+    border-radius: 5px;
+
+    background-color: red;
+    color           : #fff;
+    font-size       : 16px;
+
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+button.btnEmergenteAceptarDelete:hover{
+    background-color: rgba(255, 0, 0, 0.593);
+}
