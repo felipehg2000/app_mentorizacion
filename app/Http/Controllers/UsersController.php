@@ -40,7 +40,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-11 21:09:07
+ * @Last Modified time: 2024-04-15 11:01:50
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -1018,7 +1018,6 @@ class UsersController extends Controller
      */
     public function actual_friends(){
         if (Auth::check()){
-            log(0);
             $user_type = Auth::user()->USER_TYPE;
             if($user_type == 1){
                 $controlador = new StudentsController();
@@ -1028,9 +1027,25 @@ class UsersController extends Controller
                 return($controlador->actual_friends());
             }
         } else {
-            log(1);
             return view('users.close');
         }
+    }
+
+    public function create_report(Request $request){
+        if (!Auth::check()){
+            return view('user.close');
+        }
+
+        $nueva_tupla = new Report_request();
+
+        $nueva_tupla->reported = $request->id_reported;
+        $nueva_tupla->reporter = Auth::user()->id     ;
+        $nueva_tupla->reason   = $request->reason     ;
+        $nueva_tupla->seen     = 0                    ;
+
+        $nueva_tupla->save();
+
+        return response()->json(['success' => true]);
     }
 
 //--------------------------------------------------------------------------------------------------
