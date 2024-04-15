@@ -40,7 +40,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-15 23:45:31
+ * @Last Modified time: 2024-04-15 23:52:26
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -381,7 +381,7 @@ class UsersController extends Controller
                                     ->count();
 
             $friendRequests = DB::table('friend_requests')
-                                 ->where('STUDENT_ID', '=', 3)
+                                 ->where('STUDENT_ID', '=', Auth::user()->id)
                                  ->where(function($query) {
                                      $query->where('STATUS', '=', 1)
                                              ->orWhere('STATUS', '=', 2);
