@@ -31,6 +31,13 @@ function CerrarPanelReport(){
 
 function CrearNuevoReport(){
     id_usu = document.getElementById('id_task').textContent;
+    reason = '';
+
+    if (document.querySelector('input[name="reason"]:checked') == null){
+        MostrarMensajeError('Para crear una solicitud de report debe seleccionar una de las opciones mostradas.');
+        return;
+    }
+
     reason = document.querySelector('input[name="reason"]:checked').value;
 
     var data = {
