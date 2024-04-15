@@ -139,12 +139,33 @@ class MentorsController extends Controller{
     }
 
     private function CreateStudyRoomAcces($param_student_id, $param_mentor_id) {
-        $new_node = new Study_room_acces();
-        $new_node->student_id    = $param_student_id ;
-        $new_node->study_room_id = $param_mentor_id;
-        $new_node->logic_cancel  = '0'               ;
+        if(!Auth::check()){
+            return view('user.close');
+        }
 
-        $new_node->save();
+        $studyRoomAccess = Study_room_acces::where('STUDENT_ID', '=', $param_student_id)
+                                            ->where('STUDY_ROOM_ID', '=', $param_mentor_id)
+                                            ->first();
+
+        if ($studyRoomAccess == NULL) {
+            $new_node = new Study_room_acces();
+            $new_node->student_id    = $param_student_id ;
+            $new_node->study_room_id = $param_mentor_id;
+            $new_node->logic_cancel  = '0'               ;
+
+            $new_node->save();
+        } else {
+            /*$studyRoomAccess->logic_cancel = '0';
+            $studyRoomAccess->save();*/
+
+            DB::table('study_room_access')
+            ->where('STUDENT_ID', $param_student_id)
+            ->where('STUDY_ROOM_ID', $param_mentor_id)
+            ->update([
+                'logic_cancel' => 0,
+                'updated_at' => now()
+            ]);
+        }
     }
 
     private function CreateSeenTasks($param_student_id){
