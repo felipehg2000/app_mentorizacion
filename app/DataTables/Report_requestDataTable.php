@@ -53,7 +53,7 @@ class Report_requestDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id'     )->title('User id'  ),
+            Column::make('id'     )->title('Id'       ),
             Column::make('NAME'   )->title('Nombre'   ),
             Column::make('SURNAME')->title('Apellidos'),
             Column::make('USER'   )->title('Usuario'  ),
