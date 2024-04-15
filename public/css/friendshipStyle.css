@@ -170,3 +170,7 @@ button.btnEmergenteAceptarDelete{
 button.btnEmergenteAceptarDelete:hover{
     background-color: rgba(255, 0, 0, 0.593);
 }
+
+input.radio {
+    margin-left: 40px;
+}

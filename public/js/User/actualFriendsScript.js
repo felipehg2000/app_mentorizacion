@@ -21,7 +21,7 @@ function AbrirPanelReportes(param_user_id){
 
     document.getElementById('id_task').textContent = param_user_id;
 
-    document.getElementById('PanelShowData').style.width = '30%';
+    document.getElementById('PanelShowData').style.width = '60%';
 }
 
 function CerrarPanelReport(){
@@ -31,7 +31,7 @@ function CerrarPanelReport(){
 
 function CrearNuevoReport(){
     id_usu = document.getElementById('id_task').textContent;
-    reason = document.querySelector('input[name="fav_language"]:checked').value;
+    reason = document.querySelector('input[name="reason"]:checked').value;
 
     var data = {
         _token     : csrfToken,

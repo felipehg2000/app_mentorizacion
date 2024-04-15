@@ -49,15 +49,21 @@
             </div>
 
             <div class='PanelFormNewTask' id='PanelCentrar'>
-                <input type="radio" id="html" name="fav_language" value="HTML">
-                <label for="html">HTML</label><br>
+                <br>
+                <input class='radio' type="radio" id="op1" name="reason" value="Abuso verbal: Acoso, lenguaje ofensivo, amenazas o mensajes negativos.">
+                <label for="op1">Abuso verbal: Acoso, lenguaje ofensivo, amenazas o mensajes negativos.</label><br><br>
 
-                <input type="radio" id="css" name="fav_language" value="CSS">
-                <label for="css">CSS</label><br>
+                <input class='radio' type="radio" id="op2" name="reason" value="Inactividad: Cuenta en desuso.">
+                <label for="op2">Inactividad: Cuenta en desuso</label><br><br>
 
-                <input type="radio" id="javascript" name="fav_language" value="JavaScript">
-                <label for="javascript">JavaScript</label><br><br>
+                <input class='radio' type="radio" id="op3" name="reason" value="Apología del odio: discriminación por la identidad, minusvalía, raza, etc.">
+                <label for="op3">Apología del odio: discriminación por la identidad, minusvalía, raza, etc.</label><br><br>
 
+                <input class='radio' type="radio" id="op4" name="reason" value="Nombre ofensivo o inapropiado: Apología del odio, obscenidades u otro tipo de lenguaje ofensivo">
+                <label for="op4">Nombre ofensivo o inapropiado: Apología del odio, obscenidades u otro tipo de lenguaje ofensivo</label><br><br>
+
+                <input class='radio' type="radio" id="op4" name="reason" value="Cuenta falsa: Se hace pasar por otra persona o no es quien dice ser">
+                <label for="op4">Cuenta falsa: Se hace pasar por otra persona o no es quien dice ser</label><br><br><br>
             </div>
 
             <div class="PanelBotones">
