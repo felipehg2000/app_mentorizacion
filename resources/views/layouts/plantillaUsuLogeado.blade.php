@@ -41,7 +41,12 @@
         var url_eliminar_mi_cuenta     = "{{ route('users.delete'        ) }}";
         var url_cerrar_sesion          = "{{ route('users.close'         ) }}";
 
-        var url_datos_inicio           = "{{ route('users.info_inicial.store') }}";
+        var url_datos_inicio           = "{{ route('users.info_inicial.store'               ) }}";
+        var url_friend_req_saw         = "{{ route('users.FriendRequestsSaw'                ) }}";
+        var url_tut_saw                = "{{ route('users.TutoringSaw'                      ) }}";
+        var url_tut_mod_not            = "{{ route('users.TutoringModificationsNotification') }}";
+        var url_task_saw               = "{{ route('users.TasksSaw'                         ) }}";
+        var url_answer_saw             = "{{ route('users.AnswersSaw'                       ) }}";
     </script>
 
     @yield('js')
@@ -60,29 +65,29 @@
             <!--Apartado del menú-->
             <div class="pnlLeft">
                 <div class="menu">Tablón de anuncios      </div>
-                    <div class="submenu" id="submenu_1" onclick="redirection(1)">Tablón completo   </div>
-                    <div class="submenu" id="submenu_2" onclick="redirection(2)">Tareas completadas</div>
-                    <div class="submenu" id="submenu_3" onclick="redirection(3)">Tareas a completar</div>
+                    <div class="submenu" id="submenu_1" onclick="redirection(1)">Tablón completo   <div class='notification' id='notification_1'></div></div>
+                    <div class="submenu" id="submenu_2" onclick="redirection(2)">Tareas completadas<div class='notification' id='notification_2'></div></div>
+                    <div class="submenu" id="submenu_3" onclick="redirection(3)">Tareas a completar<div class='notification' id='notification_3'></div></div>
 
                 <div class="menu">Chats               </div>
-                    <div class="submenu" id="submenu_4" onclick="redirection(4)">Chats privados</div>
+                    <div class="submenu" id="submenu_4" onclick="redirection(4)">Chats privados<div class='notification' id='notification_4'></div></div>
 
                 <div class="menu">Tutorías                  </div>
-                    <div class="submenu" id="submenu_6" onclick="redirection(6)">Solicitudes        </div>
-                    <div class="submenu" id="submenu_7" onclick="redirection(7)">Acceso a la tutoría</div>
+                    <div class="submenu" id="submenu_6" onclick="redirection(6)">Solicitudes        <div class='notification' id='notification_6'></div></div>
+                    <div class="submenu" id="submenu_7" onclick="redirection(7)">Acceso a la tutoría<div class='notification' id='notification_7'></div></div>
 
                 <div class="menu">Sala de estudios         </div>
-                    <div class="submenu" id="submenu_8" onclick="redirection(8)">Integrantes       </div>
-                    <div class="submenu" id="submenu_9" onclick="redirection(9)">Solicitudes    </div>
+                    <div class="submenu" id="submenu_8" onclick="redirection(8)">Integrantes    <div class='notification' id='notification_8'></div></div>
+                    <div class="submenu" id="submenu_9" onclick="redirection(9)">Solicitudes    <div class='notification' id='notification_9'></div></div>
 
                 <div class="menu">Guías de uso</div>
-                    <div class="submenu" id="submenu_5"  onclick="redirection(5)">Primeros pasos        </div>
-                    <div class="submenu" id="submenu_13" onclick="redirection(13)">Novedades        </div>
+                    <div class="submenu" id="submenu_5"  onclick="redirection(5)">Primeros pasos   <div class='notification' id='notification_5'></div></div>
+                    <div class="submenu" id="submenu_13" onclick="redirection(13)">Novedades       <div class='notification' id='notification_13'></div></div>
 
                 <div class="menu">Gestión de usuario        </div>
-                    <div class="submenu" id="submenu_10" onclick="redirection(10)">Modificar mis datos </div>
-                    <div class="submenu" id="submenu_11" onclick="redirection(11)">Eliminar mi cuenta  </div>
-                    <div class="submenu" id="submenu_12" onclick="redirection(12)">Cerrar sesión       </div>
+                    <div class="submenu" id="submenu_10" onclick="redirection(10)">Modificar mis datos <div class='notification' id='notification_10'></div></div>
+                    <div class="submenu" id="submenu_11" onclick="redirection(11)">Eliminar mi cuenta  <div class='notification' id='notification_11'></div></div>
+                    <div class="submenu" id="submenu_12" onclick="redirection(12)">Cerrar sesión       <div class='notification' id='notification_12'></div></div>
             </div>
             <!--Apartado del resto de la pantalla-->
             <div class="pnlRight">

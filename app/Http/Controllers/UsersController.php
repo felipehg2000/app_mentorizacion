@@ -2,36 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\TaskDataTable;
-use App\DataTables\TutoringDataTable;
-use App\DataTables\UsersDataTable;
-use App\Events\NewMessageEvent;
-use App\Events\TutUpdateEvent;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Exception;
+use DateTime;
+
+use App\Http\Controllers\StudentsController;
+use App\Http\Controllers\MentorsController;
+
 use App\Models\User;
 use App\Models\Student;
 use App\Models\Mentor;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\StudentsController;
-use App\Http\Controllers\MentorsController;
 use App\Models\Answer;
 use App\Models\Study_room;
 use App\Models\Synchronous_message;
 use App\Models\Task;
 use App\Models\Tutoring;
-use Illuminate\Support\Facades\DB;
-use Exception;
-use DateTime;
-use Yajra\DataTables\DataTables;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Event;
+use App\Models\Friend_request;
+use App\Models\Seen_task;
+use App\Models\Report_request;
+
+use App\DataTables\TaskDataTable;
+use App\DataTables\TutoringDataTable;
+use App\DataTables\UsersDataTable;
+use App\DataTables\Report_requestDataTable;
+
+use App\Events\NewMessageEvent;
+use App\Events\TutUpdateEvent;
+
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-08 11:19:41
+ * @Last Modified time: 2024-04-15 12:30:23
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -43,6 +52,23 @@ use Illuminate\Support\Facades\Event;
 class UsersController extends Controller
 {
 //--------------------------------------------------------------------------------------------------
+    public function rep_requests(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $dataTable = new Report_requestDataTable();
+        if (request()->ajax()){
+            $query = DB::table('users')
+                       ->join('report_requests', 'users.id', '=', 'report_requests.reported')
+                       ->select('users.id', 'users.NAME', 'users.SURNAME', 'users.USER', 'report_requests.REASON');
+
+            return DataTables::of($query)->toJson();
+        }
+
+        return $dataTable->render('admins.report_requests');
+    }
+
     public function block_mentores(){
         if (!Auth::check()){
             return view('users.close');
@@ -347,11 +373,24 @@ class UsersController extends Controller
             return response()->json(['success' => false]);
         }
         $num_estudiantes = 0;
+        $tiene_solicitudes  = false;
         if (Auth::user()->USER_TYPE == 1){
             $num_salas_estudio = DB::table('study_room_access')
                                     ->where('STUDENT_ID'  , '=', Auth::user()->id)
                                     ->where('LOGIC_CANCEL', '=', 0)
                                     ->count();
+
+            $friendRequests = DB::table('friend_requests')
+                                 ->where('STUDENT_ID', '=', 3)
+                                 ->where(function($query) {
+                                     $query->where('STATUS', '=', 1)
+                                             ->orWhere('STATUS', '=', 2);
+                                 })
+                                 ->count();
+
+            if ($friendRequests != 0){
+                $tiene_solicitudes = true;
+            }
 
             if ($num_salas_estudio == 0){
                 $tiene_sala_estudio = false;
@@ -370,15 +409,22 @@ class UsersController extends Controller
                 $tiene_sala_estudio = true;
             }
         } else if (Auth::user()->USER_TYPE == 3){
-            return response()->json(['success'  => true,
-                                     'admin_id' => Auth::user()->id]);
+            return response()->json(['success'            => true,
+                                     'admin_id'           => Auth::user()->id,
+                                     'new_report_request' => $this->NotSeenReportRequest()]);
         }
 
-        return response()->json(['success'            => true,
-                                 'user_type'          => Auth::user()->USER_TYPE,
-                                 'user_id'            => Auth::user()->id       ,
-                                 'tiene_sala_estudio' => $tiene_sala_estudio    ,
-                                 'numero_alumnos'     => $num_estudiantes]);
+        return response()->json(['success'             => true                               ,
+                                 'user_type'           => Auth::user()->USER_TYPE            ,
+                                 'user_id'             => Auth::user()->id                   ,
+                                 'tiene_sala_estudio'  => $tiene_sala_estudio                ,
+                                 'numero_alumnos'      => $num_estudiantes                   ,
+                                 'new_messages'        => $this->NotSeenSynchronousMessages(),
+                                 'new_friend_requests' => $this->NotSeenFriendRequests()     ,
+                                 'new_tasks'           => $this->NotSeenTasks()              ,
+                                 'new_answer'          => $this->NotSeenAnswers()            ,
+                                 'new_tutoring'        => $this->NotSeenTutoring()           ,
+                                 'solicitud_mandada'   => $tiene_solicitudes]);
     }
 
 //--------------------------------------------------------------------------------------------------
@@ -647,29 +693,6 @@ class UsersController extends Controller
          * Hacemos una consulta para buscar todos los usuarios de la sala de estudios, que han realizado una entrega sobre esa tarea
          */
 
-        /*
-         Todos los usuarios que han entregado algo
-         SELECT
-            users.id  ,
-            users.NAME,
-            users.SURNAME
-         FROM
-            study_rooms,
-            study_room_access,
-            tasks,
-            answers,
-            users
-         WHERE
-            study_rooms.MENTOR_ID = 1								AND
-            study_rooms.MENTOR_ID = study_room_access.STUDY_ROOM_ID AND
-            study_room_access.LOGIC_CANCEL = 0						AND
-            tasks.STUDY_ROOM_ID = study_rooms.MENTOR_ID				AND
-            tasks.id			= 7									AND
-            answers.STUDY_ROOM_ACCES_ID = study_room_access.STUDENT_ID AND
-            answers.TASK_ID		= 7										AND
-            users.id = study_room_access.STUDENT_ID
-        */
-
         $mentorId = Auth::user()->id;
         $tareaId  = $request->id;
 
@@ -750,9 +773,12 @@ class UsersController extends Controller
                                ->select('NAME', 'SURNAME')
                                ->first();
 
-            return response()->json(['success'    => true      ,
-                                     'data'       => $resultado,
-                                     'selec_user' => $selected_user]);
+            $this->SynchronousMessagesSaw($request->contact_id);
+
+            return response()->json(['success'       => true      ,
+                                     'data'          => $resultado,
+                                     'selec_user'    => $selected_user,
+                                     'new_sync_chat' => $this->NotSeenSynchronousMessages()]);
 
         }else{
             return response()->json(['success' => false]);
@@ -1006,7 +1032,6 @@ class UsersController extends Controller
      */
     public function actual_friends(){
         if (Auth::check()){
-            log(0);
             $user_type = Auth::user()->USER_TYPE;
             if($user_type == 1){
                 $controlador = new StudentsController();
@@ -1016,9 +1041,25 @@ class UsersController extends Controller
                 return($controlador->actual_friends());
             }
         } else {
-            log(1);
             return view('users.close');
         }
+    }
+
+    public function create_report(Request $request){
+        if (!Auth::check()){
+            return view('user.close');
+        }
+
+        $nueva_tupla = new Report_request();
+
+        $nueva_tupla->reported = $request->id_reported;
+        $nueva_tupla->reporter = Auth::user()->id     ;
+        $nueva_tupla->reason   = $request->reason     ;
+        $nueva_tupla->seen     = 0                    ;
+
+        $nueva_tupla->save();
+
+        return response()->json(['success' => true]);
     }
 
 //--------------------------------------------------------------------------------------------------
@@ -1348,6 +1389,12 @@ class UsersController extends Controller
         $sync_message->sender              = Auth::user()->id          ;
         $sync_message->message             = $param_message            ;
 
+        if (Auth::user()->USER_TYPE == 1){
+            $sync_message->seen_by_student = 1;
+        } else if (Auth::user()->USER_TYPE == 2) {
+            $sync_message->seen_by_mentor = 1;
+        }
+
         $sync_message->save();
     }
 //--------------------------------------------------------------------------------------------------
@@ -1361,6 +1408,25 @@ class UsersController extends Controller
         $task->created_at    = $param_fecha_creacion;
 
         $task->save();
+
+        if (Auth::user()->USER_TYPE == 2){
+            //Buscamos los estudiantes de la sala de estudios
+            $studentIds = DB::table('study_room_access')
+                            ->where('STUDY_ROOM_ID', '=', Auth::user()->id)
+                            ->select('STUDENT_ID')
+                            ->get();
+
+            foreach($studentIds as $id) {
+                $nuevo_nodo = new Seen_task();
+
+                $nuevo_nodo->task_id = $task->id;
+                $nuevo_nodo->user_id = $id->STUDENT_ID;
+                $nuevo_nodo->seen_task = 0;
+
+                $nuevo_nodo->save();
+            }
+        }
+
     }
 //--------------------------------------------------------------------------------------------------
     private function CreateTutoring($param_study_room_id, $param_study_room_acces_id, $param_date, $param_status){
@@ -1370,6 +1436,7 @@ class UsersController extends Controller
         $tutoring->study_room_acces_id = $param_study_room_acces_id;
         $tutoring->date                = $param_date;
         $tutoring->status              = $param_status;
+        $tutoring->seen_by_student      = 1;
 
         $tutoring->save();
     }
@@ -1388,6 +1455,221 @@ class UsersController extends Controller
         $key  = 'clave_de_cifrado_de_32_caracteres';
 
         return openssl_encrypt($clave, 'aes-256-ecb', $key);
+    }
+//--------------------------------------------------------------------------------------------------
+    private function NotSeenReportRequest(){
+        $ret_cantidad = 0;
+        if (Auth::user()->USER_TYPE == 3){
+            $ret_cantidad = Report_request::where('seen', '=', 0)
+                                           ->count();
+        }
+
+        if ($ret_cantidad > 0){
+            return true;
+        }
+
+        return false;
+    }
+
+    private function NotSeenFriendRequests(){
+        $ret_cantidad = 0;
+        if (Auth::user()->USER_TYPE == 1){
+            $ret_cantidad = Friend_request::where('student_id', '=', Auth::user()->id)
+                                           ->where('seen_by_student', '=', 0)
+                                           ->count();
+
+        } else if (Auth::user()->USER_TYPE == 2){
+            $ret_cantidad = Friend_request::where('mentor_id', '=', Auth::user()->id)
+                                           ->where('seen_by_mentor', '=', 0)
+                                           ->count();
+        }
+
+        if ($ret_cantidad > 0){
+            return true;
+        }
+
+        return false;
+    }
+
+    private function NotSeenSynchronousMessages(){
+        $ret_cantidad = 0;
+
+        if (Auth::user()->USER_TYPE == 1){
+            $ret_cantidad = Synchronous_message::where('study_room_acces_id', '=', Auth::user()->id)
+                                                ->where('seen_by_student', '=', 0)
+                                                ->count();
+        } else if (Auth::user()->USER_TYPE == 2){
+            $ret_cantidad = Synchronous_message::where('study_room_id', '=', Auth::user()->id)
+                                                ->where('seen_by_mentor', '=', 0)
+                                                ->count();
+        }
+
+        if ($ret_cantidad > 0){
+            return true;
+        }
+
+        return false;
+    }
+
+    private function NotSeenTutoring(){
+        $ret_cantidad = 0;
+
+        if (Auth::user()->USER_TYPE == 1){
+            $ret_cantidad = Tutoring::where('study_room_acces_id', '=', Auth::user()->id)
+                                     ->where('seen_by_student', '=', 0)
+                                     ->count();
+
+        } else if (Auth::user()->USER_TYPE == 2){
+            $ret_cantidad = Tutoring::where('study_room_id', '=', Auth::user()->id)
+                                     ->where('seen_by_mentor', '=', 0)
+                                     ->count();
+        }
+
+        if ($ret_cantidad > 0){
+            return true;
+        }
+
+        return false;
+    }
+
+    private function NotSeenTasks(){
+        $ret_cantidad = 0;
+
+        if (Auth::user()->USER_TYPE == 1){
+            $ret_cantidad = Seen_task::where('user_id', '=', Auth::user()->id)
+            ->where('seen_task', '=', 0)
+            ->count();
+        } else if (Auth::user()->USER_TYPE == 2){
+            $ret_cantidad = Seen_task::where('user_id', '=', Auth::user()->id)
+            ->where('seen_task', '=', 0)
+            ->count();
+        }
+
+        if ($ret_cantidad > 0){
+            return true;
+        }
+
+        return false;
+    }
+
+    private function NotSeenAnswers(){
+        $ret_cantidad = 0;
+
+        if (Auth::user()->USER_TYPE == 2){
+            $ret_cantidad = DB::table('answers')
+                               ->join('tasks', 'answers.TASK_ID', '=', 'tasks.id')
+                               ->where('tasks.STUDY_ROOM_ID', '=', 2)
+                               ->where('answers.SEEN_BY_MENTOR', '=', 0)
+                               ->count();
+        }
+
+        if ($ret_cantidad > 0){
+            return true;
+        }
+
+        return false;
+    }
+
+    public function ReportRequestSaw(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        Report_request::where('seen', '=', 0)
+                      ->update(['seen' => 1]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function FriendRequestsSaw(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        if (Auth::user()->USER_TYPE == 1){
+            Friend_request::where('seen_by_student', '=', 0)
+                          ->update(['seen_by_student' => 1]);
+        } else if (Auth::user()->USER_TYPE == 2) {
+            Friend_request::where('seen_by_mentor', '=', 0)
+                          ->update(['seen_by_mentor' => 1]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    private function SynchronousMessagesSaw($id_user){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        if (Auth::user()->USER_TYPE == 1) {
+            Synchronous_message::where('seen_by_student', '=', 0)
+                               ->where('study_room_id', '=', $id_user)
+                               ->update(['seen_by_student' => 1]);
+        }else if(Auth::user()->USER_TYPE == 2) {
+            Synchronous_message::where('seen_by_mentor', '=', 0)
+                               ->where('study_room_acces_id', '=', $id_user)
+                               ->update(['seen_by_mentor' => 1]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function TutoringSaw(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        if (Auth::user()->USER_TYPE == 1) {
+            Tutoring::where('seen_by_student', '=', 0)
+                    ->update(['seen_by_student' => 1]);
+        }else if(Auth::user()->USER_TYPE == 2) {
+            Tutoring::where('seen_by_mentor', '=', 0)
+                    ->update(['seen_by_mentor' => 1]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function TutoringModificationsNotification(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        if (Auth::user()->USER_TYPE == 1) {
+            Tutoring::where('id', '=', $request->id_tarea)
+                    ->update(['seen_by_mentor' => 0]);
+        }else if(Auth::user()->USER_TYPE == 2) {
+            Tutoring::where('id', '=', $request->id_tarea)
+                    ->update(['seen_by_student' => 0]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function TasksSaw(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        Seen_task::where('SEEN_TASK', '=', 0)
+                 ->where('USER_ID', '=', Auth::user()->id)
+                 ->update(['SEEN_TASK' => 1]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function AnswersSaw(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        if (Auth::user()->USER_TYPE == 1) {
+            Answer::where('seen_by_mentor', '=', 0)
+                  ->update(['seen_by_mentor' => 1]);
+        }
+
+        return response()->json(['success' => true]);
     }
 //--------------------------------------------------------------------------------------------------
 }

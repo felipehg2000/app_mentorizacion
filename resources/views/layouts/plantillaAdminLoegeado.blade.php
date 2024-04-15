@@ -28,6 +28,7 @@
     <script>
         var csrfToken                  = '{{ csrf_token()                  }}';
 
+        var url_reports                = "{{ route('admin.rep_requests'  ) }}";
         var url_bloquear_mentores      = "{{ route('admin.block_mentores') }}";
         var url_bloquear_estudiantes   = "{{ route('admin.block_students') }}";
         var url_bloquear_admins        = "{{ route('admin.block_admins'  ) }}";
@@ -39,6 +40,7 @@
         var url_cerrar_sesion          = "{{ route('users.close'         ) }}";
 
         var url_datos_inicio           = "{{ route('users.info_inicial.store') }}";
+        var url_report_saw             = "{{ route('admin.ReportRequestSaw'  ) }}";
     </script>
 
     @yield('js')
@@ -56,6 +58,9 @@
         <div class="pnlPrincipal">
             <!--Apartado del menú-->
             <div class="pnlLeft">
+                <div class="menu">Solicitudes de report      </div>
+                    <div class="submenu" id="submenu_10" onclick="redirection(10)">Informes de usuarios<div class='notification' id='notification_10'></div></div>
+
                 <div class="menu">Bloquear cuentas      </div>
                     <div class="submenu" id="submenu_1" onclick="redirection(1)">Bloquear mentores       </div>
                     <div class="submenu" id="submenu_2" onclick="redirection(2)">Bloquear estudiantes    </div>

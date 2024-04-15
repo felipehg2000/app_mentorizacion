@@ -11,7 +11,7 @@ use App\Http\Controllers\StudentsController;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:03:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-08 11:17:54
+ * @Last Modified time: 2024-04-15 11:01:06
  * @Description: De este archivo se leerán las rutas a las que el usuario pueda acceder, es decir, el usuario solo puede acceder a las rutas que especifiquemos aquí.
  *               Como buena práctica hay que darle nombre a cada una de las rutas, para que si una de estas cambie no haya que cambiar todos los lugares donde las referenciemos,
  *               para esto usaremos la función name.
@@ -29,7 +29,13 @@ Route::controller(UsersController::class)->group(function(){
     Route::get  ('users'                , [UsersController::class, 'index'                  ])->name('users.index'                  );
     Route::post ('users'                , [UsersController::class, 'store'                  ])->name('users.store'                  );
 
-    Route::post ('users/info_inicial'   , [UsersController::class, 'info_inicial_store'     ])->name('users.info_inicial.store'     );
+    Route::post ('users/info_inicial'   , [UsersController::class, 'info_inicial_store'                    ])->name('users.info_inicial.store'               );
+    Route::post ('users/rep_req_saw'    , [UsersController::class, 'ReportRequestSaw'                      ])->name('admin.ReportRequestSaw'                 );
+    Route::post ('users/friend_req_saw' , [UsersController::class, 'FriendRequestsSaw'                     ])->name('users.FriendRequestsSaw'                );
+    Route::post ('users/tutoring_saw'   , [UsersController::class, 'TutoringSaw'                           ])->name('users.TutoringSaw'                      );
+    Route::post ('users/tut_modify_not' , [UsersController::class, 'TutoringModificationsNotification'     ])->name('users.TutoringModificationsNotification');
+    Route::post ('users/task_saw'       , [UsersController::class, 'TasksSaw'                              ])->name('users.TasksSaw'                         );
+    Route::post ('users/answer_saw'     , [UsersController::class, 'AnswersSaw'                            ])->name('users.AnswersSaw'                       );
 
     Route::get  ('users/task_board'     , [UsersController::class, 'task_board'             ])->name('users.task_board'             );
     Route::post ('users/task_board'     , [UsersController::class, 'task_board_store'       ])->name('users.task_board.store'       );
@@ -58,6 +64,7 @@ Route::controller(UsersController::class)->group(function(){
 
     Route::get  ('users/friendship'     , [UsersController::class, 'friendship'             ])->name('users.friendship'             );
     Route::get  ('users/actual_friends' , [UsersController::class, 'actual_friends'         ])->name('users.actual_friends'         );
+    Route::post ('users/create_report'  , [UsersController::class, 'create_report'          ])->name('users.create_repot'           );
 
     Route::get  ('users/tutorial'       , [UsersController::class, 'tutorial'               ])->name('users.tutorial'               );
     Route::get  ('users/news'           , [UsersController::class, 'news'                   ])->name('users.news'                   );
@@ -73,6 +80,7 @@ Route::controller(UsersController::class)->group(function(){
     Route::get  ('users/delete'         , [UsersController::class, 'delete'                 ])->name('users.delete'                 );
     Route::post ('users/delete'         , [UsersController::class, 'delete_store'           ])->name('users.delete.store'           );
 
+    Route::get  ('users/report_requests', [UsersController::class, 'rep_requests'           ])->name('admin.rep_requests'           );
     Route::get  ('users/block_mentores' , [UsersController::class, 'block_mentores'         ])->name('admin.block_mentores'         );
     Route::get  ('users/block_students' , [UsersController::class, 'block_students'         ])->name('admin.block_students'         );
     Route::get  ('users/block_admins'   , [UsersController::class, 'block_admins'           ])->name('admin.block_admins'           );

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Seen_task;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -64,6 +65,7 @@ class MentorsController extends Controller{
               ->update(['STATUS' => 2]);
 
               $this->CreateStudyRoomAcces($student_id, $mentor_id);
+              $this->CreateSeenTasks($student_id);
 
         }else if ($request->respuesta == "DENEGAR"){
             //Borrar petición
@@ -93,7 +95,7 @@ class MentorsController extends Controller{
         return view('mentors.actual_friends', compact('result_users'));
     }
     public function actual_friends_store(Request $request){
-        $student_id = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
+        $student_id = $request->id_user;
         $mentor_id  = Auth::user()->id;
         DB::table('FRIEND_REQUESTS')
           ->where('STUDENT_ID', '=', $student_id)
@@ -104,7 +106,7 @@ class MentorsController extends Controller{
           ->where('student_id', $student_id)
           ->update(['logic_cancel' => '1']);
 
-        return back();
+        return response()->json(['success' => true]);
     }
     //--------------------------------------------------------------------------------------------------
     /**
@@ -137,11 +139,52 @@ class MentorsController extends Controller{
     }
 
     private function CreateStudyRoomAcces($param_student_id, $param_mentor_id) {
-        $new_node = new Study_room_acces();
-        $new_node->student_id    = $param_student_id ;
-        $new_node->study_room_id = $param_mentor_id;
-        $new_node->logic_cancel  = '0'               ;
+        if(!Auth::check()){
+            return view('user.close');
+        }
 
-        $new_node->save();
+        $studyRoomAccess = Study_room_acces::where('STUDENT_ID', '=', $param_student_id)
+                                            ->where('STUDY_ROOM_ID', '=', $param_mentor_id)
+                                            ->first();
+
+        if ($studyRoomAccess == NULL) {
+            $new_node = new Study_room_acces();
+            $new_node->student_id    = $param_student_id ;
+            $new_node->study_room_id = $param_mentor_id;
+            $new_node->logic_cancel  = '0'               ;
+
+            $new_node->save();
+        } else {
+            /*$studyRoomAccess->logic_cancel = '0';
+            $studyRoomAccess->save();*/
+
+            DB::table('study_room_access')
+            ->where('STUDENT_ID', $param_student_id)
+            ->where('STUDY_ROOM_ID', $param_mentor_id)
+            ->update([
+                'logic_cancel' => 0,
+                'updated_at' => now()
+            ]);
+        }
+    }
+
+    private function CreateSeenTasks($param_student_id){
+        if (Auth::user()->USER_TYPE == 2){
+            //Buscamos los estudiantes de la sala de estudios
+            $tasksIds = DB::table('tasks')
+                           ->where('STUDY_ROOM_ID', '=', Auth::user()->id)
+                           ->select('id')
+                           ->get();
+
+            foreach($tasksIds as $id) {
+                $nuevo_nodo = new Seen_task();
+
+                $nuevo_nodo->task_id = $id->id;
+                $nuevo_nodo->user_id = $param_student_id;
+                $nuevo_nodo->seen_task = 0;
+
+                $nuevo_nodo->save();
+            }
+        }
     }
 }
