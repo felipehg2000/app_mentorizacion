@@ -45,9 +45,16 @@ function CrearNuevoReport(){
         data  : data
     }).done(function(respuesta){
         if (respuesta.success){
+            MostrarMensajeError('Reportado correctamente');
             CerrarPanelReport();
-
-            alert('Reportado correctamente');
         }
     });
+}
+
+function MostrarMensajeError(param_texto){
+
+    document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
+
+    document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
+    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
 }
