@@ -40,7 +40,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-15 12:30:23
+ * @Last Modified time: 2024-04-15 23:52:26
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -381,7 +381,7 @@ class UsersController extends Controller
                                     ->count();
 
             $friendRequests = DB::table('friend_requests')
-                                 ->where('STUDENT_ID', '=', 3)
+                                 ->where('STUDENT_ID', '=', Auth::user()->id)
                                  ->where(function($query) {
                                      $query->where('STATUS', '=', 1)
                                              ->orWhere('STATUS', '=', 2);
@@ -721,18 +721,16 @@ class UsersController extends Controller
     public function sync_chat(){
         if (Auth::check()){
             if (Auth::user()->USER_TYPE == 1) {
-                $mis_amigos = DB::table('USERS')
-                                ->join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.MENTOR_ID', '=', 'USERS.ID')
-                                ->where('FRIEND_REQUESTS.STUDENT_ID', '=', Auth::user()->id)
-                                ->where('FRIEND_REQUESTS.STATUS', '=', 2)
-                                ->select('USERS.*')
+                $mis_amigos = DB::table('users')
+                                ->join('study_room_access', 'users.id', '=', 'study_room_access.STUDY_ROOM_ID')
+                                ->where('study_room_access.STUDENT_ID', '=', Auth::user()->id)
+                                ->where('study_room_access.LOGIC_CANCEL', '=', 0)
                                 ->get();
             } else{
-                $mis_amigos = DB::table('USERS')
-                                ->join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.STUDENT_ID', '=', 'USERS.ID')
-                                ->where('FRIEND_REQUESTS.MENTOR_ID', '=', Auth::user()->id)
-                                ->where('FRIEND_REQUESTS.STATUS', '=', 2)
-                                ->select('USERS.*')
+                $mis_amigos = DB::table('users')
+                                ->join('study_room_access', 'study_room_access.STUDENT_ID', '=', 'users.id')
+                                ->where('study_room_access.STUDY_ROOM_ID', '=', Auth::user()->id)
+                                ->where('study_room_access.LOGIC_CANCEL', '=', 0)
                                 ->get();
             }
 

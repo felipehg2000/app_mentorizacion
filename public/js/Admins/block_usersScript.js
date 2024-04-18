@@ -14,9 +14,9 @@ function AdminClickTable(param_user_id){
         data  : data
     }).done(function(respuesta){
         if(respuesta.success){
-            alert('Usuario modificado correctamente');
+            MostrarMensajeError('Usuario modificado correctamente');
         } else {
-            alert('El usuario no se ha modificado correctamente');
+            MostrarMensajeError('El usuario no se ha modificado correctamente');
         }
 
         $('#data_table_name').DataTable().ajax.reload();

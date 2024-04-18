@@ -54,7 +54,7 @@ function CrearYModificarAdmins() {
             data  : data
         }).done(function(respuesta){
             if(respuesta.success){
-                alert(mensaje_bien)
+                MostrarMensajeError(mensaje_bien)
                 if (window.location.href == url_create_admin){
                     document.getElementById('name'        ).value = "";
                     document.getElementById('surname'     ).value = "";
@@ -66,7 +66,7 @@ function CrearYModificarAdmins() {
                 }
             } else {
                 texto = 'No se han encontrado los datos a modificar';
-                alert(param_texto);
+                MostrarMensajeError(param_texto);
             }
         });
     }
