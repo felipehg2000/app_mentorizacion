@@ -59,6 +59,8 @@ div.friend_card{
 
     align-self: center;
     justify-content: center;
+
+    display: flex;
 }
 
 div.friend_card.selected {
@@ -70,6 +72,17 @@ div.friend_card:hover{
     background-color: gray;
     color: white;
     cursor: pointer;
+}
+
+div.notification{
+    background-color: red;
+
+    width : 10px;
+    height: 10px;
+
+    border-radius: 100%;
+
+    visibility: hidden;
 }
 
 input.edtBusquedaChat:focus{

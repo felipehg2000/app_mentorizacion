@@ -13,5 +13,7 @@ class Synchronous_message extends Model {
     protected $fillable = ['study_room_id'      ,
                            'study_room_acces_id',
                            'sender'             ,
-                           'message'            ];
+                           'message'            ,
+                           'seen_by_mentor'     ,
+                           'seen_by_student'];
 }

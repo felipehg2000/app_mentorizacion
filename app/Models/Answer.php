@@ -17,5 +17,6 @@ class Answer extends Model
 
     protected $fillable   = ['task_id'            ,
                              'study_room_acces_id',
-                             'name'];
+                             'name'               ,
+                             'seen_by_mentor'];
 }

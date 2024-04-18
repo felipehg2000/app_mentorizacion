@@ -106,6 +106,8 @@ div.submenu{
     border-radius: 10px;
 
     color: white;
+
+    display: flex;
 }
 
 div.submenu:hover{
@@ -113,6 +115,17 @@ div.submenu:hover{
     color: black;
     font-weight: bold;
     cursor: pointer;
+}
+
+div.notification{
+    background-color: red;
+
+    width : 10px;
+    height: 10px;
+
+    border-radius: 100%;
+
+    visibility: hidden;
 }
     /*Estilo para el resto de la ventana del panel principal*/
 div.pnlRight{
@@ -324,29 +337,22 @@ input.edtPnlEmergente:focus::placeholder{
 }
 
 div.pnlEmergenteBotones{
-    width : 90%;
-    height: 20%;
+    height: auto;
+    width : 100%;
 
-    background-color: white;
+    display: flex;
+    justify-content: space-evenly;
 
-    margin-top : 2%;
-    margin-left: 5%;
-
-    display        : flex;
-    align-items    : center;
-    justify-content: center;
-
+    margin-top: -2.2%;
 }
 
 button.btnEmergente{
-    width  : 25%;
-    height : 70%;
-    padding: 10px;
+    margin-left  : 40%;
+    margin-right : 40%;
+    margin-bottom: 10px;
 
-    margin-left: 5%;
-    margin-right: 5%;
-    margin-top: 50%;
-    margin-bottom: 50%;;
+    width   : auto;
+    padding : 10px;
 
     border       : none;
     border-radius: 5px;
@@ -355,7 +361,7 @@ button.btnEmergente{
     color           : #fff;
     font-size       : 16px;
 
-    cursor    : pointer;
+    cursor: pointer;
     transition: background-color 0.3s ease;
 
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;

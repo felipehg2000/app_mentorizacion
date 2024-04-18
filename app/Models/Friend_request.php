@@ -13,5 +13,7 @@ class Friend_request extends Model
 
     protected $fillable = ['mentor_id' ,
                            'student_id',
-                           'status'    ];
+                           'status'    ,
+                           'seen_by_mentor',
+                           'seen_by_student'];
 }

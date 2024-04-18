@@ -54,6 +54,9 @@ class StudentsController extends Controller{
      * Recibe el nombre del usaurio con el que quiere contactar y se encarga de dar de alta en la base de datos la solicitud de amisrtad.
      */
     public function friendship_store(Request $request){
+        if(!Auth::check()){
+            return view('user.close');
+        }
         /**Dar de alta la entrada para que los usuarios y los mentroes queden conectados. */
         $student_id = Auth::user()->id;
         $mentor_id  = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
@@ -62,19 +65,27 @@ class StudentsController extends Controller{
                                    ->where('STUDENT_ID', $student_id)
                                    ->first();
 
-        if ($resultado == NULL)
-            {
+        if ($resultado == NULL){
             $friendRequest = new Friend_request();
             $friendRequest->mentor_id  = $mentor_id ;
             $friendRequest->student_id = $student_id;
             $friendRequest->status     = 1          ;
 
             $friendRequest->save();
-            }
-        else
-            {
-            return redirect()->back()->withErrors(['error' => $request->user_user]);
-            }
+        } else{
+            /*$resultado->status = 1;
+            $resultado->seen_by_mentor = '0';
+            $resultado->save();*/
+
+            DB::table('friend_requests')
+            ->where('mentor_id', $mentor_id)
+            ->where('student_id', $student_id)
+            ->update([
+                'status' => 1,
+                'seen_by_mentor' => 0,
+                'updated_at' => now()
+            ]);
+        }
         return back();
 
     }
@@ -97,7 +108,7 @@ class StudentsController extends Controller{
     }
     public function actual_friends_store(Request $request){
         $student_id = Auth::user()->id;
-        $mentor_id  = DB::table('USERS')->select('ID')->where('USER', $request->user_user)->get()->first()->ID;
+        $mentor_id  = $request->id_user;
 
         DB::table('FRIEND_REQUESTS')
           ->where('STUDENT_ID', '=', $student_id)
@@ -108,7 +119,7 @@ class StudentsController extends Controller{
           ->where('student_id', $student_id)
           ->update(['logic_cancel' => '1']);
 
-        return back();
+        return response()->json(['success' => true]);
     }
 //--------------------------------------------------------------------------------------------------
     /**

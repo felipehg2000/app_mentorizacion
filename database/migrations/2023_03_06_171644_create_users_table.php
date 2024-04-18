@@ -4,7 +4,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-14 20:19:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-03-15 12:14:53
+ * @Last Modified time: 2024-04-15 11:35:49
  * @Description: Migración completa para la base de datos de la primera versión de la aplicación mentoring, en la primera modificación añadiremos
  *               los datos respectivos al usuario.
  */
@@ -12,6 +12,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration{
     /**
@@ -35,11 +36,43 @@ return new class extends Migration{
             $table->string       ('USER'       , 30     )->unique  ();
             $table->text         ('PASSWORD'            );
             $table->boolean      ('USER_TYPE'           );
-            $table->integer      ('STUDY_AREA'          );
+            $table->integer      ('STUDY_AREA'          )->default(0);
             $table->text         ('DESCRIPTION'         )->nullable();
             $table->binary       ('IMAGE'               )->default($this->imageToBinary('photos/default_user_image.png'));
+            $table->boolean      ('BANNED'              )->default(0);
             $table->rememberToken(                      );//en caso de que el usuario decida tener la sesión abierta se guardará un token
             $table->timestamps   (                      );
+        });
+
+        // Insertamos el admin inicial en la tabla de usuarios
+        DB::table('USERS')->insert([
+            'NAME'        => 'admin',
+            'SURNAME'     => 'admin',
+            'EMAIL'       => 'admin',
+            'USER'        => 'admin',
+            'PASSWORD'    => 'G/mHIcX5C3Ex2kXgMVO50Q==',
+            'USER_TYPE'   => 3,
+            'DESCRIPTION' => 'admin',
+            'created_at'  => now(),
+            'updated_at'  => now(),
+        ]);
+
+        /**
+         * TABLA REPORT_REQUESTS
+         * =====================
+         *
+         * Solicitudes de baneo que hacen unos usuarios sobre otros para que los administradores decidan si banear los usuarios reportados.
+         */
+        Schema::create('REPORT_REQUESTS', function (Blueprint $table){
+            $table->id                ();
+            $table->unsignedBigInteger('REPORTED');
+            $table->unsignedBigInteger('REPORTER');
+            $table->string            ('REASON'  );
+            $table->boolean           ('SEEN'    )->default(0);
+            $table->timestamps        ();
+
+            $table->foreign('REPORTED')->references('ID')->on('USERS')->onDelete('CASCADE');
+            $table->foreign('REPORTER')->references('ID')->on('USERS')->onDelete('CASCADE');
         });
 
         /**
@@ -123,9 +156,11 @@ return new class extends Migration{
          */
         Schema::create('FRIEND_REQUESTS', function(Blueprint $table){
             $table->id                  ();
-            $table->unsignedBigInteger  ('MENTOR_ID' );
-            $table->unsignedBigInteger  ('STUDENT_ID');
-            $table->integer             ('STATUS'    )->nullable();
+            $table->unsignedBigInteger  ('MENTOR_ID'      );
+            $table->unsignedBigInteger  ('STUDENT_ID'     );
+            $table->integer             ('STATUS'         )->nullable();
+            $table->boolean             ('SEEN_BY_MENTOR' )->default(0);
+            $table->boolean             ('SEEN_BY_STUDENT')->default(0);
             $table->timestamps          ();
 
             $table->foreign('MENTOR_ID' )->references('USER_ID')->on('MENTORS' )->onDelete('CASCADE');
@@ -139,10 +174,12 @@ return new class extends Migration{
          */
         Schema::create('SYNCHRONOUS_MESSAGES', function(Blueprint $table){
             $table->id                  ();
-            $table->unsignedBigInteger  ('STUDY_ROOM_ID');
+            $table->unsignedBigInteger  ('STUDY_ROOM_ID'      );
             $table->unsignedBigInteger  ('STUDY_ROOM_ACCES_ID');
-            $table->integer             ('SENDER'       ); /*1.- Mensaje del mentor, 2.- Mensaje del estudiante*/
-            $table->text                ('MESSAGE'      );
+            $table->integer             ('SENDER'             ); /*1.- Mensaje del mentor, 2.- Mensaje del estudiante*/
+            $table->text                ('MESSAGE'            );
+            $table->boolean             ('SEEN_BY_MENTOR'     )->default(0);
+            $table->boolean             ('SEEN_BY_STUDENT'    )->default(0);
             $table->timestamps          ();
 
             $table->foreign('STUDY_ROOM_ID'      )->references('MENTOR_ID')->on('STUDY_ROOMS'       )->onDelete('CASCADE');
@@ -166,6 +203,23 @@ return new class extends Migration{
         });
 
         /**
+         * SEEN_TASKS:
+         * ===========
+         * Almacena toda la información de los usuarios que han visualizado una tarea en concreto.
+         */
+        Schema::create('SEEN_TASKS', function(Blueprint $table){
+            $table->unsignedBigInteger('TASK_ID'  );
+            $table->unsignedBigInteger('USER_ID'  );
+            $table->boolean           ('SEEN_TASK')->default(0);
+            $table->timestamps        ();
+
+            $table->primary(['TASK_ID', 'USER_ID']);
+
+            $table->foreign('TASK_ID')->references('id')->on('TASKS')->onDelete('CASCADE');
+            $table->foreign('USER_ID')->references('id')->on('USERS')->onDelete('CASCADE');
+        });
+
+        /**
          * SOLUTIONS:
          * ==========
          * Almacena la respuesta de cada usuario de la sala de estudio a la tarea que se ha creado
@@ -175,6 +229,7 @@ return new class extends Migration{
             $table->unsignedBigInteger('TASK_ID'            );
             $table->unsignedBigInteger('STUDY_ROOM_ACCES_ID');
             $table->text              ('NAME'               );
+            $table->boolean           ('SEEN_BY_MENTOR'     )->defaulet(0);
             $table->timestamps        ();
 
             $table->primary('TASK_ID', 'STUDY_ROOM_ACCES_ID');
@@ -194,9 +249,11 @@ return new class extends Migration{
             $table->unsignedBigInteger('STUDY_ROOM_ACCES_ID' );
             $table->dateTime          ('DATE'                );
             $table->boolean           ('STATUS'              )->nullable(); //0 DENEGADA, 1 ACEPTADA
+            $table->boolean           ('SEEN_BY_MENTOR'      )->default(0);
+            $table->boolean           ('SEEN_BY_STUDENT'     )->default(0);
             $table->timestamps        ();
 
-            $table->foreign('STUDY_ROOM_ID'      )->references('MENTOR_ID' )->on('STUDY_ROOMS'       )->onDelete('CASCADE');
+            $table->foreign('STUDY_ROOM_ID'      )->references('MENTOR_ID' )->on('STUDY_ROOMS'      )->onDelete('CASCADE');
             $table->foreign('STUDY_ROOM_ACCES_ID')->references('STUDENT_ID')->on('STUDY_ROOM_ACCESS')->onDelete('CASCADE');
 
         });
@@ -212,9 +269,11 @@ return new class extends Migration{
         Schema::dropIfExists('INHERITANCE_USERS'    );
         Schema::dropIfExists('TUTORING'             );
         Schema::dropIfExists('ANSWERS'              );
+        Schema::dropIfExists('SEEN_TASKS'           );
         Schema::dropIfExists('TASKS'                );
+        Schema::dropIfExists('REPORT_REQUESTS'      );
         Schema::dropIfExists('SYNCHRONOUS_MESSAGES' );
-        Schema::dropIfExists('STUDY_ROOM_ACCES'     );
+        Schema::dropIfExists('STUDY_ROOM_ACCESS'    );
         Schema::dropIfExists('STUDY_ROOMS'          );
         Schema::dropIfExists('MENTORS'              );
         Schema::dropIfExists('STUDENTS'             );

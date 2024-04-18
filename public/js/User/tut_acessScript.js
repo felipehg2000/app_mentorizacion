@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
 })
 
 
-function ActivarPizarraClick(){
+/**function ActivarPizarraClick(){
     if (document.getElementById('pnlPizarra').style.visibility == 'visible'){
         document.getElementById('pnlPizarra').style.visibility = 'hidden';
         document.getElementById('btnPizarra').textContent = 'Activar Pizarra';
@@ -29,7 +29,7 @@ function ActivarPizarraClick(){
         document.getElementById('pnlPizarra').style.visibility = 'visible';
         document.getElementById('btnPizarra').textContent = 'Desactivar Pizarra';
     }
-}
+}*/
 
 function MentorPulsaTecla(){
     var tipo_usu = document.getElementById('tipo_usu').textContent;

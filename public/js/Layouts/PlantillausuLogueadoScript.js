@@ -35,7 +35,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 InicializarTemporizador();
             });
 
-            CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.num_alumnos);
+            if (respuesta.new_messages){
+                document.getElementById('notification_4').style.visibility = 'visible';
+            }
+
+            if (respuesta.new_friend_requests){
+                document.getElementById('notification_9').style.visibility = 'visible';
+            }
+
+            if (respuesta.new_tasks){
+                document.getElementById('notification_1').style.visibility = 'visible';
+            }
+
+            if (respuesta.new_answer){
+                document.getElementById('notification_1').style.visibility = 'visible';
+            }
+
+            if (respuesta.new_tutoring){
+                document.getElementById('notification_6').style.visibility = 'visible';
+            }
+
+            CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.num_alumnos, respuesta.solicitud_mandada);
         } else {
             window.location.href = url_close;
         }
@@ -100,18 +120,23 @@ function aceptarPnlRespuestaEmergente(){
     document.getElementById('btnCancelarEmergente').innerText = "Cancelar" ;
 }
 
-function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sala_estudio, param_num_alumnos){
-    var url_actual            = window.location.href;
-    var id_elemento           = ''   ;
-    var mostrarCubierta       = false;
-    var mensajeMuchosAlumnos  = false;
-    var mensajeYaSalaEstudio  = false;
-    var mensajeAmigosActuales = false;
-    var mensajeNoHora         = false;
-    var mensajeNoUsuarios     = false;
+function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sala_estudio, param_num_alumnos, param_solicitud_mandada){
+    var url_actual              = window.location.href;
+    var id_elemento             = ''   ;
+    var id_div_notificacion     = ''   ;
+    var mostrarCubierta         = false;
+    var mensajeMuchosAlumnos    = false;
+    var mensajeYaSalaEstudio    = false;
+    var mensajeAmigosActuales   = false;
+    var mensajeNoHora           = false;
+    var mensajeNoUsuarios       = false;
+    var mensajeSolicitudMandada = false;
+    var url_opcion_seleccionada = "";
 
     if (url_actual == url_tablon_completo){
         id_elemento = "submenu_1";
+        url_opcion_seleccionada = url_task_saw;
+        id_div_notificacion = "notification_1";
         if (param_user_type == 1 && !param_tiene_sala_estudio){
             mostrarCubierta = true;
         }
@@ -134,6 +159,8 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         id_elemento = "submenu_5";
     }else if (url_actual == url_solicitudes){
         id_elemento = "submenu_6";
+        id_div_notificacion = "notification_6";
+        url_opcion_seleccionada = url_tut_saw;
         if ((param_user_type == 1 && !param_tiene_sala_estudio) || (param_user_type == 2 && !param_tiene_sala_estudio)){
             mostrarCubierta = true;
         }
@@ -153,9 +180,15 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         }
     }else if (url_actual == url_solicitudes_de_amistad){
         id_elemento = "submenu_9";
+        id_div_notificacion = "notification_9";
+        url_opcion_seleccionada = url_friend_req_saw;
         if (param_user_type == 1 && param_tiene_sala_estudio){
             mostrarCubierta = true;
             mensajeYaSalaEstudio = true;
+        }
+        if (param_user_type == 1 && param_solicitud_mandada){
+            mostrarCubierta = true;
+            mensajeSolicitudMandada = true;
         }
         if (param_user_type == 2 && param_num_alumnos == 5){
             mostrarCubierta = true;
@@ -193,6 +226,8 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
                 mensaje = 'Para acceder a una tutoría debe tenerla programada, que esté aceptada y que sea la hora de la tutoría o una hora posterior a la concretada.';
             }else if (mensajeNoUsuarios){
                 mensaje = 'No tiene ninguna solicitud pendiente.';
+            }else if (param_solicitud_mandada){
+                mensaje = 'Tiene una solicitud de amistad mandada y pendiente, no puede mandar más solicitudes de amsitad';
             }else{
                 mensaje = 'Debe pertenecer a una sala de estudio para acceder a esta opción.';
             }
@@ -215,6 +250,22 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
     } else {
         document.getElementById('pnlCubierta'       ).style.visibility = 'hidden';
         document.getElementById('pnlCubiertaMensaje').style.visibility = 'hidden';
+    }
+
+    if (url_opcion_seleccionada != ""){
+        var data = {
+            _token : csrfToken,
+        }
+
+        $.ajax({
+            url   : url_opcion_seleccionada,
+            method: 'POST',
+            data  : data
+        }).done(function(respuesta){
+            if(respuesta.success){
+                document.getElementById(id_div_notificacion).style.visibility = 'hidden';
+            }
+        });
     }
 
     document.getElementById('pnlCarga').style.visibility = 'hidden';
