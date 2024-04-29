@@ -166,7 +166,7 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         }
     }else if (url_actual == url_acceso_a_tutoria){
         id_elemento = "submenu_7";
-        if ((param_user_type == 1 && !param_tiene_sala_estudio) || (param_user_type == 2 && !param_tiene_sala_estudio)){
+        if ((param_user_type == 1 && !param_tiene_sala_estudio) || (param_user_type == 2 && !param_tiene_sala_estudio) || (param_user_type == 3 && !param_tiene_sala_estudio)){
             mostrarCubierta = true;
         } else if (document.getElementById('tit_tut_access').innerText == ''){
             mostrarCubierta = true;

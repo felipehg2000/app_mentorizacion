@@ -5,6 +5,10 @@ var pusher2 = new Pusher('7b7c6d7f8ba7188308b6', {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
+
+    CrearCkEditorMentor();
+    CrearCkEditorEstudiante();
+
     var id_channel = document.getElementById('id_tuto' ).textContent;
     var tipo_usu   = document.getElementById('tipo_usu').textContent;
     var id_usuario = document.getElementById('id_user' ).textContent;
@@ -13,13 +17,111 @@ document.addEventListener('DOMContentLoaded', function() {
 
     channel2.bind('App\\Events\\TutUpdateEvent', function(data) {
         if (tipo_usu == '1') {
-            document.getElementById('textAreaMentor').value = data.data;
+            //document.getElementById('textAreaMentor').value = data.data;
+            editorMentor.setData(data.data)
         } else if(tipo_usu == '2'){
-            document.getElementById('textAreaEstudiante').value = data.data;
+            //document.getElementById('textAreaEstudiante').value = data.data;
+            editorEstudiante.setData(data.data);
         }
     });
 })
 
+function CrearCkEditorMentor(){
+    ClassicEditor
+    .create( document.querySelector( '#textAreaMentor' ), {
+        toolbar: [
+            'heading',
+            '|',
+            {
+                label: 'Textox',
+                icon: 'text',
+                items: ['bold', 'italic', 'underline', '|', 'fontfamily', 'fontsize', 'fontColor', '|', 'highlight']
+            },
+            'alignment',
+            '|',
+            {
+                label: 'Insert',
+                icon: 'plus',
+                items: [ 'uploadImage', 'insertTable', 'link' ]
+            },
+            '|',
+            {
+                label: 'Listas',
+                icon: 'threeVerticalDots',
+                items: [ 'bulletedList', 'numberedList' ]
+            },
+            '|',
+            'codeBlock',
+            '|',
+            'undo', 'redo',
+            '|',
+            'selectAll',
+        ],
+
+        placeholder: 'Area de texto del mentor',
+
+    })
+    .then( editor => {
+        editorMentor = editor;
+
+        editor.editing.view.document.on( 'keydown', ( evt, data ) => {
+            MentorPulsaTecla();
+        });
+
+        const componentNames = Array.from(editor.ui.componentFactory.names());
+        console.log(componentNames); // Esto imprimirá los nombres en la consola del navegador
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
+}
+
+function CrearCkEditorEstudiante(){
+    ClassicEditor
+    .create( document.querySelector( '#textAreaEstudiante' ), {
+        toolbar: [
+            'heading',
+            '|',
+            {
+                label: 'Textox',
+                icon: 'text',
+                items: ['bold', 'italic', 'underline', '|', 'fontfamily', 'fontsize', 'fontColor', '|', 'highlight']
+            },
+            'alignment',
+            '|',
+            {
+                label: 'Insert',
+                icon: 'plus',
+                items: [ 'uploadImage', 'insertTable', 'link' ]
+            },
+            '|',
+            {
+                label: 'Listas',
+                icon: 'threeVerticalDots',
+                items: [ 'bulletedList', 'numberedList' ]
+            },
+            '|',
+            'codeBlock',
+            '|',
+            'undo', 'redo',
+            '|',
+            'selectAll',
+        ],
+
+        placeholder: 'Area de texto del estudiante',
+
+    })
+    .then( editor => {
+        editorEstudiante = editor;
+
+        editor.editing.view.document.on( 'keydown', ( evt, data ) => {
+            EstudiantePulsaTecla();
+        });
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
+}
 
 /**function ActivarPizarraClick(){
     if (document.getElementById('pnlPizarra').style.visibility == 'visible'){
@@ -41,7 +143,8 @@ function MentorPulsaTecla(){
 
         setTimeout(function() {
             if (Date.now() - ultimaPulsacion >= 300) {
-                var texto = document.getElementById('textAreaMentor').value;
+                //var texto = document.getElementById('textAreaMentor').value;
+                var texto = editorMentor.getData();
                 MandarTexto(texto);
             }
         }, 1000); // Espera un segundo
@@ -56,7 +159,8 @@ function EstudiantePulsaTecla(){
 
             setTimeout(function() {
                 if (Date.now() - ultimaPulsacion >= 300) {
-                    var texto = document.getElementById('textAreaEstudiante').value;
+                    //var texto = document.getElementById('textAreaEstudiante').value;
+                    var texto = editorEstudiante.getData();
                     MandarTexto(texto);
                 }
             }, 1000); //Espera un segundo
@@ -88,4 +192,25 @@ function MandarTexto(param_texto){
         method: 'POST',
         data  : data
     });
+}
+
+function FinalizarTutoria(){
+    var id_tuto = document.getElementById('id_tuto').textContent;
+
+    var data = {
+        _token : csrfToken,
+        id_tuto: id_tuto
+    }
+
+    $.ajax({
+        url   : url_fin_tuto,
+        method: 'POST'      ,
+        data  : data
+    }).done(function(respuesta){
+        if(respuesta.success){
+            document.getElementById('pnlCubierta').style.visibility = 'visible';
+            document.getElementById('pnlCubiertaMensaje').style.visibility = 'visible';
+            document.getElementById('pnlCubiertaMensaje').textContent = 'La tutoría ha finalizado';
+        }
+    });;
 }

@@ -55,6 +55,7 @@
             <option value="0">En tratmite</option>
             <option value="1">Aceptada   </option>
             <option value="2">Denegada   </option>
+            <option value="3">Finalizada </option>
         </select>
     </div>
 
