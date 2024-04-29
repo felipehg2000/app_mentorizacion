@@ -14,5 +14,8 @@
         "pusher-js": "^8.4.0-rc2",
         "sass": "^1.56.1",
         "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "@ckeditor/ckeditor5-build-classic": "^41.3.1"
     }
 }

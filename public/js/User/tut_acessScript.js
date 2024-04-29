@@ -68,8 +68,11 @@ function CrearCkEditorMentor(){
             MentorPulsaTecla();
         });
 
-        const componentNames = Array.from(editor.ui.componentFactory.names());
-        console.log(componentNames); // Esto imprimirá los nombres en la consola del navegador
+        if (document.getElementById('tipo_usu').textContent == '1'){
+            for (i = 0; i < editor.ui.view.toolbar.items.length - 1; i++){
+                editor.ui.view.toolbar.items.get(i).isEnabled = false;
+            }
+        }
     } )
     .catch( error => {
         console.error( error );
@@ -109,7 +112,6 @@ function CrearCkEditorEstudiante(){
         ],
 
         placeholder: 'Area de texto del estudiante',
-
     })
     .then( editor => {
         editorEstudiante = editor;
@@ -117,6 +119,12 @@ function CrearCkEditorEstudiante(){
         editor.editing.view.document.on( 'keydown', ( evt, data ) => {
             EstudiantePulsaTecla();
         });
+
+        if (document.getElementById('tipo_usu').textContent == '2'){
+            for (i = 0; i < editor.ui.view.toolbar.items.length - 1; i++){
+                editor.ui.view.toolbar.items.get(i).isEnabled = false;
+            }
+        }
     } )
     .catch( error => {
         console.error( error );
