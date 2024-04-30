@@ -103,6 +103,9 @@ function redirection(index) {
         case 13:
             window.location.href = url_novedades;
             break;
+        case 14:
+            window.location.href = url_change_password;
+            break;
     }
 }
 

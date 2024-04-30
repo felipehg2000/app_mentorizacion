@@ -40,7 +40,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-30 20:14:48
+ * @Last Modified time: 2024-04-30 21:52:24
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -1221,7 +1221,7 @@ class UsersController extends Controller
         }
 
     }
-//--------------------------------------------------------------------------------------------------
+
     public function modify_store(Request $request){
         if (Auth::check()){
             $id = Auth::user()->id;
@@ -1278,6 +1278,32 @@ class UsersController extends Controller
             return response()->json(['success' => false]);
         }
     }
+
+    public function modify_password(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('users.modify_password');
+    }
+
+    public function modify_password_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        dd('Contraseña introducida: ' . self::cifrate_private_key($request->actual_pass) . '\nContraseña actual; ' . Auth::user()->PASSWORD);
+
+        if (self::cifrate_private_key($request->actual_pass) !== Auth::user()->PASSWORD){
+            return response()->json(['success' => false]);
+        }
+
+        $user = User::find(Auth::user()->id);
+
+        $user->password = self::cifrate_private_key($request->nueva_pass);
+        $user->save();
+    }
+
 //--------------------------------------------------------------------------------------------------
     public function check_password_store(Request $request){
         $ret_resultado = false;

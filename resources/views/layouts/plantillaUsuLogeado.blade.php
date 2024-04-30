@@ -26,20 +26,21 @@
     <!--YAJRA STYLE-->
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
     <script>
-        var csrfToken                  = '{{ csrf_token()                  }}';
-        var url_tablon_completo        = "{{ route('users.task_board'    ) }}";
-        var url_tareas_completadas     = "{{ route('users.done_tasks'    ) }}";
-        var url_tareas_a_completar     = "{{ route('users.to_do_tasks'   ) }}";
-        var url_chats_privados         = "{{ route('users.sync_chat'     ) }}";
-        var url_solicitudes            = "{{ route('users.tut_request'   ) }}";
-        var url_acceso_a_tutoria       = "{{ route('users.tut_access'    ) }}";
-        var url_amigos_actuales        = "{{ route('users.actual_friends') }}";
-        var url_solicitudes_de_amistad = "{{ route('users.friendship'    ) }}";
-        var url_informacion            = "{{ route('users.tutorial'      ) }}";
-        var url_novedades              = "{{ route('users.news'          ) }}";
-        var url_modificar_mis_datos    = "{{ route('users.modify'        ) }}";
-        var url_eliminar_mi_cuenta     = "{{ route('users.delete'        ) }}";
-        var url_cerrar_sesion          = "{{ route('users.close'         ) }}";
+        var csrfToken                  = '{{ csrf_token()                   }}';
+        var url_tablon_completo        = "{{ route('users.task_board'     ) }}";
+        var url_tareas_completadas     = "{{ route('users.done_tasks'     ) }}";
+        var url_tareas_a_completar     = "{{ route('users.to_do_tasks'    ) }}";
+        var url_chats_privados         = "{{ route('users.sync_chat'      ) }}";
+        var url_solicitudes            = "{{ route('users.tut_request'    ) }}";
+        var url_acceso_a_tutoria       = "{{ route('users.tut_access'     ) }}";
+        var url_amigos_actuales        = "{{ route('users.actual_friends' ) }}";
+        var url_solicitudes_de_amistad = "{{ route('users.friendship'     ) }}";
+        var url_informacion            = "{{ route('users.tutorial'       ) }}";
+        var url_novedades              = "{{ route('users.news'           ) }}";
+        var url_modificar_mis_datos    = "{{ route('users.modify'         ) }}";
+        var url_change_password        = "{{ route('users.modify_password')}}"
+        var url_eliminar_mi_cuenta     = "{{ route('users.delete'         ) }}";
+        var url_cerrar_sesion          = "{{ route('users.close'          ) }}";
 
         var url_datos_inicio           = "{{ route('users.info_inicial.store'               ) }}";
         var url_friend_req_saw         = "{{ route('users.FriendRequestsSaw'                ) }}";
@@ -86,6 +87,7 @@
 
                 <div class="menu">Gestión de usuario        </div>
                     <div class="submenu" id="submenu_10" onclick="redirection(10)">Modificar mis datos <div class='notification' id='notification_10'></div></div>
+                    <div class="submenu" id="submenu_13" onclick="redirection(14)">Modificar contraseña<div class='notification' id='notification_14'></div></div>
                     <div class="submenu" id="submenu_11" onclick="redirection(11)">Eliminar mi cuenta  <div class='notification' id='notification_11'></div></div>
                     <div class="submenu" id="submenu_12" onclick="redirection(12)">Cerrar sesión       <div class='notification' id='notification_12'></div></div>
             </div>
