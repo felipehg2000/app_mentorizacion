@@ -1,4 +1,5 @@
 var channel2;
+var contenidoOriginal = '';
 
 var pusher2 = new Pusher('7b7c6d7f8ba7188308b6', {
     cluster: 'eu'
@@ -19,9 +20,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (tipo_usu == '1') {
             //document.getElementById('textAreaMentor').value = data.data;
             editorMentor.setData(data.data)
+            contenidoOriginal = data.data;
         } else if(tipo_usu == '2'){
             //document.getElementById('textAreaEstudiante').value = data.data;
             editorEstudiante.setData(data.data);
+            contenidoOriginal = data.data;
         }
     });
 })
@@ -44,8 +47,16 @@ function CrearCkEditorMentor(){
     .then( editor => {
         editorMentor = editor;
 
-        editor.editing.view.document.on( 'keydown', ( evt, data ) => {
+        contenidoOriginal = editor.getData();
+
+        editor.editing.view.document.on( 'change', ( evt, data ) => {
             MentorPulsaTecla();
+        });
+
+        editor.editing.view.document.on( 'keydown', ( evt, data ) => {
+            if (document.getElementById('tipo_usu').textContent == '1') {
+                NoGrrabarTeclaExceptoCopiar();
+            }
         });
 
         if (document.getElementById('tipo_usu').textContent == '1'){
@@ -76,8 +87,14 @@ function CrearCkEditorEstudiante(){
     .then( editor => {
         editorEstudiante = editor;
 
-        editor.editing.view.document.on( 'keydown', ( evt, data ) => {
+        editor.editing.view.document.on( 'change', ( evt, data ) => {
             EstudiantePulsaTecla();
+        });
+
+        editor.editing.view.document.on( 'keydown', ( evt, data ) => {
+            if (document.getElementById('tipo_usu').textContent == '2') {
+                NoGrrabarTeclaExceptoCopiar();
+            }
         });
 
         if (document.getElementById('tipo_usu').textContent == '2'){
@@ -105,13 +122,14 @@ function MentorPulsaTecla(){
     var tipo_usu = document.getElementById('tipo_usu').textContent;
 
     if (tipo_usu == '1') {
-        NoGrrabarTeclaExceptoCopiar();
+        if (editorMentor.getData() !== contenidoOriginal) {
+            editorMentor.setData(contenidoOriginal);
+        }
     } else if(tipo_usu == '2') {
         ultimaPulsacion = Date.now();
 
         setTimeout(function() {
             if (Date.now() - ultimaPulsacion >= 300) {
-                //var texto = document.getElementById('textAreaMentor').value;
                 var texto = editorMentor.getData();
                 MandarTexto(texto);
             }
@@ -127,14 +145,15 @@ function EstudiantePulsaTecla(){
 
             setTimeout(function() {
                 if (Date.now() - ultimaPulsacion >= 300) {
-                    //var texto = document.getElementById('textAreaEstudiante').value;
                     var texto = editorEstudiante.getData();
                     MandarTexto(texto);
                 }
             }, 1000); //Espera un segundo
 
         } else if(tipo_usu == '2') {
-            NoGrrabarTeclaExceptoCopiar();
+            if (editorEstudiante.getData() !== contenidoOriginal) {
+                editorEstudiante.setData(contenidoOriginal);
+            }
         }
 }
 
