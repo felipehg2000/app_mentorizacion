@@ -10,8 +10,8 @@ function ModifyPassword(){
 
     if (nueva_p != nueva_p_rep){
         MostrarMensajeError('ERROR: los campos de contraseñas deben tener el mismo texto');
-        document.getElementById('password'       ).textContent = '';
-        document.getElementById('rep_password'   ).textContent = '';
+        document.getElementById('password'       ).value = "";
+        document.getElementById('rep_password'   ).value = "";
 
         return;
     }
@@ -29,18 +29,44 @@ function ModifyPassword(){
     }).done(function(respuesta){
         if(respuesta.success){
             MostrarMensajeError('Datos modificados correctamente');
-            document.getElementById('actual_password').textContent = '';
-            document.getElementById('password'       ).textContent = '';
-            document.getElementById('rep_password'   ).textContent = '';
+            document.getElementById('actual_password').value = "";
+            document.getElementById('password'       ).value = "";
+            document.getElementById('rep_password'   ).value = "";
 
         } else {
             MostrarMensajeError('ERROR: la contraseña actual no es correcta');
-            document.getElementById('actual_password').textContent = '';
+            document.getElementById('actual_password').value = "";
 
             return;
         }
     });
 }
+
+function MouseDownActual(){
+    document.getElementById('actual_password').type = 'text';
+}
+
+function MouseUpActual(){
+    document.getElementById('actual_password').type = 'password';
+}
+
+function MouseDownNew(){
+    document.getElementById('password').type = 'text';
+}
+
+function MouseUpNew(){
+    document.getElementById('password').type = 'password';
+}
+
+function MouseDownRep(){
+    document.getElementById('rep_password').type = 'text';
+}
+
+function MouseUpRep(){
+    document.getElementById('rep_password').type = 'password';
+}
+
+
 //--------------------------------------------------------------------------------------------------
 /**
  * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
