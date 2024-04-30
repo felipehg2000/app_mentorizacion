@@ -7,8 +7,11 @@
 
 @section('js')
     <script src="{{ asset('js/User/tut_acessScript.js') }}"></script>
+    <script src="{{ asset('js/CkEditor/build/ckeditor.js') }}"></script>
     <script>
-        var url_send_text = "{{ route('users.send_text.store') }}"
+        var url_send_text = "{{ route('users.send_text.store') }}";
+        var url_fin_tuto  = "{{ route('users.fin_tuto.store' ) }}";
+        var url_add_img   = "{{ route('users.upload_img_tuto.store') }}";
         var url_close     = "{{ route('users.close') }}";
     </script>
 @endsection
@@ -26,19 +29,22 @@
 
     <div class='pnlCopmpletoTut'>
         <div class='pnlSupTut'>
-            <h2 id='tit_tut_access'> {{ $titulo }}</h2>
+            <h2 id='tit_tut_access'> {{ $titulo }} </h2>
+            @if ($tipo_usu == 2)
+            <button class='btn_fin_tut' id='btnPizarra' onclick="FinalizarTutoria()">Finalizar tutoría</button>
+            @endif
             <!--<button class='btn_create' id='btnPizarra' onclick="ActivarPizarraClick()">Activar Pizarra</button>-->
         </div>
 
         <div class='pnlPrinTut'>
             <div class='pnlIzqTut'>
-                <p>Area de texto Mentor</p>
-                <textarea class='tuto' id='textAreaMentor' onkeydown="MentorPulsaTecla()"></textarea>
+                <!--<textarea class='tuto' id='textAreaMentor' onkeydown="MentorPulsaTecla()"></textarea>-->
+                <div class='tuto' id='textAreaMentor' name='textAreaMentor'></div>
             </div>
 
             <div class='pnlDchaTut'>
-                <p>Area de texto Estudiante</p>
-                <textarea class='tuto' id='textAreaEstudiante' onkeydown="EstudiantePulsaTecla()"></textarea>
+                <!--<textarea class='tuto' id='textAreaEstudiante' onkeydown="EstudiantePulsaTecla()"></textarea>-->
+                <div class='tuto' id='textAreaEstudiante' name='textAreaEstudiante'></div>
             </div>
         </div>
 

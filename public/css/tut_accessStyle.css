@@ -16,8 +16,35 @@ div.pnlSupTut{
     height: 6%;
     width: 100%;
 
-    margin-top: 10px;
+    margin-top: 20px;
     margin-left: 25px;
+
+    display: flex;
+    align-items: center;
+}
+
+button.btn_fin_tut{
+    margin-bottom: 10px;
+
+    width   : auto;
+    padding : 10px;
+
+    border       : none;
+    border-radius: 5px;
+
+    background-color: #0099cc;
+    color           : white;
+    font-size       : 16px;
+
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+    margin-left: 60%;
+}
+
+button.btn_fin_tut:hover {
+    background-color: #0077b3;
 }
 
 div.pnlPrinTut{
@@ -62,27 +89,9 @@ div.pnlDchaTut{
     margin: 5px;
 }
 
-textarea#textAreaMentor, textarea#textAreaEstudiante  {
-    height: 90%;
-    width: 90%;
-
-    box-shadow: 4px 4px 10px black;
-
-    margin-top: -20px;
-}
-
-/*div.pnlPizarra{
-    background-color: white;
-
-    height: 75%;
+.ck-editor__editable_inline {
+    height: 75vh;
     width: 100%;
-    padding: 0;
-    background-color: black;
-    opacity         : 0.2;
 
-    position: absolute;
-
-    z-index: 1000;
-
-    visibility: hidden;
+    overflow: auto;
 }
