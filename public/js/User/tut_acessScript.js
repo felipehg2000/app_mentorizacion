@@ -1,5 +1,5 @@
 var channel2;
-var contenidoOriginal = '';
+var contenidoOriginal = "";
 
 var pusher2 = new Pusher('7b7c6d7f8ba7188308b6', {
     cluster: 'eu'
@@ -18,13 +18,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     channel2.bind('App\\Events\\TutUpdateEvent', function(data) {
         if (tipo_usu == '1') {
-            //document.getElementById('textAreaMentor').value = data.data;
-            editorMentor.setData(data.data)
-            contenidoOriginal = data.data;
+            if (data.data == null){
+                editorMentor.setData("");
+                contenidoOriginal = "";
+            }else {
+                editorMentor.setData(data.data)
+                contenidoOriginal = data.data;
+            }
         } else if(tipo_usu == '2'){
-            //document.getElementById('textAreaEstudiante').value = data.data;
-            editorEstudiante.setData(data.data);
-            contenidoOriginal = data.data;
+            if (data.data == null){
+                editorEstudiante.setData("");
+                contenidoOriginal = "";
+            } else {
+                editorEstudiante.setData(data.data);
+                contenidoOriginal = data.data;
+            }
         }
     });
 })
