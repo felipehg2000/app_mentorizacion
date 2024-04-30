@@ -62,6 +62,7 @@ Route::controller(UsersController::class)->group(function(){
     Route::get  ('users/tut_access'     , [UsersController::class, 'tut_access'             ])->name('users.tut_access'             );
     Route::post ('users/send_text'      , [UsersController::class, 'send_text_store'        ])->name('users.send_text.store'        );
     Route::post ('users/fin_tuto'       , [UsersController::class, 'fin_tuto_store'         ])->name('users.fin_tuto.store'         );
+    Route::post ('users/upload_img_tuto', [UsersController::class, 'upload_img_tuto_store'  ])->name('users.upload_img_tuto.store'  );
 
     Route::get  ('users/friendship'     , [UsersController::class, 'friendship'             ])->name('users.friendship'             );
     Route::get  ('users/actual_friends' , [UsersController::class, 'actual_friends'         ])->name('users.actual_friends'         );

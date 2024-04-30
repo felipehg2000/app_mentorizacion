@@ -11,6 +11,7 @@
     <script>
         var url_send_text = "{{ route('users.send_text.store') }}";
         var url_fin_tuto  = "{{ route('users.fin_tuto.store' ) }}";
+        var url_add_img   = "{{ route('users.upload_img_tuto.store') }}";
         var url_close     = "{{ route('users.close') }}";
     </script>
 @endsection

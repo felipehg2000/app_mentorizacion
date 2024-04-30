@@ -29,36 +29,16 @@ document.addEventListener('DOMContentLoaded', function() {
 function CrearCkEditorMentor(){
     ClassicEditor
     .create( document.querySelector( '#textAreaMentor' ), {
-        toolbar: [
-            'heading',
-            '|',
-            {
-                label: 'Textox',
-                icon: 'text',
-                items: ['bold', 'italic', 'underline', '|', 'fontfamily', 'fontsize', 'fontColor', '|', 'highlight']
-            },
-            'alignment',
-            '|',
-            {
-                label: 'Insert',
-                icon: 'plus',
-                items: [ 'uploadImage', 'insertTable', 'link' ]
-            },
-            '|',
-            {
-                label: 'Listas',
-                icon: 'threeVerticalDots',
-                items: [ 'bulletedList', 'numberedList' ]
-            },
-            '|',
-            'codeBlock',
-            '|',
-            'undo', 'redo',
-            '|',
-            'selectAll',
-        ],
-
         placeholder: 'Area de texto del mentor',
+
+        simpleUpload: {
+            uploadUrl: url_add_img,
+            withCredencials: true,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept'      : 'application/json',
+            }
+        }
 
     })
     .then( editor => {
@@ -82,36 +62,16 @@ function CrearCkEditorMentor(){
 function CrearCkEditorEstudiante(){
     ClassicEditor
     .create( document.querySelector( '#textAreaEstudiante' ), {
-        toolbar: [
-            'heading',
-            '|',
-            {
-                label: 'Textox',
-                icon: 'text',
-                items: ['bold', 'italic', 'underline', '|', 'fontfamily', 'fontsize', 'fontColor', '|', 'highlight']
-            },
-            'alignment',
-            '|',
-            {
-                label: 'Insert',
-                icon: 'plus',
-                items: [ 'uploadImage', 'insertTable', 'link' ]
-            },
-            '|',
-            {
-                label: 'Listas',
-                icon: 'threeVerticalDots',
-                items: [ 'bulletedList', 'numberedList' ]
-            },
-            '|',
-            'codeBlock',
-            '|',
-            'undo', 'redo',
-            '|',
-            'selectAll',
-        ],
-
         placeholder: 'Area de texto del estudiante',
+
+        simpleUpload: {
+            uploadUrl: url_add_img,
+            withCredencials: true,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept'      : 'application/json',
+            }
+        }
     })
     .then( editor => {
         editorEstudiante = editor;
