@@ -71,6 +71,22 @@ function CrearYModificarAdmins() {
         });
     }
 }
+
+function MouseDownPassword(){
+    document.getElementById('password').type = 'text';
+}
+
+function MouseUpPassword(){
+    document.getElementById('password').type = 'password';
+}
+
+function MouseDownRep(){
+    document.getElementById('rep_password').type = 'text';
+}
+
+function MouseUpRep(){
+    document.getElementById('rep_password').type = 'password';
+}
 //--------------------------------------------------------------------------------------------------
 /**
  * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
