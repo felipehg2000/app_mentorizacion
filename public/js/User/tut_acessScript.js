@@ -141,7 +141,7 @@ function MentorPulsaTecla(){
                 var texto = editorMentor.getData();
                 MandarTexto(texto);
             }
-        }, 1000); // Espera un segundo
+        }, 500); // Espera medio segundo
     }
 }
 
@@ -156,7 +156,7 @@ function EstudiantePulsaTecla(){
                     var texto = editorEstudiante.getData();
                     MandarTexto(texto);
                 }
-            }, 1000); //Espera un segundo
+            }, 500); //Espera medio segundo
 
         } else if(tipo_usu == '2') {
             if (editorEstudiante.getData() !== contenidoOriginal) {

@@ -40,7 +40,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-30 09:13:22
+ * @Last Modified time: 2024-04-30 11:11:13
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -1008,19 +1008,64 @@ class UsersController extends Controller
             return view('users.close');
         }
 
+        //Borramos todos los elementos de la tutoría y la carpeta que se ha creado para almacenarlos temporalmente
+        $id_mentor = '';
+
+        if (Auth::user()->USER_TYPE == 1){ //Estudiante
+            $id_mentor = DB::table('study_room_access')
+                           ->where('STUDENT_ID', '=', Auth::user()->id)
+                           ->where('LOGIC_CANCEL', '=', 0)
+                           ->select('STUDY_ROOM_ID')
+                           ->first();
+
+            $id_mentor = $id_mentor->STUDY_ROOM_ID;
+
+        } else if (Auth::user()->USER_TYPE == 2){ //Mentor
+            $id_mentor = Auth::user()->id;
+        }
+
+        $path = Storage::path('\public\images_tuto_' . $id_mentor);
+        $archivos = glob($path . '/*');
+        foreach ($archivos as $archivo) {
+            if (is_file($archivo)) {
+                unlink($archivo);
+            }
+        }
+
+        if (is_dir($path)) {
+            rmdir($path);
+        }
+
+        //Actualizamos el estado de la tutoría
         $tutoria = Tutoring::where('id', $request->id_tuto)->first();
-
         $tutoria->status = 3;
-
         $tutoria->save();
-        return response()->json(['success' => true]);
 
+        return response()->json(['success' => true]);
     }
 
     public function upload_img_tuto_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $id_mentor = '';
+
+        if (Auth::user()->USER_TYPE == 1){ //Estudiante
+            $id_mentor = DB::table('study_room_access')
+                           ->where('STUDENT_ID', '=', Auth::user()->id)
+                           ->where('LOGIC_CANCEL', '=', 0)
+                           ->select('STUDY_ROOM_ID')
+                           ->first();
+
+            $id_mentor = $id_mentor->STUDY_ROOM_ID;
+
+        } else if (Auth::user()->USER_TYPE == 2){ //Mentor
+            $id_mentor = Auth::user()->id;
+        }
 
         $file = $request->file('upload');
-        $path = $file->store('public/images');
+        $path = $file->store('public/images_tuto_' . $id_mentor);
 
         return [
             'url' => url(Storage::url($path))
