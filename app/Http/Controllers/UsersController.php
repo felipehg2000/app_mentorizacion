@@ -40,7 +40,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-30 20:08:29
+ * @Last Modified time: 2024-04-30 20:14:48
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -349,20 +349,9 @@ class UsersController extends Controller
 
             Auth::login($user);
             if ($user->USER_TYPE == 1){
-                /*$controlador_estudiante = new StudentsController();
-                $vista_estudiante = $controlador_estudiante->index();
-
-                return $vista_estudiante;*/
-
                 return redirect()->route('users.task_board');
-            }
-            else if($user->USER_TYPE == 2){
-                /*$controlador_mentores = new MentorsController();
-                $vista_mentor = $controlador_mentores->index();
-
-                return $vista_mentor;*/
+            }else if($user->USER_TYPE == 2){
                 return redirect()->route('users.task_board');
-
             } else if($user->USER_TYPE == 3) {
                 return redirect()->route('admin.rep_requests');
             }
