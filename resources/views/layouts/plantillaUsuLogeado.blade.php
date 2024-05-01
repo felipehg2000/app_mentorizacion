@@ -57,7 +57,7 @@
     <!--Parte de la navegación-->
     <nav>
         <img src = " {{ asset('photos/logo_blanco.JPG') }}" class="logo">
-        <img src = " {{ asset('photos/my_image.png') }} " class="perfil_image">
+        <img src = " {{ asset('photos/my_image.JPG') }} " class="perfil_image">
     </nav>
     <!--Pantalla sin la parte de la navegación-->
     <div class="pnlMain">
