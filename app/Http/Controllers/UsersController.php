@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
@@ -40,7 +41,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-30 23:20:58
+ * @Last Modified time: 2024-05-01 11:52:59
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -347,7 +348,12 @@ class UsersController extends Controller
                 return view('users.banned');
             }
 
+            $ruta_original = public_path('photos/Perfiles/' . $user->IMAGE);
+            $ruta_clon     = public_path('photos/my_image.JPG');
+            File::copy($ruta_original, $ruta_clon);
+
             Auth::login($user);
+
             if ($user->USER_TYPE == 1){
                 return redirect()->route('users.task_board');
             }else if($user->USER_TYPE == 2){
@@ -1371,6 +1377,11 @@ class UsersController extends Controller
      * Borrar caché del navegador para que al dar hacia atrás no vuelva a la pagina anterior y que no pueda acceder a su cuenta de ninguna manera
      */
     public function close (){
+        $ruta_archivo = public_path('photos/my_image.JPG');
+        if (File::exists($ruta_archivo)) {
+            File::delete($ruta_archivo);
+        }
+
         Auth::logout();
         return view('users.close');
     }
