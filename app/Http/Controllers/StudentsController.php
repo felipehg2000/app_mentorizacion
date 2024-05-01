@@ -24,10 +24,6 @@ class StudentsController extends Controller{
                          ->where('USER_TYPE' , $user_type              )
                          ->get();
 
-        foreach ($users as $user){
-            $this->convertToPhoto($user->IMAGE, $user->USER);
-        }
-
         $titulo = '';
         if (!$users->isEmpty()){
             $titulo = 'Solicitudes de amistad:';
@@ -62,9 +58,6 @@ class StudentsController extends Controller{
 
             $friendRequest->save();
         } else{
-            /*$resultado->status = 1;
-            $resultado->seen_by_mentor = '0';
-            $resultado->save();*/
 
             DB::table('friend_requests')
             ->where('mentor_id', $mentor_id)
@@ -111,20 +104,4 @@ class StudentsController extends Controller{
         return response()->json(['success' => true]);
     }
 //--------------------------------------------------------------------------------------------------
-    private function convertToPhoto($blopPhoto, $user){
-        //Creamos la ruta y el archivo
-        $path             = "photos/users/User" . $user. ".png";
-        $destination_path = public_path($path);
-
-        touch($destination_path);
-
-        //Convertimos el campo blop en una imagen
-        $image_binary = $blopPhoto;
-        $image_data   = base64_decode($image_binary);
-
-        //Guardamos los datos de la imagen en el file creado
-        if (file_exists($destination_path)){
-            file_put_contents($destination_path, $image_data);
-        }
-    }
 }

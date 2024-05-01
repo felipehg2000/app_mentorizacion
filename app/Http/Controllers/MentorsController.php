@@ -26,14 +26,8 @@ class MentorsController extends Controller{
                          ->select('USERS.*')
                          ->get();
 
-        /*$result_student = Student::where('id', $result_user->id)
-                                 ->get();
-        */
 
         $titulo = '';
-        foreach($result_user as $user){
-            $this->convertToPhoto($user->IMAGE, $user->USER);
-        }
 
         if (!$result_user->isEmpty()){
             $titulo = 'Solicitudes de amistad:';
@@ -101,23 +95,6 @@ class MentorsController extends Controller{
      * =====================
      * Distintas funcionalidades para simplificar el código
      */
-    private function convertToPhoto($blopPhoto, $user){
-        //Creamos la ruta y el archivo
-        $path             = "photos/users/User" . $user. ".png";
-        $destination_path = public_path($path);
-
-        touch($destination_path);
-
-        //Convertimos el campo blop en una imagen
-        $image_binary = $blopPhoto;
-        $image_data   = base64_decode($image_binary);
-
-        //Guardamos los datos de la imagen en el file creado
-        if (file_exists($destination_path)){
-            file_put_contents($destination_path, $image_data);
-        }
-    }
-
     private function CreateStudyRoomAcces($param_student_id, $param_mentor_id) {
         if(!Auth::check()){
             return view('user.close');
