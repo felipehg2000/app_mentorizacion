@@ -148,12 +148,12 @@
         </div>
 
         <div class='pnlMensajeNuevo' id='pnlNotificacionMensajeNuevo'>
-            <div class='pnlMensajeNuevoSuperior'>
-                <div class='btnCerrar' onclick="VisibilidadNotificacionNuevoMensaje(false)">x</div>
-            </div>
-
             <div class='pnlPrincipalMensajeNuevo'>
                 Nuevo mensaje del chat
+            </div>
+
+            <div class='pnlMensajeNuevoSuperior'>
+                <div class='btnCerrar' onclick="VisibilidadNotificacionNuevoMensaje(false)">x</div>
             </div>
         </div>
 

@@ -286,6 +286,7 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
 function VisibilidadNotificacionNuevoMensaje(param_hacer_visible) {
     if (param_hacer_visible) {
         document.getElementById('pnlNotificacionMensajeNuevo').style.visibility= 'visible';
+        document.getElementById('pnlNotificacionMensajeNuevo').classList.add('mostrar_animacion');
     } else {
         document.getElementById('pnlNotificacionMensajeNuevo').style.visibility= 'hidden';
     }
