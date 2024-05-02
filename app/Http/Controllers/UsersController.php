@@ -41,7 +41,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-02 12:00:22
+ * @Last Modified time: 2024-05-02 12:16:40
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -1390,6 +1390,25 @@ class UsersController extends Controller
             return response()->json(['success' => false]);
         }
     }
+
+    public function check_password_store(Request $request){
+        $ret_resultado = false;
+        if (Auth::check()){
+            $id = Auth::user()->id;
+            $usuario_autenticado = User::find($id);
+
+            $clave_cifrada = self::cifrate_private_key($request->password);
+            if ($clave_cifrada == $usuario_autenticado->PASSWORD){
+                $ret_resultado = true;
+                return response()->json(['success' => $ret_resultado]);
+            } else {
+                return response()->json(['success' => $ret_resultado]);
+            }
+        } else {
+            return response()->json(['success' => $ret_resultado]);
+        }
+    }
+
 //--------------------------------------------------------------------------------------------------
     /**
      * Cerrar sesión:
