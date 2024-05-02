@@ -41,7 +41,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-02 16:17:36
+ * @Last Modified time: 2024-05-02 16:28:13
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -999,7 +999,7 @@ class UsersController extends Controller
 
         $id_canal = $request->id_channel . $id_usuario_contrario;
 
-        Event::dispatch(new TutUpdateEvent($request->texto, $id_canal));
+        Event::dispatch(new TutUpdateEvent($this->cifrate_private_key($request->texto), $id_canal));
     }
 
     public function fin_tuto_store(Request $request){

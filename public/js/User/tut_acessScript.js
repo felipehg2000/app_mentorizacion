@@ -17,23 +17,37 @@ document.addEventListener('DOMContentLoaded', function() {
     channel2 = pusher2.subscribe('tut_access_' + id_channel + id_usuario);
 
     channel2.bind('App\\Events\\TutUpdateEvent', function(data) {
-        if (tipo_usu == '1') {
-            if (data.data == null){
-                editorMentor.setData("");
-                contenidoOriginal = "";
-            }else {
-                editorMentor.setData(data.data)
-                contenidoOriginal = data.data;
-            }
-        } else if(tipo_usu == '2'){
-            if (data.data == null){
-                editorEstudiante.setData("");
-                contenidoOriginal = "";
-            } else {
-                editorEstudiante.setData(data.data);
-                contenidoOriginal = data.data;
-            }
+        var data = {
+            _token : csrfToken,
+            message: data.data
         }
+
+        $.ajax({
+            url   : url_decrypt_info,
+            method: 'POST'         ,
+            data  : data
+        }).done(function(respuesta){
+            if (respuesta.success) {
+                if (tipo_usu == '1') {
+                    if (respuesta.message == null){
+                        editorMentor.setData("");
+                        contenidoOriginal = "";
+                    }else {
+                        editorMentor.setData(respuesta.message)
+                        contenidoOriginal = respuesta.message;
+                    }
+                } else if(tipo_usu == '2'){
+                    if (respuesta.message == null){
+                        editorEstudiante.setData("");
+                        contenidoOriginal = "";
+                    } else {
+                        editorEstudiante.setData(respuesta.message);
+                        contenidoOriginal = respuesta.message;
+                    }
+                }
+            }
+
+        });
     });
 })
 
