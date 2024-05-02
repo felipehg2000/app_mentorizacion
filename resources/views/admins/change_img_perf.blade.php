@@ -1,4 +1,4 @@
-@extends('layouts.plantillaUsuLogeado')
+@extends('layouts.plantillaAdminLoegeado')
 
 @if ($tipo_usu == 1)
     @section('title', 'Estudiantes')

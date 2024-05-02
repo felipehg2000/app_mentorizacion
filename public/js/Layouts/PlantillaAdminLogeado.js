@@ -53,6 +53,10 @@ function redirection(index) {
             break;
         case 10:
             window.location.href = url_reports;
+            break;
+        case 11:
+            window.location.href = url_change_porfile_img;
+            break;
     }
 }
 
@@ -103,6 +107,8 @@ function CambiarOpcionDeColoresYMostrarCubierta(){
                 document.getElementById('notification_10').style.visibility = 'hidden';
             }
         });
+    }else if(url_actual == url_change_porfile_img){
+        id_elemento = "submenu_11";
     }
 
     if (id_elemento != '') {
