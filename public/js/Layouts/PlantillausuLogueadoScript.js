@@ -22,17 +22,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
             channel.bind('App\\Events\\NewMessageEvent', function(data) {
                 if(window.location.href == url_chats_privados){
-                    var id_usuario_seleccionado = document.getElementById('lblIdChatSeleccionado').textContent;
 
-                    if (respuesta.user_type == 1 && id_usuario_seleccionado == data.data.mi_id){ //Estudiante
-                        PushMessage(data.data.message_id, data.data.mensaje, 'pnlMensajeContacto', 'mensajeContacto');
-                    } else if (respuesta.user_type == 2 && id_usuario_seleccionado == data.data.mi_id) {
-                        PushMessage(data.data.message_id, data.data.mensaje, 'pnlMensajeContacto', 'mensajeContacto');
+                    var datos_decrypt = {
+                        _token : csrfToken  ,
+                        message: data.data.mensaje
                     }
-                }
 
-                VisibilidadNotificacionNuevoMensaje(true);
-                InicializarTemporizador();
+                    $.ajax({
+                        url   : url_decrypt_info,
+                        method: 'POST'          ,
+                        data  : datos_decrypt
+                    }).done(function(respuesta2){
+                        if (respuesta2.success){
+                            var id_usuario_seleccionado = document.getElementById('lblIdChatSeleccionado').textContent;
+
+                            if (respuesta.user_type == 1 && id_usuario_seleccionado == data.data.mi_id){ //Estudiante
+                                PushMessage(data.data.message_id, respuesta2.message, 'pnlMensajeContacto', 'mensajeContacto');
+                            } else if (respuesta.user_type == 2 && id_usuario_seleccionado == data.data.mi_id) {
+                                PushMessage(data.data.message_id, respuesta2.message, 'pnlMensajeContacto', 'mensajeContacto');
+                            }
+
+                            VisibilidadNotificacionNuevoMensaje(true);
+                            InicializarTemporizador();
+                        }
+                    });
+                }
             });
 
             if (respuesta.new_messages){

@@ -49,6 +49,8 @@
         var url_tut_mod_not            = "{{ route('users.TutoringModificationsNotification') }}";
         var url_task_saw               = "{{ route('users.TasksSaw'                         ) }}";
         var url_answer_saw             = "{{ route('users.AnswersSaw'                       ) }}";
+
+        var url_decrypt_info = "{{ route('users.decrypt_info.store') }}";
     </script>
 
     @yield('js')

@@ -41,7 +41,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-02 13:06:18
+ * @Last Modified time: 2024-05-02 16:17:36
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -807,7 +807,7 @@ class UsersController extends Controller
             $id_mensaje = DB::table('synchronous_messages')
                             ->max('id');
             $message = [
-                'mensaje'    => $request->datos['message'],
+                'mensaje'    => $this->cifrate_private_key($request->datos['message']),
                 'mi_id'      => Auth::user()->id          ,
                 'message_id' => $id_mensaje
             ];
@@ -1584,6 +1584,14 @@ class UsersController extends Controller
         $key  = 'clave_de_cifrado_de_32_caracteres';
 
         return openssl_encrypt($clave, 'aes-256-ecb', $key);
+    }
+
+    public function decrypt_info_store (Request $request){
+        $key  = 'clave_de_cifrado_de_32_caracteres';
+        $message = openssl_decrypt($request->message, 'aes-256-ecb', $key);
+
+        return response()->json(['success' => true,
+                                 'message'   => $message]);
     }
 //--------------------------------------------------------------------------------------------------
     private function NotSeenReportRequest(){
