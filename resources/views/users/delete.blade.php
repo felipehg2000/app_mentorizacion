@@ -1,6 +1,6 @@
 @extends('layouts.plantillaUsuLogeado')
 @section('style')
-    <link rel="stylesheet" href="{{ asset('css/formsSimpleStyle.css') }}"
+    <link rel="stylesheet" href="{{ asset('css/formsSimpleStyle.css') }}">
 @endsection
 @section('title', 'Borrar datos')
 

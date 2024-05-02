@@ -29,10 +29,12 @@
     <input type="text" id="user" name="user" value='{{ $admin['user'] }}'><br>
 
     <label for="password">Nueva contraseña:</label><br>
-    <input type="password" id="password" name="password"><br>
+    <input type="password" id="password" name="password">
+    <a onmousedown='MouseDownPassword()' onmouseup='MouseUpPassword()'><i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i></a><br>
 
     <label for="rep_password">Repetir nueva contraseña:</label><br>
-    <input type="password" id="rep_password" name="rep_password"> <br>
+    <input type="password" id="rep_password" name="rep_password">
+    <a onmousedown='MouseDownRep()' onmouseup='MouseUpRep()'><i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i></a><br>
 
     <label for="description">Descripción: </label><br>
     <input type="text" id="description" name="description" value='{{ $admin['description'] }}'><br>

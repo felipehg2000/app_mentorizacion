@@ -103,6 +103,12 @@ function redirection(index) {
         case 13:
             window.location.href = url_novedades;
             break;
+        case 14:
+            window.location.href = url_change_password;
+            break;
+        case 15:
+            window.location.href = url_change_porfile_img;
+            break;
     }
 }
 
@@ -204,7 +210,13 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         id_elemento = "submenu_11";
     }else if (url_actual == url_novedades){
         id_elemento = "submenu_13";
+    }else if (url_actual == url_change_password){
+        id_elemento = "submenu_14";
+    }else if (url_actual == url_change_porfile_img){
+        id_elemento = "submenu_15";
     }
+
+
 
     if (id_elemento != '') {
         document.getElementById(id_elemento).style.backgroundColor= "white";

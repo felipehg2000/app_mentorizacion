@@ -11,7 +11,7 @@ use App\Http\Controllers\StudentsController;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:03:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-29 10:25:15
+ * @Last Modified time: 2024-05-02 12:14:45
  * @Description: De este archivo se leerán las rutas a las que el usuario pueda acceder, es decir, el usuario solo puede acceder a las rutas que especifiquemos aquí.
  *               Como buena práctica hay que darle nombre a cada una de las rutas, para que si una de estas cambie no haya que cambiar todos los lugares donde las referenciemos,
  *               para esto usaremos la función name.
@@ -77,10 +77,15 @@ Route::controller(UsersController::class)->group(function(){
     Route::get  ('users/modify'         , [UsersController::class, 'modify'                 ])->name('users.modify'                 );
     Route::post ('users/modify'         , [UsersController::class, 'modify_store'           ])->name('users.modify.store'           );
 
-    Route::post ('users/check_password' , [UsersController::class, 'check_password_store'   ])->name('users.check_password.store'   );
+    Route::get ('users/modify_password' , [UsersController::class, 'modify_password'        ])->name('users.modify_password'        );
+    Route::post('users/modify_password' , [UsersController::class, 'modify_password_store'  ])->name('users.modify_password.store'  );
+
+    Route::get ('users/modify_img_perf' , [UsersController::class, 'modify_img_perf'        ])->name('users.modify_img_perf'        );
+    Route::post('users/modify_img_perf' , [UsersController::class, 'modify_img_perf_store'  ])->name('users.modify_img_perf.store'  );
 
     Route::get  ('users/delete'         , [UsersController::class, 'delete'                 ])->name('users.delete'                 );
     Route::post ('users/delete'         , [UsersController::class, 'delete_store'           ])->name('users.delete.store'           );
+    Route::post ('users/check_password' , [UsersController::class, 'check_password_store'   ])->name('users.check_password.store'   );
 
     Route::get  ('users/report_requests', [UsersController::class, 'rep_requests'           ])->name('admin.rep_requests'           );
     Route::get  ('users/block_mentores' , [UsersController::class, 'block_mentores'         ])->name('admin.block_mentores'         );
@@ -92,7 +97,7 @@ Route::controller(UsersController::class)->group(function(){
     Route::get  ('users/admin_news'     , [UsersController::class, 'admin_news'             ])->name('admin.news'                   );
 
     Route::get  ('users/create_admin'   , [UsersController::class, 'create_admin'           ])->name('admin.create'                 );
-    Route::post  ('users/create_admin'  , [UsersController::class, 'create_admin_store'     ])->name('admin.create.store'           );
+    Route::post ('users/create_admin'   , [UsersController::class, 'create_admin_store'     ])->name('admin.create.store'           );
 
     Route::get  ('users/modify_admin'   , [UsersController::class, 'modify_admin'           ])->name('admin.modify'                 );
     Route::post ('users/modify_admin'   , [UsersController::class, 'modify_admin_store'     ])->name('admin.modify.store'           );
@@ -104,7 +109,6 @@ Route::controller(UsersController::class)->group(function(){
 });
 
 Route::controller(MentorsController::class)->group(function(){
-    Route::get  ('mentors'               , [MentorsController::class, 'index'               ])->name('mentors.index'               );
     Route::get  ('mentors/friendship'    , [MentorsController::class, 'friendship'          ])->name('mentors.friendship'          );
     Route::post ('mentors/friendship'    , [MentorsController::class, 'friendship_store'    ])->name('mentors.friendship.store'    );
     Route::get  ('mentors/actual_friends', [MentorsController::class, 'actual_friends'      ])->name('mentors.actual_fruends'      );
@@ -112,7 +116,6 @@ Route::controller(MentorsController::class)->group(function(){
 });
 
 Route::controller(StudentsController::class)->group(function(){
-    Route::get  ('students'               , [StudentsController::class, 'index'               ])->name('students.index'               );
     Route::get  ('students/friendship'    , [StudentsController::class, 'friendship'          ])->name('students.friendship'          );
     Route::post ('students/friendship'    , [StudentsController::class, 'friendship_store'    ])->name('students.friendship.store'    );
     Route::get  ('students/actual_friends', [StudentsController::class, 'actual_friends'      ])->name('students.actual_fruends'      );

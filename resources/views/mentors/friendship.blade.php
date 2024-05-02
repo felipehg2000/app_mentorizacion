@@ -13,7 +13,7 @@
         @foreach ($result_user as $user)
             <div class="pnlCard">
                 <div class="pnlSuperiorCard">
-                    <img src=" {{ asset('photos/users/User' . $user->USER . '.png')}}">
+                    <img src=" {{ asset('photos/Perfiles/' . $user->IMAGE)}}">
                 </div>
 
                 <div class="pnlInferiorCard">

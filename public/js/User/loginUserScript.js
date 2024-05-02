@@ -31,3 +31,11 @@ function deleteLabel(index){
             break;
     }
 }
+
+function MouseDownPassword(){
+    document.getElementById('password').type = 'text';
+}
+
+function MouseUpPassword(){
+    document.getElementById('password').type = 'password';
+}

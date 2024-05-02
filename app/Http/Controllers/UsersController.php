@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
@@ -40,7 +41,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-30 11:11:13
+ * @Last Modified time: 2024-05-02 13:06:18
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -347,20 +348,18 @@ class UsersController extends Controller
                 return view('users.banned');
             }
 
+            $ruta_original = public_path('photos/Perfiles/' . $user->IMAGE);
+            $ruta_clon     = public_path('photos/my_image.JPG');
+            File::copy($ruta_original, $ruta_clon);
+
             Auth::login($user);
+
             if ($user->USER_TYPE == 1){
-                $controlador_estudiante = new StudentsController();
-                $vista_estudiante = $controlador_estudiante->index();
-
-                return $vista_estudiante;
-            }
-            else if($user->USER_TYPE == 2){
-                $controlador_mentores = new MentorsController();
-                $vista_mentor = $controlador_mentores->index();
-
-                return $vista_mentor;
+                return redirect()->route('users.task_board');
+            }else if($user->USER_TYPE == 2){
+                return redirect()->route('users.task_board');
             } else if($user->USER_TYPE == 3) {
-                return view('admins.news');
+                return redirect()->route('admin.rep_requests');
             }
         }
         else{
@@ -1228,7 +1227,7 @@ class UsersController extends Controller
         }
 
     }
-//--------------------------------------------------------------------------------------------------
+
     public function modify_store(Request $request){
         if (Auth::check()){
             $id = Auth::user()->id;
@@ -1285,25 +1284,62 @@ class UsersController extends Controller
             return response()->json(['success' => false]);
         }
     }
-//--------------------------------------------------------------------------------------------------
-    public function check_password_store(Request $request){
-        $ret_resultado = false;
-        if (Auth::check()){
-            $id = Auth::user()->id;
 
-            $usuario_autenticado = User::find($id);
+    public function modify_password(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
 
-            $clave_cifrada = self::cifrate_private_key($request->password);
-            if ($clave_cifrada == $usuario_autenticado->PASSWORD){
-                $ret_resultado = true;
-                return response()->json(['success' => $ret_resultado]);
-            } else {
-                return response()->json(['success' => $ret_resultado]);
-            }
-        } else {
-            return response()->json(['success' => $ret_resultado]);
+        return view('users.modify_password');
+    }
+
+    public function modify_password_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        if (self::cifrate_private_key($request->actual_pass) !== Auth::user()->PASSWORD){
+            return response()->json(['success' => false]);
+        }
+
+        $user = User::find(Auth::user()->id);
+
+        $user->password = self::cifrate_private_key($request->nueva_pass);
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function modify_img_perf(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+        $tipo_img = Auth::user()->IMAGE;
+        $tipo_usu = Auth::user()->USER_TYPE;
+
+        if ($tipo_usu == 1 || $tipo_usu == 2) {
+            return view('users.change_img_perf', compact('tipo_img', 'tipo_usu'));
+        } elseif($tipo_usu == 3){
+            return view('admins.change_img_perf', compact('tipo_img', 'tipo_usu'));
         }
     }
+
+    public function modify_img_perf_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $usuario = User::find(Auth::user()->id);
+        $usuario->image = $request->img_seleccionada;
+        $usuario->save();
+
+        $ruta_original = public_path('photos/Perfiles/' . $request->img_seleccionada);
+        $ruta_clon     = public_path('photos/my_image.JPG');
+        File::copy($ruta_original, $ruta_clon);
+
+        return response()->json(['success' => true]);
+    }
+
 //--------------------------------------------------------------------------------------------------
     /**
      * Borrar usuario
@@ -1350,7 +1386,7 @@ class UsersController extends Controller
             return view('users.close');
         }
     }
-//--------------------------------------------------------------------------------------------------
+
     public function delete_store(Request $request){
         if (Auth::check()){
             $user = User::findOrFail(Auth::user()->id);
@@ -1360,6 +1396,25 @@ class UsersController extends Controller
             return response()->json(['success' => false]);
         }
     }
+
+    public function check_password_store(Request $request){
+        $ret_resultado = false;
+        if (Auth::check()){
+            $id = Auth::user()->id;
+            $usuario_autenticado = User::find($id);
+
+            $clave_cifrada = self::cifrate_private_key($request->password);
+            if ($clave_cifrada == $usuario_autenticado->PASSWORD){
+                $ret_resultado = true;
+                return response()->json(['success' => $ret_resultado]);
+            } else {
+                return response()->json(['success' => $ret_resultado]);
+            }
+        } else {
+            return response()->json(['success' => $ret_resultado]);
+        }
+    }
+
 //--------------------------------------------------------------------------------------------------
     /**
      * Cerrar sesión:
@@ -1371,6 +1426,11 @@ class UsersController extends Controller
      * Borrar caché del navegador para que al dar hacia atrás no vuelva a la pagina anterior y que no pueda acceder a su cuenta de ninguna manera
      */
     public function close (){
+        $ruta_archivo = public_path('photos/my_image.JPG');
+        if (File::exists($ruta_archivo)) {
+            File::delete($ruta_archivo);
+        }
+
         Auth::logout();
         return view('users.close');
     }
