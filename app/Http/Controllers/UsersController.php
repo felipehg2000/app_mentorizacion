@@ -41,7 +41,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-01 11:52:59
+ * @Last Modified time: 2024-05-02 12:00:22
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -1310,6 +1310,30 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function modify_img_perf(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+        $tipo_img = Auth::user()->IMAGE;
+        return view('users.change_img_perf', compact('tipo_img'));
+    }
+
+    public function modify_img_perf_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        $usuario = User::find(Auth::user()->id);
+        $usuario->image = $request->img_seleccionada;
+        $usuario->save();
+
+        $ruta_original = public_path('photos/Perfiles/' . $request->img_seleccionada);
+        $ruta_clon     = public_path('photos/my_image.JPG');
+        File::copy($ruta_original, $ruta_clon);
+
+        return response()->json(['success' => true]);
+    }
+
 //--------------------------------------------------------------------------------------------------
     /**
      * Borrar usuario
@@ -1356,7 +1380,7 @@ class UsersController extends Controller
             return view('users.close');
         }
     }
-//--------------------------------------------------------------------------------------------------
+
     public function delete_store(Request $request){
         if (Auth::check()){
             $user = User::findOrFail(Auth::user()->id);

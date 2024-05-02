@@ -38,7 +38,8 @@
         var url_informacion            = "{{ route('users.tutorial'       ) }}";
         var url_novedades              = "{{ route('users.news'           ) }}";
         var url_modificar_mis_datos    = "{{ route('users.modify'         ) }}";
-        var url_change_password        = "{{ route('users.modify_password')}}"
+        var url_change_password        = "{{ route('users.modify_password') }}";
+        var url_change_porfile_img     = "{{ route('users.modify_img_perf') }}";
         var url_eliminar_mi_cuenta     = "{{ route('users.delete'         ) }}";
         var url_cerrar_sesion          = "{{ route('users.close'          ) }}";
 
@@ -57,7 +58,8 @@
     <!--Parte de la navegación-->
     <nav>
         <img src = " {{ asset('photos/logo_blanco.JPG') }}" class="logo">
-        <img src = " {{ asset('photos/my_image.JPG') }} " class="perfil_image">
+        <!--Ponemos el time() para que no cargue la que tiene en caché-->
+        <img src = " {{ asset('photos/my_image.JPG') }} ? {{ time() }}" class="perfil_image">
     </nav>
     <!--Pantalla sin la parte de la navegación-->
     <div class="pnlMain">
@@ -87,7 +89,8 @@
 
                 <div class="menu">Gestión de usuario        </div>
                     <div class="submenu" id="submenu_10" onclick="redirection(10)">Modificar mis datos <div class='notification' id='notification_10'></div></div>
-                    <div class="submenu" id="submenu_13" onclick="redirection(14)">Modificar contraseña<div class='notification' id='notification_14'></div></div>
+                    <div class="submenu" id="submenu_14" onclick="redirection(14)">Modificar contraseña<div class='notification' id='notification_14'></div></div>
+                    <div class="submenu" id="submenu_15" onclick="redirection(15)">Modificar imagen    <div class='notification' id='notification_15'></div></div>
                     <div class="submenu" id="submenu_11" onclick="redirection(11)">Eliminar mi cuenta  <div class='notification' id='notification_11'></div></div>
                     <div class="submenu" id="submenu_12" onclick="redirection(12)">Cerrar sesión       <div class='notification' id='notification_12'></div></div>
             </div>
