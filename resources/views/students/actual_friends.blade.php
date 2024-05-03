@@ -61,8 +61,8 @@
                 <input class='radio' type="radio" id="op4" name="reason" value="Nombre ofensivo o inapropiado: Apología del odio, obscenidades u otro tipo de lenguaje ofensivo">
                 <label for="op4">Nombre ofensivo o inapropiado: Apología del odio, obscenidades u otro tipo de lenguaje ofensivo</label><br><br>
 
-                <input class='radio' type="radio" id="op4" name="reason" value="Cuenta falsa: Se hace pasar por otra persona o no es quien dice ser">
-                <label for="op4">Cuenta falsa: Se hace pasar por otra persona o no es quien dice ser</label><br><br><br>
+                <input class='radio' type="radio" id="op5" name="reason" value="Cuenta falsa: Se hace pasar por otra persona o no es quien dice ser">
+                <label for="op5">Cuenta falsa: Se hace pasar por otra persona o no es quien dice ser</label><br><br><br>
             </div>
 
             <div class="PanelBotones">
