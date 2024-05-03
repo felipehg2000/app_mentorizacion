@@ -14,9 +14,9 @@ function AdminClickTable(param_user_id){
         data  : data
     }).done(function(respuesta){
         if(respuesta.success){
-            MostrarMensajeError('Usuario borrado correctamente');
+            MostrarMensajeError('Usuario borrado correctamente', true);
         } else {
-            MostrarMensajeError('El usuario no se ha podido borrar. No se ha encontrado o quería eliminar su propia cuenta');
+            MostrarMensajeError('El usuario no se ha podido borrar. No se ha encontrado o quería eliminar su propia cuenta', true);
         }
 
         $('#data_table_name').DataTable().ajax.reload();

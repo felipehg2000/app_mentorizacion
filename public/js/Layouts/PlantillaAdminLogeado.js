@@ -131,25 +131,29 @@ function CambiarOpcionDeColoresYMostrarCubierta(){
 
     document.getElementById('pnlCarga').style.visibility = 'hidden';
 }
-
-function aceptarPnlRespuestaEmergente(){
-    document.getElementById("pnlOscurecer"            ).style.visibility = "hidden" ;
-    document.getElementById("pnlRespuestaEmergente"   ).style.visibility = "hidden" ;
-    document.getElementById('btnAceptarEmergente'     ).style.visibility = "visible";
-
-    document.getElementById('btnCancelarEmergente').innerText = "Cancelar" ;
-}
 //--------------------------------------------------------------------------------------------------
 /**
  * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
  *
  * @param {Texto que saldrá en el mensaje de error} param_texto
  */
-function MostrarMensajeError(param_texto){
+function MostrarMensajeError(param_texto, param_hacer_visible){
 
     document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
 
-    document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
-    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
+    if (param_hacer_visible) {
+        document.getElementById('pnlRespuestaEmergente').style.top = '40px';
+        document.getElementById('pnlRespuestaEmergente').style.visibility= 'visible';
+        document.getElementById('pnlRespuestaEmergente').classList.add('mostrar_animacion');
+        InicializarTemporizadorMensajeAviso();
+    } else {
+        document.getElementById('pnlRespuestaEmergente').style.visibility= 'hidden';
+        document.getElementById('pnlRespuestaEmergente').classList.remove('mostrar_animacion');
+    }
 }
 //--------------------------------------------------------------------------------------------------
+function InicializarTemporizadorMensajeAviso(){
+    setTimeout(function() {
+        MostrarMensajeError('', false);
+    }, 4000); //Se ejecuta medio segundo después
+}

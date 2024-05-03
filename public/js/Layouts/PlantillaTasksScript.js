@@ -82,32 +82,19 @@ function downloadTask(pragma_usuario_id){
             responseType: 'blob' // Esperamos un tipo de dato Blob (archivo)
         }
     }).done(function(respuesta){
-         // Crear un objeto Blob con la respuesta recibida
-         var blob = new Blob([respuesta], {type: 'application/pdf'});
-         // Crear una URL para el Blob
-         var url = window.URL.createObjectURL(blob);
-         // Crear un enlace <a> para descargar el archivo
-         var a = document.createElement('a');
-         a.href = url;
-         a.download = pragma_usuario_id + '_' + id_task + '.pdf';
-         document.body.appendChild(a);
-         a.click();
-         // Limpiar el objeto URL creado
-         window.URL.revokeObjectURL(url);
+        // Crear un objeto Blob con la respuesta recibida
+        var blob = new Blob([respuesta], {type: 'application/pdf'});
+        // Crear una URL para el Blob
+        var url = window.URL.createObjectURL(blob);
+        // Crear un enlace <a> para descargar el archivo
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = pragma_usuario_id + '_' + id_task + '.pdf';
+        document.body.appendChild(a);
+        a.click();
+        // Limpiar el objeto URL creado
+        window.URL.revokeObjectURL(url);
     })
-}
-//--------------------------------------------------------------------------------------------------
-/**
- * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
- *
- * @param {Texto que saldrá en el mensaje de error} param_texto
- */
-function MostrarMensajeError(param_texto){
-
-    document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
-
-    document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
-    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
 }
 //--------------------------------------------------------------------------------------------------
 function PushUser(pragma_usuario_id, pragma_usuario_nombre, pragma_usuario_ape, pragma_nombre_lista) {
@@ -132,9 +119,9 @@ function CrearNuevaRespuesta(){
     var fichero = document.getElementById('input_upload').files[0];
 
     if (fichero == null){
-        MostrarMensajeError('Tienes que seleccionar un archivo antes de realizar la entrega');
+        MostrarMensajeError('Tienes que seleccionar un archivo antes de realizar la entrega', true);
     } else if (fichero.type !== 'application/pdf') {
-        MostrarMensajeError('El archivo seleccionado tiene que ser de tipo PDF');
+        MostrarMensajeError('El archivo seleccionado tiene que ser de tipo PDF', true);
     } else {
         /**Como al ser un booleano no puede leer los datos antes de pasarlos porque da error, usamos
          * el tipo de dato FormData para que lea el token pero no el fichero
@@ -156,11 +143,11 @@ function CrearNuevaRespuesta(){
         }).done(function(respuesta){
             if(respuesta.success){
                 texto = 'Tarea subida correctamente';
-                MostrarMensajeError(texto);
+                MostrarMensajeError(texto), true;
                 MostrarPanelTareas();
             } else {
                 texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
-                MostrarMensajeError(param_texto);
+                MostrarMensajeError(param_texto, true);
             }
         });
     }

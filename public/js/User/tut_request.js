@@ -89,7 +89,7 @@ function CrearNuevaTutoria() {
     }
 
     if (!datosCorrectos){
-        MostrarMensajeError(texto);
+        MostrarMensajeError(texto, true);
         return;
     }
 
@@ -126,7 +126,7 @@ function ModificarTutoria(param_id){
     }
 
     if (!datosCorrectos){
-        MostrarMensajeError(texto);
+        MostrarMensajeError(texto, true);
         return;
     }
 
@@ -177,17 +177,4 @@ function FormatearHora(param_hora){
     var horaMinuto = horaFormateada + ":" + minutoFormateado;
 
     return horaMinuto;
-}
-
-/**
- * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
- *
- * @param {Texto que saldrá en el mensaje de error} param_texto
- */
-function MostrarMensajeError(param_texto){
-
-    document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
-
-    document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
-    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
 }

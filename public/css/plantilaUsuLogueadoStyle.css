@@ -242,32 +242,6 @@ div.pnlEmergente{
     z-index: 290;
 }
 
-div.pnlRespuestaEmergente{
-    width : 30%;
-    height: 30%;
-
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    margin: auto;
-
-    position: absolute;
-
-    background-color: white;
-
-    border-radius: 20%;
-    border: solid;
-    border-width: 1px;
-    border-color: red;
-
-    visibility: hidden;
-
-    z-index: 300;
-}
-
-
 div.pnlEmergenteTitulo{
     width : max-content;
     height: 50px;

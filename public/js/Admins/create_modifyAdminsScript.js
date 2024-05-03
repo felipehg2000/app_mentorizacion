@@ -26,7 +26,7 @@ function CrearYModificarAdmins() {
     }
 
     if (!insertar_datos){
-        MostrarMensajeError(mensaje);
+        MostrarMensajeError(mensaje, true);
     } else {
         var data = {
             _token      : csrfToken,
@@ -54,7 +54,7 @@ function CrearYModificarAdmins() {
             data  : data
         }).done(function(respuesta){
             if(respuesta.success){
-                MostrarMensajeError(mensaje_bien)
+                MostrarMensajeError(mensaje_bien, true)
                 if (window.location.href == url_create_admin){
                     document.getElementById('name'        ).value = "";
                     document.getElementById('surname'     ).value = "";
@@ -66,7 +66,7 @@ function CrearYModificarAdmins() {
                 }
             } else {
                 texto = 'No se han encontrado los datos a modificar';
-                MostrarMensajeError(param_texto);
+                MostrarMensajeError(param_texto, true);
             }
         });
     }
@@ -88,15 +88,3 @@ function MouseUpRep(){
     document.getElementById('rep_password').type = 'password';
 }
 //--------------------------------------------------------------------------------------------------
-/**
- * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
- *
- * @param {Texto que saldrá en el mensaje de error} param_texto
- */
-function MostrarMensajeError(param_texto){
-
-    document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
-
-    document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
-    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
-}

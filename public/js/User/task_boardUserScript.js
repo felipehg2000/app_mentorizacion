@@ -83,7 +83,7 @@ function CrearNuevaTarea(){
             FuncionModificarTarea(id_task, titulo, descripcion, fechaForm);
         }
     } else {
-        MostrarMensajeError(texto);
+        MostrarMensajeError(texto, true);
     }
 }
 
@@ -107,7 +107,7 @@ function BorrarTarea(param_id_tarea){
             location.reload()
         } else {
             texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
-            MostrarMensajeError(param_texto);
+            MostrarMensajeError(param_texto, true);
         }
     });
 }
@@ -138,7 +138,7 @@ function FuncionCrearNuevaTarea(param_titulo, param_descripcion, param_fechaForm
             location.reload()
         } else {
             texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
-            MostrarMensajeError(param_texto);
+            MostrarMensajeError(param_texto, true);
         }
     });
 }
@@ -171,7 +171,7 @@ function FuncionModificarTarea(param_id, param_titulo, param_descripcion, param_
             location.reload()
         } else {
             texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
-            MostrarMensajeError(param_texto);
+            MostrarMensajeError(param_texto, true);
         }
     });
 }

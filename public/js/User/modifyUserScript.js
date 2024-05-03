@@ -25,11 +25,9 @@ function aceptarEmergente(){
         data  : datos
     }).done(function(respuesta){
         if (respuesta.success){
-            document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
-            document.getElementById('textoEmergenteRespuesta').innerText        = "Los datos han sido modificados correctamente";
+            MostrarMensajeError('Los datos han sido modificados correctamente', true);
         } else {
-            document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
-            document.getElementById('textoEmergenteRespuesta').innerText        = "Ha ocurrido un error y no se han podido actualizar los datos, pruebe mas tarde por favor";
+            MostrarMensajeError('Ha ocurrido un error y no se han podido actualizar los datos, pruebe mas tarde.', true);
         }
     });
 
@@ -48,7 +46,7 @@ function abrirPnlEmergente(){
        )
         {
             error_encontrado = true;
-            mostrar_emergente_aceptar("Es obligatorio rellenar los campos que contengan un asterisco.");
+            MostrarMensajeError("Es obligatorio rellenar los campos que contengan un asterisco.");
         }
 
     console.log(document.getElementById("tipo_usuario").value);
@@ -59,7 +57,7 @@ function abrirPnlEmergente(){
         var valorEntero = parseInt(valFirstYear, 10);
 
         if (valorEntero < 1800 || valorEntero > 2024 && !error_encontrado){
-            mostrar_emergente_aceptar("El año de comienzo de la carrera debe estar entre 1800 y 2024");
+            MostrarMensajeError("El año de comienzo de la carrera debe estar entre 1800 y 2024");
             error_encontrado = true;
         }
 
@@ -67,7 +65,7 @@ function abrirPnlEmergente(){
         valorEntero     = parseInt(valDuracion, 10);
 
         if (valorEntero < 1 || valorEntero > 10 && !error_encontrado) {
-            mostrar_emergente_aceptar("La duración tiene que estar entre los valores 1 y 10");
+            MostrarMensajeError("La duración tiene que estar entre los valores 1 y 10");
             error_encontrado = true;
         }
     }
@@ -80,12 +78,4 @@ function abrirPnlEmergente(){
         document.getElementById("textoEmergente").innerText = "¿Está seguro de que quiere modificar los datos de esta cuenta?";
     }
 
-}
-
-function mostrar_emergente_aceptar(paramTexto){
-    document.getElementById('btnEmergenteCancelar'   ).click();
-
-    document.getElementById("pnlOscurecer"           ).style.visibility = "visible";
-    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
-    document.getElementById('textoEmergenteRespuesta').innerText        = paramTexto;
 }

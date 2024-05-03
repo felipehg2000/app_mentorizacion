@@ -34,7 +34,7 @@ function CrearNuevoReport(){
     reason = '';
 
     if (document.querySelector('input[name="reason"]:checked') == null){
-        MostrarMensajeError('Para crear una solicitud de report debe seleccionar una de las opciones mostradas.');
+        MostrarMensajeError('Para crear una solicitud de report debe seleccionar una de las opciones mostradas.', true);
         return;
     }
 
@@ -52,16 +52,8 @@ function CrearNuevoReport(){
         data  : data
     }).done(function(respuesta){
         if (respuesta.success){
-            MostrarMensajeError('Reportado correctamente');
+            MostrarMensajeError('Reportado correctamente', true);
             CerrarPanelReport();
         }
     });
-}
-
-function MostrarMensajeError(param_texto){
-
-    document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
-
-    document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
-    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
 }

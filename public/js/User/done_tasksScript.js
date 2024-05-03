@@ -40,7 +40,7 @@ function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entr
             MostrarPanelFormulario(false);
         } else {
             texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
-            MostrarMensajeError(texto);
+            MostrarMensajeError(texto, true);
         }
     });
 }

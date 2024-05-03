@@ -41,12 +41,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             } else if (respuesta.user_type == 2 && id_usuario_seleccionado == data.data.mi_id) {
                                 PushMessage(data.data.message_id, respuesta2.message, 'pnlMensajeContacto', 'mensajeContacto');
                             }
-
-                            VisibilidadNotificacionNuevoMensaje(true);
-                            InicializarTemporizador();
                         }
                     });
                 }
+
+                VisibilidadNotificacionNuevoMensaje(true);
+                InicializarTemporizador();
             });
 
             if (respuesta.new_messages){
@@ -130,14 +130,6 @@ function cerrarEmergetne(){
     document.getElementById("pnlOscurecer"   ).style.visibility = "hidden";
     document.getElementById("pnlEmergente"   ).style.visibility = "hidden";
     document.getElementById("edtPnlEmergente").style.visibility = "hidden";
-}
-
-function aceptarPnlRespuestaEmergente(){
-    document.getElementById("pnlOscurecer"            ).style.visibility = "hidden" ;
-    document.getElementById("pnlRespuestaEmergente"   ).style.visibility = "hidden" ;
-    document.getElementById('btnAceptarEmergente'     ).style.visibility = "visible";
-
-    document.getElementById('btnCancelarEmergente').innerText = "Cancelar" ;
 }
 
 function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sala_estudio, param_num_alumnos, param_solicitud_mandada){
@@ -303,6 +295,7 @@ function VisibilidadNotificacionNuevoMensaje(param_hacer_visible) {
         document.getElementById('pnlNotificacionMensajeNuevo').classList.add('mostrar_animacion');
     } else {
         document.getElementById('pnlNotificacionMensajeNuevo').style.visibility= 'hidden';
+        document.getElementById('pnlNotificacionMensajeNuevo').classList.remove('mostrar_animacion');
     }
 }
 
@@ -316,6 +309,12 @@ function InicializarTemporizadorTutoria(){
     setTimeout(function() {
         VisibilidadNotificacionNuevoMensaje(false);
     }, 500); //Se ejecuta medio segundo después
+}
+
+function InicializarTemporizadorMensajeAviso(){
+    setTimeout(function() {
+        MostrarMensajeError('', false);
+    }, 4000); //Se ejecuta medio segundo después
 }
 
 /**
@@ -347,5 +346,26 @@ function scrollAlFinal() {
     if (document.getElementById('pnlSobreponerChatDcha').style.visibility == 'hidden'){
         var panel = $('#pnlMensajes')[0]; // Obtenemos el elemento DOM
         panel.scrollTop = panel.scrollHeight; // Hacemos scroll al final
+    }
+}
+
+/**
+ * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
+ *
+ * @param {Texto que saldrá en el mensaje de error} param_texto
+ */
+function MostrarMensajeError(param_texto, param_hacer_visible){
+
+    document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
+
+    if (param_hacer_visible) {
+        document.getElementById('pnlRespuestaEmergente').style.top = '80px';
+        document.getElementById('pnlRespuestaEmergente').style.visibility= 'visible';
+        document.getElementById('pnlRespuestaEmergente').classList.add('mostrar_animacion');
+        InicializarTemporizadorMensajeAviso();
+    } else {
+        document.getElementById('pnlOscurecer').style.visibility = 'hidden';
+        document.getElementById('pnlRespuestaEmergente').style.visibility= 'hidden';
+        document.getElementById('pnlRespuestaEmergente').classList.remove('mostrar_animacion');
     }
 }

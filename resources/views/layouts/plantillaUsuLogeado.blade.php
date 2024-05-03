@@ -134,20 +134,16 @@
             </div>
         </div>
 
-        <div class='pnlRespuestaEmergente' id='pnlRespuestaEmergente'>
-            <div class='pnlEmergenteTitulo'>
-                <i class="fa fa-exclamation-triangle" style="font-size:24px;color:white"></i>
-                <p class="tituloEmergente"> Aviso </p>
+        <div class='pnlMensajeNuevo' id='pnlRespuestaEmergente'>
+            <div class='pnlPrincipalMensajeNuevo' id='textoEmergenteRespuesta'>
+                Nuevo mensaje del chat
             </div>
-            <div class='pnlEmergentePrincipal'>
-                <p class='textoEmergente' id='textoEmergenteRespuesta'>Texto respuesta emergente</p>
-            </div>
-            <div class='pnlEmergenteBotones'>
-                <button class="btnEmergente" id="btnEmergenteAceptar" type="submit" onclick="aceptarPnlRespuestaEmergente()">
-                    Aceptar
-                </button>
+
+            <div class='pnlMensajeNuevoSuperior'>
+                <div class='btnCerrar' onclick="MostrarMensajeError('', false)">x</div>
             </div>
         </div>
+
 
         <div class='pnlMensajeNuevo' id='pnlNotificacionMensajeNuevo'>
             <div class='pnlPrincipalMensajeNuevo'>

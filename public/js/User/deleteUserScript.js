@@ -23,9 +23,7 @@ function aceptarEmergente() {
         } else{
             document.getElementById('btnEmergenteCancelar'   ).click();
 
-            document.getElementById("pnlOscurecer"           ).style.visibility = "visible";
-            document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
-            document.getElementById('textoEmergenteRespuesta').innerText        = "La contraseña es incorrecta por lo que no puede borrar la cuenta";
+            MostrarMensajeError('La contraseña es incorrecta por lo que no puede borrar la cuenta', true);
 
             document.getElementById("edtPnlEmergente").value = "";
         }
@@ -43,13 +41,8 @@ function aceptarEmergenteEspecifico(){
             document.getElementById('btnEmergenteCancelar'   ).click();
 
             window.location.href = url_home;
-
-            document.getElementById("pnlOscurecer"           ).style.visibility = "visible";
-            document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
-            document.getElementById('textoEmergenteRespuesta').innerText        = "Su cuenta ha sido borrada correctamente";
         } else {
-            document.getElementById('pnlRespuestaEmergente'  ).style.visibility = "visible";
-            document.getElementById('textoEmergenteRespuesta').innerText        = "Ha ocurrido algún tipo de error y no se ha podido borrar el usuario, intentelo más tarde";
+            MostrarMensajeError('Ha ocurrido algún tipo de error y no se ha podido borrar el usuario, intentelo más tarde', true);
         }
     })
 }
