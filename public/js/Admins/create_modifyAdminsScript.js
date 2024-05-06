@@ -2,7 +2,7 @@ function CrearYModificarAdmins() {
     var nombre       = document.getElementById('name'        ).value;
     var apellidos    = document.getElementById('surname'     ).value;
     var email        = document.getElementById('email'       ).value;
-    var usuario      = document.getElementById('user'        ).value;
+    var user         = document.getElementById('user'        ).value;
     var password     = document.getElementById('password'    ).value;
     var rep_password = document.getElementById('rep_password').value;
     var description  = document.getElementById('description' ).value;
@@ -33,7 +33,7 @@ function CrearYModificarAdmins() {
             nombre      : nombre   ,
             apellidos   : apellidos,
             email       : email    ,
-            usuario     : usuario  ,
+            user        : user     ,
             password    : password ,
             description : description
         }
@@ -65,8 +65,12 @@ function CrearYModificarAdmins() {
                     document.getElementById('description' ).value = "";
                 }
             } else {
-                texto = 'No se han encontrado los datos a modificar';
-                MostrarMensajeError(param_texto, true);
+                if (!respuesta.validate){
+                    texto = 'El email o usuario ya está registrado, modifiquelo'
+                }else{
+                    texto = 'No se han encontrado los datos a modificar';
+                }
+                MostrarMensajeError(texto, true);
             }
         });
     }
