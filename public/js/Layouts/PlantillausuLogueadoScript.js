@@ -147,7 +147,12 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
 
     if (url_actual == url_tablon_completo){
         id_elemento = "submenu_1";
-        url_opcion_seleccionada = url_task_saw;
+        if(param_user_type == 1){
+            url_opcion_seleccionada = url_task_saw;
+        }else if (param_user_type == 2){
+            url_opcion_seleccionada = url_answer_saw;
+        }
+
         id_div_notificacion = "notification_1";
         if (param_user_type == 1 && !param_tiene_sala_estudio){
             mostrarCubierta = true;
