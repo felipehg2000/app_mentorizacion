@@ -1,3 +1,16 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-16 13:20:26
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-05-16 13:24:28
+ * @Description: Controlador de las vistas create y modify de los administradores.
+ */
+//--------------------------------------------------------------------------------------------------
+/**
+ * Hace las comprobaciones de la información muestra los mensajes de error y en caso de que todo esté correcto
+ * llama al controlador para que lo guarde en la base de datos y gestiona la respuesta.
+ */
 function CrearYModificarAdmins() {
     var nombre       = document.getElementById('name'        ).value;
     var apellidos    = document.getElementById('surname'     ).value;
@@ -75,7 +88,10 @@ function CrearYModificarAdmins() {
         });
     }
 }
-
+//--------------------------------------------------------------------------------------------------
+/**
+ * Funciones para mostrar y ocultar la contraseña cuando el botón de visualización esté pulsado o no
+ */
 function MouseDownPassword(){
     document.getElementById('password').type = 'text';
 }

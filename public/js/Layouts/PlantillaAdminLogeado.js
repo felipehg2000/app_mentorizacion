@@ -1,5 +1,19 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-16 13:26:14
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-05-16 13:29:09
+ * @Description: Controlador padre de todas las vistas del tipo de usuario administrador.
+ *               Contiene las funciones básicas que comparten todas las vistas.
+ */
+
 var admin_id = 0;
 
+/**
+ * Constructor de la vista, función que se ejecuta una vez todos los elementos se han cargado en la vista.
+ * Llama a la función de búsqueda del controlador de la base de datos para ver si hay puntos de notificación que mostrar.
+ */
 document.addEventListener('DOMContentLoaded', function() {
     var data = {
         _token : csrfToken,
@@ -22,6 +36,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 })
 
+/**
+ * Redirigimos la localización de la url a la seleccionada en el menú.
+ *
+ * @param {Índice que corresponde con la opción de menú seleccionada} index
+ */
 function redirection(index) {
     switch(index){
         case 1:
@@ -60,6 +79,11 @@ function redirection(index) {
     }
 }
 
+/**
+ * Modificamos el color de la opción de menú que estamos mostrando.
+ * Mostramos una cubierta si el usuario no puede acceder a esa opción de menú con un mensaje dando una explicación de por qué no puede acceder.
+ * Ocultamos los puntos de notificación y llamamos a la función que decide si estos puntos se muestran o no.
+ */
 function CambiarOpcionDeColoresYMostrarCubierta(){
     var mostrarCubierta = false;
     var url_actual = window.location.href;
@@ -152,6 +176,10 @@ function MostrarMensajeError(param_texto, param_hacer_visible){
     }
 }
 //--------------------------------------------------------------------------------------------------
+/**
+ * Inicializa el temporizador y llama a la función que hay que ejecutar después de esperar el tiempo indicado.
+ * En este caso cierra el panel del mensaje de error
+ */
 function InicializarTemporizadorMensajeAviso(){
     setTimeout(function() {
         MostrarMensajeError('', false);

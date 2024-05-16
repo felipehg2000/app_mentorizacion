@@ -1,12 +1,29 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-16 12:53:51
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-05-16 12:57:27
+ * @Description: Controlador padre de las funcionalidades más generales de todas las opciones de la aplicación para usuarios de tipo estudiante y mentor.
+ */
+
 var channel;
 
-// Enable pusher logging - don't include this in production
-Pusher.logToConsole = true;
+Pusher.logToConsole = false; //Mensajes de consola del pusher, ponerlo en true para debuguear si no en false
 
+/**
+ * Creamos la variable pusher para recivir mensajes en vivo.
+ */
 var pusher = new Pusher('7b7c6d7f8ba7188308b6', {
     cluster: 'eu'
 });
 
+/**
+ * Constructor de la vista. Una vez todo está cargado se ejecuta esta función. Llama a una función del controlador para
+ * recibir datos generales que necesita para terminar de construir la vista. Muestra los puntos de notificación y da funcionalidad
+ * a la llegada y envio de mensajes del chat sincrono para poder hacer la sincronía, montando el canal y controlando que se muestre
+ * en caso de que llegue el mensaje cuando se está dentro del chat.
+ */
 document.addEventListener('DOMContentLoaded', function() {
     var data = {
         _token : csrfToken,
@@ -76,6 +93,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 })
 
+/**
+ * Redirigimos la localización de la url a la seleccionada en el menú.
+ *
+ * @param {Índice que corresponde con la opción de menú seleccionada} index
+ */
 function redirection(index) {
     switch(index){
         case 1:
@@ -132,6 +154,16 @@ function cerrarEmergetne(){
     document.getElementById("edtPnlEmergente").style.visibility = "hidden";
 }
 
+/**
+ * Modificamos el color de la opción de menú que estamos mostrando.
+ * Mostramos una cubierta si el usuario no puede acceder a esa opción de menú con un mensaje dando una explicación de por qué no puede acceder.
+ * Ocultamos los puntos de notificación y llamamos a la función que decide si estos puntos se muestran o no.
+ *
+ * @param {Tipo de usuario que está logeado, mentor 2 o estudiante 1} param_user_type
+ * @param {Booleano que nos dice si el estudiante tiene o no una sala de estudio asignada} param_tiene_sala_estudio
+ * @param {Integer que nos dice el número de alumnos que hay en una sala de estudios} param_num_alumnos
+ * @param {Booleano que nos dice si el estudiante ha mandado alguna solicitud de amistad o no} param_solicitud_mandada
+ */
 function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sala_estudio, param_num_alumnos, param_solicitud_mandada){
     var url_actual              = window.location.href;
     var id_elemento             = ''   ;
@@ -294,6 +326,10 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
     document.getElementById('pnlCarga').style.visibility = 'hidden';
 }
 
+/**
+ *
+ * @param {Booleano que determina si hacemos visible u ocultamos el panel} param_hacer_visible
+ */
 function VisibilidadNotificacionNuevoMensaje(param_hacer_visible) {
     if (param_hacer_visible) {
         document.getElementById('pnlNotificacionMensajeNuevo').style.visibility= 'visible';
@@ -304,18 +340,27 @@ function VisibilidadNotificacionNuevoMensaje(param_hacer_visible) {
     }
 }
 
+/**
+ * Inicializamos temporizador y llamamos a la función que tiene que ejecutarse al finalizar el tiempo de espera
+ */
 function InicializarTemporizador(){
     setTimeout(function() {
         VisibilidadNotificacionNuevoMensaje(false);
     }, 4000); //Se ejecuta después de 4 segundos
 }
 
+/**
+ * Inicializamos temporizador y llamamos a la función que tiene que ejecutarse al finalizar el tiempo de espera
+ */
 function InicializarTemporizadorTutoria(){
     setTimeout(function() {
         VisibilidadNotificacionNuevoMensaje(false);
     }, 500); //Se ejecuta medio segundo después
 }
 
+/**
+ * Inicializamos temporizador y llamamos a la función que tiene que ejecutarse al finalizar el tiempo de espera
+ */
 function InicializarTemporizadorMensajeAviso(){
     setTimeout(function() {
         MostrarMensajeError('', false);
@@ -347,6 +392,9 @@ function PushMessage(param_id_chat, param_message, param_name_pnl, param_name_lb
     scrollAlFinal();
 }
 
+/**
+ * Ponemos el scroll del panel del chat en lo más bajo.
+ */
 function scrollAlFinal() {
     if (document.getElementById('pnlSobreponerChatDcha').style.visibility == 'hidden'){
         var panel = $('#pnlMensajes')[0]; // Obtenemos el elemento DOM

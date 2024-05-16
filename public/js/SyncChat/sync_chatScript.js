@@ -1,4 +1,14 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-16 13:34:08
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-05-16 13:36:28
+ * @Description: Controlador de la vista sync_chat.
+ */
+
 /**
+ * Oculta la cubierta del chat, muestra el nombre del usuario seleccionado en la parte superior carga los mensajes y deja el scroll al final del panel
  *
  * @param {Id del usuario del que vamos a abrir el chat} id_chat
  */
@@ -43,6 +53,9 @@ function chat_selected(id_chat){
     })
 }
 
+/**
+ * Llama a la función encargada de guardar el mensaje y lo muestra por pantalla.
+ */
 function SendMessage(){
     var message_tmp = document.getElementById('edtMensajeChat'       ).value;
     var id_chat_sel = document.getElementById('lblIdChatSeleccionado').textContent;
@@ -71,6 +84,8 @@ function SendMessage(){
 
 
 /**
+ * Borra todos los mensajes del panel de mensajes para cambiar de chat.
+ *
  * @param {Nombre del panel del que queremos borrar todo su contenido} param_div_name
  */
 function EmptyPnael(param_div_name){
@@ -81,6 +96,8 @@ function EmptyPnael(param_div_name){
 }
 
 /**
+ * Controlamos que el color del usuario seleccionado cambie para remarcar que está seleccionado. Panel selector de chats.
+ *
  * @param {id del usuario que hemos seleccionado, habrá un componente oculto con esta informaicón para acceder al div que hayamos seleccionado} param_id_selected
  */
 function ModifyBackgroundColorUserSelected(param_id_selected){
