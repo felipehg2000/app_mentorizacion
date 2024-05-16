@@ -1,7 +1,22 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-16 12:21:22
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-05-16 12:29:12
+ * @Description: Controlador de la vista done_tasks.blade. Que corresponde a las opciones de menú tareas hechas y por hacer.
+ *               Formatea las fechas para mostrarlas en los titulos y realiza la funcionalidad de pulsar en el botón de una columna.
+ */
+
 $(document).ready(function(){
         let dataTable = new DataTable('data_table_name');
     });
 //--------------------------------------------------------------------------------------------------
+/**
+ *
+ * @param {Identificador de la tarea que hemos seleccionado                    } param_id_tarea
+ * @param {Booleano que determina si se muestra el botón para subir tareas o no} param_posibilidad_hacer_entrega
+ */
 function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entrega){
     document.getElementById('id_task').innerText = param_id_tarea;
 
@@ -45,6 +60,11 @@ function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entr
     });
 }
 //--------------------------------------------------------------------------------------------------
+/**
+ *
+ * @param {Fecha que tenemos que formatear, viene con el formato de la base de datos} param_fecha
+ * @returns Fecha con formato yyyy-mm-dd para que el imput date la procese
+ */
 function FormatearFecha(param_fecha) {
     var fechaOriginal = param_fecha;
     var fechaCompleta = new Date(fechaOriginal);
