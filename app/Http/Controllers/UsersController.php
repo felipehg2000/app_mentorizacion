@@ -41,7 +41,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-06 21:21:20
+ * @Last Modified time: 2024-05-16 12:17:01
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -468,14 +468,21 @@ class UsersController extends Controller
                     return view('users.task_board',  compact('tipo_usu', 'tasks'));
                 }
                 $id_sala_estudio = $respuesta->STUDY_ROOM_ID;
-            } else if ($tipo_usu == 2) { //Mentor
-                $id_sala_estudio = Auth::user()->id;
-            }
 
-            $tasks = DB::table('TASKS')
+                $tasks = DB::table('TASKS')
                         ->where('study_room_id', $id_sala_estudio)
+                        ->where('logic_cancel', 0)
                         ->orderBy('last_day', 'desc')
                         ->get();
+            } else if ($tipo_usu == 2) { //Mentor
+                $id_sala_estudio = Auth::user()->id;
+
+                $tasks = DB::table('TASKS')
+                        ->where('study_room_id', $id_sala_estudio)
+                        ->orderBy('logic_cancel', 'asc')
+                        ->orderBy('last_day', 'desc')
+                        ->get();
+            }
 
             return view('users.task_board',  compact('tipo_usu', 'tasks'));
         } else {
@@ -576,13 +583,18 @@ class UsersController extends Controller
     }
 
     /**
-     * Borra un registro de la base de datos, el que esté en $request->id_task
+     * Modifica el campo logic_cancel de la tabla tasks con id = $request->id_task
      */
     public function delete_task_store(Request $request){
         if (Auth::check()) {
             $task_id = $request->datos;
             $tarea = Task::where('id', $task_id)->first();
-            $tarea->delete();
+            $tarea->logic_cancel = $request->logic_cancel;
+            try{
+                $tarea->save();
+            }catch(Exception $e) {
+                return response()->json(['success' => false]);
+            }
 
             return response()->json(['success' => true]);
         } else {
@@ -613,6 +625,7 @@ class UsersController extends Controller
                     $query = DB::table('TASKS')
                                 ->join('ANSWERS', 'TASKS.id', '=', 'ANSWERS.TASK_ID')
                                 ->where('TASKS.STUDY_ROOM_ID', $studyRoomId)
+                                ->where('TASKS.LOGIC_CANCEL', 0)
                                 ->select('TASKS.*');
                 } elseif (Auth::user()->USER_TYPE == 2) {
                     $action_code = '<a onclick="MentorClickColumnDataTableTask({{ $model->id }})">
@@ -664,6 +677,7 @@ class UsersController extends Controller
                                 ->leftJoin('ANSWERS', 'TASKS.id', '=', 'ANSWERS.TASK_ID')
                                 ->whereNull('ANSWERS.TASK_ID')
                                 ->where('TASKS.STUDY_ROOM_ID', $studyRoomId)
+                                ->where('TASKS.LOGIC_CANCEL', 0)
                             ->select('TASKS.*');
                 }elseif (Auth::user()->USER_TYPE == 2){
                     $action_code = '<a onclick="MentorClickColumnDataTableTask({{ $model->id }})">
