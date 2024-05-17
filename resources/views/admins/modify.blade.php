@@ -1,3 +1,13 @@
+<!--
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-17 14:23:23
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-05-17 14:23:55
+ * @Description: Vista asociada a la opción de menú "Modificar mis Datos" del tipo de usuario adminstrador
+ */
+-->
 @extends('layouts.plantillaAdminLoegeado')
 
 @section ('style')

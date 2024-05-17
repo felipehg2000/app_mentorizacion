@@ -1,3 +1,13 @@
+<!--
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-17 14:22:53
+ * @Last Modified by:   undefined
+ * @Last Modified time: 2024-05-17 14:22:53
+ * @Description: Vista asociada a la opción de menú Novedades del tipo de usuario adminstrador
+ */
+-->
 @extends('layouts.plantillaAdminLoegeado')
 
 @section ('style')

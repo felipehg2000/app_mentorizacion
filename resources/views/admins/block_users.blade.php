@@ -1,3 +1,13 @@
+<!--
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-17 14:26:49
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-05-17 14:27:24
+ * @Description: Vista asociada a las opciones de menú "Bloquear mentores", "Bloquear estudiantes" "Bloquear administradores" del tipo de usuario adminstrador
+ */
+-->
 @extends('layouts.plantillaAdminLoegeado')
 
 @section ('style')

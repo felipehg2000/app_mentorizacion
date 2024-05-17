@@ -1,3 +1,13 @@
+<!--
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-17 14:20:21
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-05-17 14:21:25
+ * @Description: Vista asociada a la opción de menú Primeros Pasos del apartado Guías de uso para el tipo de usuairo administrador.
+ */
+-->
 @extends('layouts.plantillaAdminLoegeado')
 
 @section ('style')

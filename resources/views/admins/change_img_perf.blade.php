@@ -1,3 +1,14 @@
+<!--
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-17 14:19:13
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-05-17 14:19:54
+ * @Description: Vista asociada a la opción modificar imagen del menú, para el tipo de usuario administrador.
+ */
+
+-->
 @extends('layouts.plantillaAdminLoegeado')
 
 @if ($tipo_usu == 1)
