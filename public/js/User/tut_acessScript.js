@@ -1,3 +1,12 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-17 13:47:57
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-05-17 13:57:27
+ * @Description: Controlador de la vista tut_access.blade.php
+ */
+
 var channel2;
 var contenidoOriginal = "";
 
@@ -5,6 +14,10 @@ var pusher2 = new Pusher('7b7c6d7f8ba7188308b6', {
     cluster: 'eu'
 });
 
+/**
+ * Función que se ejecuta cuando todos los componentes están cargados.
+ * Creamos los CkEditors y abrimos el canal para hacer la comunicación actualizada en tiempo real de los usuarios.
+ */
 document.addEventListener('DOMContentLoaded', function() {
 
     CrearCkEditorMentor();
@@ -50,7 +63,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 })
-
+//--------------------------------------------------------------------------------------------------
+/**
+ * Funciones para crear los CkEditors. Cambiamos los divs por el tipo de componente CkEditor y
+ * añadimos los eventos que vayamso a utilizar, en este caso los siguientes:
+ *      OnChange()
+ *      OnKeyDown()
+ *
+ * También bloqueamos los iconos del CkEditor del usuario contrario al que somos.
+ */
 function CrearCkEditorMentor(){
     ClassicEditor
     .create( document.querySelector( '#textAreaMentor' ), {
@@ -129,17 +150,12 @@ function CrearCkEditorEstudiante(){
         console.error( error );
     } );
 }
-
-/**function ActivarPizarraClick(){
-    if (document.getElementById('pnlPizarra').style.visibility == 'visible'){
-        document.getElementById('pnlPizarra').style.visibility = 'hidden';
-        document.getElementById('btnPizarra').textContent = 'Activar Pizarra';
-    } else {
-        document.getElementById('pnlPizarra').style.visibility = 'visible';
-        document.getElementById('btnPizarra').textContent = 'Desactivar Pizarra';
-    }
-}*/
-
+//--------------------------------------------------------------------------------------------------
+/**
+ * Si el usuario del tipo contrario al nuestro pulsa una tecla en nuestro CkEditor prevenimos la acción,
+ * si somos nosotros quienes la pulsamos mandamos, después de cierto tiempo, la información al otro usuario
+ * para hacer la actualización de la pantalla de ambos en vivo.
+ */
 function MentorPulsaTecla(){
     var tipo_usu = document.getElementById('tipo_usu').textContent;
 
@@ -178,7 +194,10 @@ function EstudiantePulsaTecla(){
             }
         }
 }
-
+//--------------------------------------------------------------------------------------------------
+/**
+ * Prevenimos que las teclas pulsadas, en el CkEditor, hagan su función a excepción de ctl+c
+ */
 function NoGrrabarTeclaExceptoCopiar(){
     var codigoTecla = event.keyCode || event.which;
 
@@ -187,6 +206,12 @@ function NoGrrabarTeclaExceptoCopiar(){
     }
 }
 
+/**
+ * Función a través de la que mandamos la información de nuestro CkEditor al usuario con el que estmos
+ * teniendo la tutoría.
+ *
+ * @param {Texto que está en el CkEditor que corresponde al usuario logeado} param_texto
+ */
 function MandarTexto(param_texto){
     var id_channel = document.getElementById('id_tuto' ).textContent;
 
@@ -203,6 +228,10 @@ function MandarTexto(param_texto){
     });
 }
 
+/**
+ * Solo accesible por los mentores, llama a un controlador de base de datos para actualizar el estado de las tutorías
+ * y muestra la cubierta para que el mentor sepa que la tutoría ha finalizado correctamente.
+ */
 function FinalizarTutoria(){
     var id_tuto = document.getElementById('id_tuto').textContent;
 
@@ -217,7 +246,7 @@ function FinalizarTutoria(){
         data  : data
     }).done(function(respuesta){
         if(respuesta.success){
-            document.getElementById('pnlCubierta').style.visibility = 'visible';
+            document.getElementById('pnlCubierta'       ).style.visibility = 'visible';
             document.getElementById('pnlCubiertaMensaje').style.visibility = 'visible';
             document.getElementById('pnlCubiertaMensaje').textContent = 'La tutoría ha finalizado';
         }

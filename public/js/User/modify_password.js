@@ -1,3 +1,17 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-17 13:40:27
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-05-17 13:41:53
+ * @Description: Controlador asociado a la vista modify_password
+ */
+
+/**
+ * Hacemos las comprobaciones necesarias y llamamos al controlador para que modifique la base de datos.
+ *
+ * @returns Finalización de la función en caso de que algún requisito no se cumpla NULL
+ */
 function ModifyPassword(){
     var actual_p    = document.getElementById('actual_password').value;
     var nueva_p     = document.getElementById('password'       ).value;
@@ -42,6 +56,10 @@ function ModifyPassword(){
     });
 }
 
+//--------------------------------------------------------------------------------------------------
+/**
+ * Funciones para mostrar y ocultar la contraseña según si un botón está siendo pulsado o no
+ */
 function MouseDownActual(){
     document.getElementById('actual_password').type = 'text';
 }

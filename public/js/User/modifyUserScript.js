@@ -1,3 +1,15 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-17 13:43:03
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-05-17 13:45:50
+ * @Description: Controlador de la vista asociado a modify.blade.php para los usuarios de tipo estudiante y mentor.
+ */
+
+/**
+ * Coge todos los datos del formulario y llama al controlador para que actualice la base de datos.
+ */
 function aceptarEmergente(){
     var datos = {
         _token       : csrfToken                                     ,
@@ -34,6 +46,9 @@ function aceptarEmergente(){
     document.getElementById("btnEmergenteCancelar").click();
 }
 
+/**
+ * Hace las comprobaciones necesarias y abre el panel emergente para preguntar si el usuario quiere realmente realizar los cambios
+ */
 function abrirPnlEmergente(){
     var error_encontrado = false;
 
@@ -48,8 +63,6 @@ function abrirPnlEmergente(){
             error_encontrado = true;
             MostrarMensajeError("Es obligatorio rellenar los campos que contengan un asterisco.");
         }
-
-    console.log(document.getElementById("tipo_usuario").value);
 
     if (document.getElementById("tipo_usuario").value === "1"){
         console.log("Entra");
