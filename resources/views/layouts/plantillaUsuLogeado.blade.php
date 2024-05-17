@@ -123,6 +123,7 @@
                 <br>
                 <input class="edtPnlEmergente" id="edtPnlEmergente" type="password" placeholder="Introduzca su contraseña">
             </div>
+            <br>
             <div class="pnlEmergenteBotones">
                 @csrf
                 <button class="btnEmergente" id="btnEmergenteAceptar" type="submit" onclick="aceptarEmergente()">
