@@ -41,7 +41,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-16 12:17:01
+ * @Last Modified time: 2024-05-22 00:33:53
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -53,6 +53,10 @@ use App\Events\TutUpdateEvent;
 class UsersController extends Controller
 {
 //--------------------------------------------------------------------------------------------------
+    /**
+     * Devuelve la vista de reportes de los usuarios para el tipo de usuario administrador
+     * con la consulta del data table cargada.
+     */
     public function rep_requests(){
         if (!Auth::check()){
             return view('users.close');
@@ -70,6 +74,10 @@ class UsersController extends Controller
         return $dataTable->render('admins.report_requests');
     }
 
+    /**
+     * Devuelve la vista de la opción de bloquear mentores para el tipo de usuario administrador
+     * con la consulta del data table cargada.
+     */
     public function block_mentores(){
         if (!Auth::check()){
             return view('users.close');
@@ -101,6 +109,10 @@ class UsersController extends Controller
         return $dataTable->render('admins.block_users');
     }
 
+    /**
+     * Devuelve la vista de la opción de bloquear estudiantes para el tipo de usuario administrador
+     * con la consulta del data table cargada.
+     */
     public function block_students(){
         if (!Auth::check()){
             return view('users.close');
@@ -132,6 +144,11 @@ class UsersController extends Controller
         return $dataTable->render('admins.block_users');
     }
 
+    /**
+     * Devuelve la vista de la opción de bloquear administradores para el tipo de usuario administrador
+     * con la consulta del data table cargada. Solo es accesible para el administrador con id = 1 que
+     * será el superadmin.
+     */
     public function block_admins(){
         if (!Auth::check()){
             return view('users.close');
@@ -164,6 +181,14 @@ class UsersController extends Controller
         return $dataTable->render('admins.block_users');
     }
 
+    /**
+     * Actualizamos la base de datos para poner el dato BANNED del usuario seleccionado a 0 o 1 dependiendo del
+     * valor que tenga en el momento actual
+     *
+     * @param {Tiene solo un argumento, el id del usuario que queramos banear} request
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si el update de la base de datos se hace correctamente se hace una respuesta true a la llamada ajax}
+     */
     public function bann_people_store(Request $request){
 
         if(!Auth::check()){
@@ -184,6 +209,10 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado devolveremos la vista de tutorial para el tipo de usuario administrador}
+     */
     public function admin_tut(){
         if (!Auth::check()){
             return view('users.close');
@@ -192,6 +221,10 @@ class UsersController extends Controller
         return view('admins.tutorial');
     }
 
+    /**
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado devolveremos la vista de novedades para el tipo de usuario administrador}
+     */
     public function admin_news(){
         if (!Auth::check()){
             return view('users.close');
@@ -200,6 +233,10 @@ class UsersController extends Controller
         return view('admins.news');
     }
 
+    /**
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado devolveremos la vista de crear administradores para el tipo de usuario superadmin. Admin con id = 1}
+     */
     public function create_admin(){
         if (!Auth::check()){
             return view('users.close');
@@ -208,6 +245,14 @@ class UsersController extends Controller
         return view('admins.create');
     }
 
+    /**
+     * Creamos tuplas nuevas de USUARIOS para el tipo de usuario administrador.
+     *
+     * @param  {Vector con los datos del formulario create del tipo de usuario admin, los de la tabla USUARIOS. (NOMBRE, APELLIDOS, EMAIL, USUARIO, CONTRASEÑA, DESCRIPCIÓN)} request
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado y la validación de datos es incorrecta devolvemos un false en respuesta ajax especificando el tipo}
+     *         {Si la tupla de la base de datos se crea correctamente devolvemos un true en respuesta ajax}
+     */
     public function create_admin_store(Request $request){
         if (!Auth::check()){
             return view('users.close');
@@ -240,6 +285,10 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado devolveremos la vista de modificar datos, con los datos del usuario logueado}
+     */
     public function modify_admin(){
         if (!Auth::check()){
             return view('users.close');
@@ -256,6 +305,15 @@ class UsersController extends Controller
         return view('admins.modify', ['admin' => $admin]);
     }
 
+    /**
+     * Modificamos los datos de la tabla USUARIOS de la tupla con id igual al usuario logueado.
+     *
+     * @param  {Vector con los datos del formulario modificar del tipo de usuario admin, los de la tabla USUARIOS. (NOMBRE, APELLIDOS, EMAIL, USUARIO, CONTRASEÑA, DESCRIPCIÓN)} request
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado y la validación de datos es incorrecta devolvemos un false en respuesta ajax especificando el tipo}
+     *         {Si hay un usuario logueado y el usuario a modificar no se encuentra devolveremos un false en la respuesta ajax especificando el tipo}
+     *         {Si la tupla de la base de datos se modifica correctamente devolvemos un true en respuesta ajax}
+     */
     public function modify_admin_store(Request $request){
         if (!Auth::check()){
             return view('users.close');
@@ -293,6 +351,12 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * Mostramos el data table con la consulta cargada con todos los administradores excepto el superadmin.
+     *
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado devolveremos la vista de borrar administradores para el tipo de usuario superadmin, admin con id = 1}
+     */
     public function delete_admins(){
         if (!Auth::check()){
             return view('users.close');
@@ -325,6 +389,15 @@ class UsersController extends Controller
         return $dataTable->render('admins.delete');
     }
 
+    /**
+     * Eliminamos los datos de la tabla USUARIOS de la tupla con id igual al usuario logueado.
+     *
+     * @param  {Identificador del usuario administrador que queramos eliminar} request
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado y el id a eliminar es el nuestro propio, el del superadmin, devolvemos false en la respuesta ajax}
+     *         {Si no se encuentra el usuario con el id parametrizado devolvemos false en la respuesta ajax}
+     *         {Si la tupla de la base de datos se elimina correctamente devolvemos un true en respuesta ajax}
+     */
     public function delete_admins_store(Request $request){
         if (!Auth::check()){
             return view('users.close');
@@ -346,16 +419,19 @@ class UsersController extends Controller
 
 //--------------------------------------------------------------------------------------------------
     /**
-     * Iniciar sesión
-     * ==============
-     * Función index, muestra la ventana de inicio de sesión. en la función store se controla el inicio de sesión, es decir
-     * se comprueba la contraseña y el usuario con la base de datos y en caso de que exista se coge el rol del usuario para
-     * redireccionarlo a la vista adecuada.
+     * @return {Devolvemos la vista del inicio de sesión}
      */
     public function index(){
         return view('users.index');
     }
 
+    /**
+     * Comprobamos usuario y contraseña y en caso de encontrar un usuario, cogemos imagen de perfil logeamos y redireccionamos.
+     *
+     * @param {Vector con usuario y contraseña puestos en el formulario}
+     * @return {Mensaje de error en caso de que el usuario y la contrseña no sean correctos}
+     *         {Si el usuario y la contraseña son correctos devolvemos la vista correspondiente al tipo de usuario que haya iniciado sesión}
+     */
     public function store(Request $request){
         $validacion = $request->validate([
             'user'     => ['max:30', 'required'],
@@ -389,6 +465,15 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * Hacemos las consultas de base de datos necesarias para pasar todos los datos a la función js que controla que mostrar en cada opción.
+     * Puntos de notificación cubiertas con sus mensajes específicos...
+     *
+     * @param {Vacío}
+     * @return {Si el usuario no está logueado devolvemos un false en la respuesta ajax}
+     *         {Si el usuario está logueado y es un administrador devolvemos true con id del administrador y puntos de notificación a activar en la respuesta ajax}
+     *         {Si el usuario está logueado y no es un administrador devolveremos true con los datos necesarios para mostrar la pantalla correctamente}
+     */
     public function info_inicial_store(Request $request){
         if (!Auth::check()){
             return response()->json(['success' => false]);
