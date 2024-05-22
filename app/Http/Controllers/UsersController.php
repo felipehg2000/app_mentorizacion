@@ -692,7 +692,6 @@ class UsersController extends Controller
      *      Mentor    : le mostrará las tareas cuyas fechas de último día ha pasado ya.
      *      Estudiante: le mostrará sus tareas que aún no tienen una respuesta asociada
      * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
-     *
      *         {Si el usuario está logueado devolvemos la vista done_tasks con la consulta correspondiente}
      */
     public function done_tasks(){
@@ -1429,6 +1428,10 @@ class UsersController extends Controller
     }
 //--Gestión de la modificación de usuarios----------------------------------------------------------
 
+    /**
+     * @return  {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *          {Si hay un usuario logueado devolveremos la vista para modificar los datos del usuario con los datos actuales de este}
+     */
     public function modify(){
         if (Auth::check()){
             $data = [
@@ -1462,6 +1465,12 @@ class UsersController extends Controller
 
     }
 
+    /**
+     * @param {Vector con todos los datos de un usuario, también los datos asociados al tipo de usuario que es} request
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {En caso de que alguna tupla no se pueda guardar correctamente devolveremos false en la respuesta ajax}
+     *         {Si todas las tuplas se modifican correctamente devolveremos true en la respuesta ajax}
+     */
     public function modify_store(Request $request){
         if (Auth::check()){
             $id = Auth::user()->id;
@@ -1597,16 +1606,8 @@ class UsersController extends Controller
 
 //--Gestión de la eliminación de usuarios-----------------------------------------------------------
     /**
-     * Borrar usuario
-     * ==============
-     * En la función delete se cargan los datos en una variable y se pasan a la vista para que los muestre, se bloquea para que el usuario
-     * no pueda modificar los datos.
-     * Función delete_store se borran los datos y se redirige a la ventana de home.
-     *
-     * TO DO:
-     * ======
-     * Pedir la contraseña antes de borrar los datos, para asegurarnos de que realmente quieren borrar los datos.
-     * Borrar la caché de la pagina web para que al darle atrás no vaya a ninguna página.
+     * @return  {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *          {Si hay un usuario logueado devolveremos la vista para eliminar los datos del usuario con los datos actuales de este}
      */
     public function delete(){
         if (Auth::check()) {
@@ -1642,6 +1643,10 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * @return  {Si no hay usuario logueado devolvemos false como respuesta ajax}
+     *          {Si el usuario está logueado y podemos borrarlo correctamente devolvemos true como respuesta ajax}
+     */
     public function delete_store(Request $request){
         if (Auth::check()){
             $user = User::findOrFail(Auth::user()->id);
@@ -1652,6 +1657,12 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * @param {Contraseña que el usuario ha introducido para corroborar su identidad} request->password
+     * @return {Si no hay usuario logueado devolvemos false como respuesta ajax}
+     *         {Si un usuario está logueado pero la contraseña introducida no coincide con la contraseña del usuario logueado devolvemos false como respuesta ajax}
+     *         {Si un usuario está logueado y la contraseña introducida coincide con la contraseña del usuario logueado devolvemos tdrue como respuesta ajax}
+     */
     public function check_password_store(Request $request){
         $ret_resultado = false;
         if (Auth::check()){
@@ -1686,6 +1697,9 @@ class UsersController extends Controller
         return view('users.close');
     }
 //--Funciones auxiliares----------------------------------------------------------------------------
+    /**
+     * @param {Todos los datos asociados a la creación de usuarios (Nombre, apellidos, email, usuario, contraseña, campo de estudio y tipo de usuario)}request
+     */
     private function validate_user_data(Request $request){
         $validacion = $request->validate([
             'name'          => ['max:30' , 'min:5', 'required'                ],
@@ -1701,6 +1715,10 @@ class UsersController extends Controller
         ]);
     }
 
+    /**
+     * @param {Todos los datos asociados a la tabla USERS}
+     * @return {Modelo User relleno con los datos}
+     */
     private function complet_users_model(Request $request){
         $user              = new User();
         $user->name        = $request->name;
@@ -1716,6 +1734,11 @@ class UsersController extends Controller
         return $user;
     }
 
+    /**
+     * @param {Modelo relacionado con el usuario} user
+     *        {Datos relacionados con el tipo específico del usuario, en este caso estudiante} request
+     * @return {Modelo de estudiante relleno}
+     */
     private function complet_students_model(User $user, Request $request){
 
         $student             = new Student();
@@ -1731,6 +1754,11 @@ class UsersController extends Controller
         return $student;
     }
 
+    /**
+     * @param {Modelo relacionado con el usuario} user
+     *        {Datos relacionados con el tipo específico del usuario, en este caso mentor} request
+     * @return {Modelo de mentor relleno}
+     */
     private function complet_mentors_model(User $user, Request $request){
         $mentor          = new Mentor();
         $mentor->user_id = User::where('USER' , $user->user)
@@ -1743,6 +1771,11 @@ class UsersController extends Controller
         return $mentor;
     }
 
+    /**
+     * Crea una entrada en la tabla STUDY_ROOMS
+     *
+     * @param {Identificador del usuario mentor} param_mentor_idç
+     */
     private function CreateStudyRoom($param_mentor_id) {
         $study_room = new Study_room();
 
@@ -1752,6 +1785,13 @@ class UsersController extends Controller
         $study_room->save();
     }
 
+    /**
+     * Crea una entrada en la tabla SYNCHRONOUS_MESSAGES
+     *
+     * @param {Identificador del usuario mentor en la conversación} param_study_room_id
+     *        {Identificador del usuario estudiante en la conversación} param_study_room_access_id
+     *        {Mensaje mandado de un usuario a otro} param_message
+     */
     private function CreateSynchronousMessage($param_study_room_id, $param_study_room_acces_id, $param_message){
         $sync_message = new Synchronous_message();
 
@@ -1769,6 +1809,16 @@ class UsersController extends Controller
         $sync_message->save();
     }
 
+    /**
+     * Crea una entrada para la tabla TASKS con los datos parametrizados y una entrada por estudiante está en la sala de estudios para la
+     * tabla SEEN_TASKS
+     *
+     * @param {Identificador de la tarea que vamos a crear} param_study_room_id
+     *        {Título de la tarea que vamos a crear} param_titulo
+     *        {Descripción de la tarea que vamos a crear} param_description
+     *        {Fecha de finalización de la tarea que vamos a crear} param_fecha_hasta
+     *        {Fecha de creación de la tarea que vamos a crear} param_fecha_creacion
+     */
     private function CreateTask($param_study_room_id, $param_titulo, $param_descripcion, $param_fecha_hasta, $param_fecha_creacion){
         $task = new Task();
 
@@ -1800,6 +1850,14 @@ class UsersController extends Controller
 
     }
 
+    /**
+     * Crea una entrada para la tabla Tutorings con los datos parametrizados
+     *
+     * @param {Identificador del mentor de la tutría que vamos a crear} param_study_room_id
+     *        {Identificador del estudiante de la tutría que vamos a crear} param_study_room_acces_id
+     *        {Fecha y hora  de la tutría que vamos a crear} param_date
+     *        {Estado de la tutría que vamos a crear} param_status
+     */
     private function CreateTutoring($param_study_room_id, $param_study_room_acces_id, $param_date, $param_status){
         $tutoring = new Tutoring();
 
@@ -1812,6 +1870,13 @@ class UsersController extends Controller
         $tutoring->save();
     }
 
+    /**
+     * Crea una entrada para la tabla ANSWERS con los datos parametrizados
+     *
+     * @param {Identificador de la tarea asociada a la respuesta que vamos a crear} param_task_id
+     *        {Identificador del estudiante asociado a la respuesta que vamos a crear} param_study_room_access_id
+     *        {Nombre del archivo que se ha subido al storage asociado a la respuesta que vamos a crear} param_name
+     */
     private function CreateAnswer($param_task_id, $param_study_room_acces_id, $param_name) {
         $answer = new Answer();
 
@@ -1822,13 +1887,25 @@ class UsersController extends Controller
         $answer->save();
     }
 
+    /**
+     * @param {Frase o palabra que queremos cifrar} clave
+     * @return {Texto cifrado asociado a la clave que nos han pasado por parametro}
+     */
     private function cifrate_private_key ($clave){
         $key  = 'clave_de_cifrado_de_32_caracteres';
 
         return openssl_encrypt($clave, 'aes-256-ecb', $key);
     }
 
+    /**
+     * @param {Texto o palabra que queremos descifrar} request->message
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado devolveremos true y el texto descifrado a la petición ajax}
+     */
     public function decrypt_info_store (Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
         $key  = 'clave_de_cifrado_de_32_caracteres';
         $message = openssl_decrypt($request->message, 'aes-256-ecb', $key);
 
