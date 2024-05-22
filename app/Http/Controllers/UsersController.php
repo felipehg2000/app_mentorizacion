@@ -52,7 +52,7 @@ use App\Events\TutUpdateEvent;
 
 class UsersController extends Controller
 {
-//--------------------------------------------------------------------------------------------------
+//--Gestión de las funciones de los administradores-------------------------------------------------
     /**
      * Devuelve la vista de reportes de los usuarios para el tipo de usuario administrador
      * con la consulta del data table cargada.
@@ -417,7 +417,7 @@ class UsersController extends Controller
         }
     }
 
-//--------------------------------------------------------------------------------------------------
+//--Gestión del inicio de sesión--------------------------------------------------------------------
     /**
      * @return {Devolvemos la vista del inicio de sesión}
      */
@@ -533,7 +533,7 @@ class UsersController extends Controller
                                  'solicitud_mandada'   => $tiene_solicitudes]);
     }
 
-//--------------------------------------------------------------------------------------------------
+//--Gestión del tablón de tareas--------------------------------------------------------------------
     /**
      * Selecciona las tareas que hay en una sala de estudio y devuelve una vista con esas tareas.
      */
@@ -686,10 +686,14 @@ class UsersController extends Controller
             return view('users.close');
         }
     }
-//--------------------------------------------------------------------------------------------------
+//--Gestión de los resumenes de tareas--------------------------------------------------------------
     /**
-     * Mentor    : le mostrará las tareas cuyas fechas de último día ha pasado ya.
-     * Estudiante: le mostrará sus tareas que aún no tienen una respuesta asociada
+     * Devolvemos la vista de la opción tareas finalizadas con la consulta del data table cargada de la siguiente manera:
+     *      Mentor    : le mostrará las tareas cuyas fechas de último día ha pasado ya.
+     *      Estudiante: le mostrará sus tareas que aún no tienen una respuesta asociada
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *
+     *         {Si el usuario está logueado devolvemos la vista done_tasks con la consulta correspondiente}
      */
     public function done_tasks(){
 
@@ -741,8 +745,12 @@ class UsersController extends Controller
     }
 
     /**
-     * Mentor    : le mostrará las tareas cuyas fechas de último día aún no ha pasado.
-     * Estudiante: le mostrará las tareas que tienen asociada una entrega
+     * Devolvemos la vista de la opción tareas por hacer con la consult a del data table cargada de la siguiente manera:
+     *      Mentor    : le mostrará las tareas cuyas fechas de último día aún no ha pasado.
+     *      Estudiante: le mostrará las tareas que tienen asociada una entrega
+     *
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si el usuario está logueado devolvemos la vista done_tasks con la consulta correspondiente}
      */
     public function to_do_tasks(){
         if (Auth::check()){
@@ -791,13 +799,31 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * @param {Solo tiene el dato id que es el identificador de la tarea que debemos buscara} request
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si no encontramos la tarea devolveremos false como respuesta ajax}
+     *         {Si encontramos la tarea devolveremos true y los datos de la tarea como respuesta ajax}
+     */
     public function found_task_store(Request $request){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
         $task = Task::find($request->id);
 
+        if ($task == NULL){
+            return response()->json(['success' => false]);
+        }
         return response()->json(['success' => true,
                                  'tarea'   => $task]);
     }
 
+    /**
+     * @param {Identificador de la tarea asociada a las respuestas que queremos encontrar} request->id
+     * @return {Si no hay un usuario logueado devolvemos false como respuesta ajax}
+     *         {Si hay usuario logueado devolveremos true, los integrantes activos de la sala de estudio y la lista de usuarios que tienen tareas hechas como respuesta ajax}
+     */
     public function found_answers_store(Request $request){
 
         if (!Auth::check()) {
@@ -843,7 +869,11 @@ class UsersController extends Controller
                                  'usuarios_con_entrega'  => $usuariosConRespuesta]);
     }
 
-//--------------------------------------------------------------------------------------------------
+//--Gestión del chat síncrono-----------------------------------------------------------------------
+    /**
+     * @return {Si no hay un usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado devolvemos la vista del chat sincrono con una lista de los uaurios con los que podemos chatear y el tipo de usuario que somos}
+     */
     public function sync_chat(){
         if (Auth::check()){
             if (Auth::user()->USER_TYPE == 1) {
@@ -867,6 +897,11 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * @param {Identificador del contacto del que debemos buscar los mensajes para mostrar en el chat} request->contact_id
+     * @return {Si no hay usuario logueado devolveremos false como respuesta ajax}
+     *         {Si el usuario está logueado devolveremos true, los mensajes del chat y los datos del usuario seleccionado, también cancelaremos el punto de notificación}
+     */
     public function sync_chat_store(Request $request){
         $id_mentor     = 0;
         $id_estudiante = 0;
@@ -909,6 +944,13 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * Antes de mandar la información por el pusher la ciframos con nuestra función auxiliar.
+     *
+     * @param {id_chat como identificador del chat al que hemos enviado el mensaje. Message: el mensaje que le vamos a mandar} request
+     * @return {Si no hay usuario logueado devolvemos false como respuesta ajax}
+     *         {Si el usuario está logueado devolvemos ture con nuestro id como respuesta ajax}
+     */
     public function send_message_store(Request $request){
         if (Auth::check()){
             $mi_id = Auth::user()->id;
@@ -934,10 +976,11 @@ class UsersController extends Controller
             $id_mensaje = DB::table('synchronous_messages')
                             ->max('id');
             $message = [
-                'mensaje'    => $this->cifrate_private_key($request->datos['message']),
+                'mensaje'    => $this->cifrate_private_key($request->datos['message']), //ciframos mensaje
                 'mi_id'      => Auth::user()->id          ,
                 'message_id' => $id_mensaje
             ];
+            //Disparador del pusher para que reciva el evento el usuario al que le mandamos el mensaje
             Event::dispatch(new NewMessageEvent($message, $id_canal));
 
             return response()->json(['success' => true,
@@ -947,7 +990,11 @@ class UsersController extends Controller
             return response()->json(['success' => false]);
         }
     }
-//--------------------------------------------------------------------------------------------------
+//--Gestión de de solicitud de tutorías-------------------------------------------------------------
+    /**
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado dvolvemos la vista de solicitudes de amistad con la query correspondiente del data table cargada}
+     */
     public function tut_request(){
         if(!Auth::check()){
             return view('users.close');
@@ -1006,6 +1053,13 @@ class UsersController extends Controller
         return $dataTable->render('users.tut_request', compact('tipo_usu'));
     }
 
+    /**
+     * @param {Fecha de la tutoría que queremos crear} request->fecha
+     *        {Hora de la tutoría que queremos crear} request->hora
+     *        {Estado de la tutoría que queremos crear} request->status
+     * @return {Si no hay usuario logueado devolvemos false como respuesta ajax}
+     *         {Si hay un usuario logueado y se crea el registro correctamente devolvemos ture como respuesta ajax}
+     */
     public function add_tuto_store(Request $request){
         if (!Auth::check()){
             return response()->json(['success' => false]);
@@ -1033,6 +1087,12 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * @param {Identificador de la tutoría de la que queremos obtener los datos} request->id
+     * @return {Si no hay usuario logueado devolvemos false como respuesta ajax}
+     *         {Si hay un usuario logueado y no se encuentra el registro mandamos false como respuesta ajax}
+     *         {Si hay un usuario logueado y se encuentra los datos de la tutoría se devuelve true, el tipo de usuario y los datos de la tutoría como respuesta ajax}
+     */
     public function get_tuto_data_store(Request $request){
         if (!Auth::check()){
             return response()->json(['success' => false]);
@@ -1040,11 +1100,21 @@ class UsersController extends Controller
 
         $datos_tutoria = Tutoring::find($request->id);
 
+        if ($datos_tutoria == NULL){
+            return response()->json(['success' => false]);
+        }
         return response()->json(['success'   => true,
                                  'user_type' => Auth::user()->USER_TYPE,
                                  'tut_data'  => $datos_tutoria]);
     }
 
+    /**
+     * @param {Fecha nueva de la tutoría que queremos modificar} request->fecha
+     *        {Hora nueva de la tutoría que queremos modificar} request->hora
+     *        {Estado nuevo de la tutoría que queremos modificar} request->status
+     * @return {Si no hay usuario logueado devolvemos false como respuesta ajax}
+     *         {Si hay usuario logueado y se modifica correctamente la tutoría devolvemos true como respuesta ajax}
+     */
     public function update_tuto_store(Request $request){
         if (!Auth::check()){
             return response()->json(['success' => false]);
@@ -1058,8 +1128,18 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
-//--------------------------------------------------------------------------------------------------
+//--Gestión de acceso a las tutorías----------------------------------------------------------------
+    /**
+     * Buscamos los parametros que definen si los usuarios pueden o no acceder a la tutoría
+     *
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado devolvemos la vista de acceso a la tutoría con los parametros necesarios para hacer la tutoría}
+     */
     public function tut_access(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
         $tipo_usu  = Auth::user()->USER_TYPE;
         $id_user   = Auth::user()->id;
         $titulo    = '';
@@ -1099,6 +1179,13 @@ class UsersController extends Controller
         return view('users.tut_access', compact('tipo_usu', 'titulo', 'id_tuto', 'id_user'));
     }
 
+    /**
+     * Mandamos la información en tiempo real a través del servidor pusher. Antes de pasar el texto se cifra la información.
+     *
+     * @param {Identificador del canal pusher por el que tenemos que mandar el texto} request->id_canal
+     *        {Texto que tenemos que mandar por el pusher} request->texto
+     * @return {Si no hay usuario logueado devolveremos la vista de sesión cerrada}
+     */
     public function send_text_store(Request $request){
         if(!Auth::check()){
             return view('users.close');
@@ -1126,9 +1213,18 @@ class UsersController extends Controller
 
         $id_canal = $request->id_channel . $id_usuario_contrario;
 
+        //Disparamos el pusher para que salte el evento al usuario conectado al canal
         Event::dispatch(new TutUpdateEvent($this->cifrate_private_key($request->texto), $id_canal));
     }
 
+    /**
+     * Borramos las imagenes que se han intercambiado los usuarios y la carpeta asociada a la
+     * tutoría y cambiamos el estado de la tutoría a finalizado
+     *
+     * @param {Identificador de la tutoría que queremos finalizar} request->id_tuto
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Devolvemos true en caso de que la tupla se actualice correctamentew}
+     */
     public function fin_tuto_store(Request $request){
         if(!Auth::check()){
             return view('users.close');
@@ -1170,6 +1266,13 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * Subimos al storage el fichero que nos manda el componente CkEditor
+     *
+     * @param {Fichero que queremos gestionar} request->file()
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {URL del archivo subido al storage para que lo gestione el CkEditor}
+     */
     public function upload_img_tuto_store(Request $request){
         if (!Auth::check()){
             return view('users.close');
@@ -1198,7 +1301,7 @@ class UsersController extends Controller
         ];
     }
 
-//--------------------------------------------------------------------------------------------------
+//--Gestión de las solicitudes de amistad-----------------------------------------------------------
     /**
      * Manejar solicitudes de amistad
      * ==============================
@@ -1219,7 +1322,7 @@ class UsersController extends Controller
         }
 
     }
-//--------------------------------------------------------------------------------------------------
+//--Gestión de la sala de estudios------------------------------------------------------------------
     /**
      * Manejar amistades actuales
      * ==========================
@@ -1240,6 +1343,12 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * @param {Datos necesarios para crear una tupla de reportes (identificador del usuario reportado, razón del reporte)} request
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Si hay usuario logueado y no se guarda la tupla correctamente devolvemos false como respuesta ajax}
+     *         {si hay usuario logueado y se guarda la tupla correctamente devolvemos ture como respuesta ajax}
+     */
     public function create_report(Request $request){
         if (!Auth::check()){
             return view('user.close');
@@ -1252,12 +1361,20 @@ class UsersController extends Controller
         $nueva_tupla->reason   = $request->reason     ;
         $nueva_tupla->seen     = 0                    ;
 
-        $nueva_tupla->save();
+        try {
+            $nueva_tupla->save();
+        } catch(Exception $e){
+            return response()->json(['success' => false]);
+        }
 
         return response()->json(['success' => true]);
     }
 
-//--------------------------------------------------------------------------------------------------
+//--Tutorías y novedades----------------------------------------------------------------------------
+    /**
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Si hay usuario logueado devolvemos la vista de los tutoriales}
+     */
     public function tutorial(){
         if (!Auth::check()){
             return view('users.close');
@@ -1266,6 +1383,10 @@ class UsersController extends Controller
         return view('users.tutorial');
     }
 
+    /**
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Si hay usuario logueado devolvemos la vista de las novedades}
+     */
     public function news(){
         if (!Auth::check()){
             return view('users.close');
@@ -1273,23 +1394,21 @@ class UsersController extends Controller
 
         return view('users.news');
     }
-//--------------------------------------------------------------------------------------------------
+//--Gestión de la creación de usuarios--------------------------------------------------------------
+
     /**
-     * Crear usuario
-     * =============
-     * Función index muestra el formulario de los datos que se necesitan para introducirlos en la base de datos. En la función
-     * store se realizan distintas comprobaciones y en caso de que se cupmlan las condiciones se insertan los datos en la base de datos,
-     * se redirecciona al usuario a la página de inicio de sesión.
-     *
-     * TO DO:
-     * ======
-     * Confirmación de la creación de la cuenta por correo electrónico.
+     * @param {Vista create de usuarios}
      */
     public function create(){
-        log(Auth::check());
         return view('users.create');
     }
 
+    /**
+     * Se valida la información que nos llega del formulario y cremos las tuplas necesarias
+     *
+     * @param {Todos los datos necesarios para crear un usuario y los datos asociados al tipo de usuario} request
+     * @return {Si no ha habido ningún tipo de error devolvemos la vista home}
+     */
     public function create_store(Request $request){
         $this->validate_user_data($request);
 
@@ -1308,20 +1427,8 @@ class UsersController extends Controller
 
         return view('home');
     }
-//--------------------------------------------------------------------------------------------------
-    /**
-     * Modificar datos usuario
-     * =======================
-     * Función modify carga los datos en una variable y muestra la vista correspondiente con los datos introducidos para que el usuario pueda verlos
-     * y modificarlos.
-     * En la función store se cargan los datos en la tupla adecuada y se hace el update de estos para modificarlo
-     * de la base de datos.
-     *
-     * TO DO:
-     * =====
-     * Falta hacer las comprobaciones de los datos antes de hacer el update.
-     * Pedir la contraseña cuando se pulse el botón para asegurarnos de que es el usuario quien quiere modificar la contraseña.
-     */
+//--Gestión de la modificación de usuarios----------------------------------------------------------
+
     public function modify(){
         if (Auth::check()){
             $data = [
@@ -1412,6 +1519,10 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * @return  {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *          {Si hay un usuario logueado devolveremos la vista para modificar la contraseña}
+     */
     public function modify_password(){
         if (!Auth::check()){
             return view('users.close');
@@ -1420,6 +1531,12 @@ class UsersController extends Controller
         return view('users.modify_password');
     }
 
+    /**
+     * @param {Antigua contraseña y nueva contraseña que queremos asociar a nuestro usuario}
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado y la contraseña actual que nos llega en el request y la real no son la misma devolvemos false como respuesta ajax}
+     *         {Si hay un usuario logueado y la contraseña actual que nos llega en el request y la real son la misma guardamos la modificación y devolvemos true como respuesta ajax}
+     */
     public function modify_password_store(Request $request){
         if (!Auth::check()){
             return view('users.close');
@@ -1437,6 +1554,10 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * @return  {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *          {Si hay un usuario logueado devolveremos la vista para modificar la imágen de perfil}
+     */
     public function modify_img_perf(){
         if (!Auth::check()){
             return view('users.close');
@@ -1451,6 +1572,13 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * Hacemos una copia para la imagen de perfil temporal.
+     *
+     * @param {Nombre de la nueva imagen de perfil que ha seleccionado el usuario} request->img_seleccionada
+     * @return  {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *          {Si hay un usuario logueado y guardamos correctamente la modificación de la tupola true como respuesta ajax}
+     */
     public function modify_img_perf_store(Request $request){
         if (!Auth::check()){
             return view('users.close');
@@ -1467,7 +1595,7 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
-//--------------------------------------------------------------------------------------------------
+//--Gestión de la eliminación de usuarios-----------------------------------------------------------
     /**
      * Borrar usuario
      * ==============
@@ -1542,15 +1670,11 @@ class UsersController extends Controller
         }
     }
 
-//--------------------------------------------------------------------------------------------------
+//--Cerrar sesión-----------------------------------------------------------------------------------
     /**
-     * Cerrar sesión:
-     * ==============
-     * Ejecutamos la función de logout y redirigimos a la página de inicio.
+     * Borramos la copia de la foto de perfil que se hace para mostrar continuamente. Y hacemos logout
      *
-     * TO DO:
-     * ======
-     * Borrar caché del navegador para que al dar hacia atrás no vuelva a la pagina anterior y que no pueda acceder a su cuenta de ninguna manera
+     * @return {Vista de sesión cerrada}
      */
     public function close (){
         $ruta_archivo = public_path('photos/my_image.JPG');
@@ -1561,16 +1685,7 @@ class UsersController extends Controller
         Auth::logout();
         return view('users.close');
     }
-//--------------------------------------------------------------------------------------------------
-    /**
-     * Funciones auxiliares
-     * ====================
-     * Funciones con utilidades distintas.
-     *
-     * TO DO:
-     * ======
-     * Abstraerlo más y darle un uso más genérico, separar la comrobación de los datos para hacerlo sin contraseña con contraseña y sin que sean únicos los datos.
-     */
+//--Funciones auxiliares----------------------------------------------------------------------------
     private function validate_user_data(Request $request){
         $validacion = $request->validate([
             'name'          => ['max:30' , 'min:5', 'required'                ],
@@ -1585,7 +1700,7 @@ class UsersController extends Controller
 
         ]);
     }
-//--------------------------------------------------------------------------------------------------
+
     private function complet_users_model(Request $request){
         $user              = new User();
         $user->name        = $request->name;
@@ -1600,7 +1715,7 @@ class UsersController extends Controller
 
         return $user;
     }
-//--------------------------------------------------------------------------------------------------
+
     private function complet_students_model(User $user, Request $request){
 
         $student             = new Student();
@@ -1615,7 +1730,7 @@ class UsersController extends Controller
 
         return $student;
     }
-//--------------------------------------------------------------------------------------------------
+
     private function complet_mentors_model(User $user, Request $request){
         $mentor          = new Mentor();
         $mentor->user_id = User::where('USER' , $user->user)
@@ -1627,7 +1742,7 @@ class UsersController extends Controller
 
         return $mentor;
     }
-//--------------------------------------------------------------------------------------------------
+
     private function CreateStudyRoom($param_mentor_id) {
         $study_room = new Study_room();
 
@@ -1636,7 +1751,7 @@ class UsersController extends Controller
 
         $study_room->save();
     }
-//--------------------------------------------------------------------------------------------------
+
     private function CreateSynchronousMessage($param_study_room_id, $param_study_room_acces_id, $param_message){
         $sync_message = new Synchronous_message();
 
@@ -1653,7 +1768,7 @@ class UsersController extends Controller
 
         $sync_message->save();
     }
-//--------------------------------------------------------------------------------------------------
+
     private function CreateTask($param_study_room_id, $param_titulo, $param_descripcion, $param_fecha_hasta, $param_fecha_creacion){
         $task = new Task();
 
@@ -1684,7 +1799,7 @@ class UsersController extends Controller
         }
 
     }
-//--------------------------------------------------------------------------------------------------
+
     private function CreateTutoring($param_study_room_id, $param_study_room_acces_id, $param_date, $param_status){
         $tutoring = new Tutoring();
 
@@ -1696,7 +1811,7 @@ class UsersController extends Controller
 
         $tutoring->save();
     }
-//--------------------------------------------------------------------------------------------------
+
     private function CreateAnswer($param_task_id, $param_study_room_acces_id, $param_name) {
         $answer = new Answer();
 
@@ -1706,7 +1821,7 @@ class UsersController extends Controller
 
         $answer->save();
     }
-//--------------------------------------------------------------------------------------------------
+
     private function cifrate_private_key ($clave){
         $key  = 'clave_de_cifrado_de_32_caracteres';
 
@@ -1720,7 +1835,14 @@ class UsersController extends Controller
         return response()->json(['success' => true,
                                  'message'   => $message]);
     }
-//--------------------------------------------------------------------------------------------------
+//--Gestión de las notificaciones-------------------------------------------------------------------
+    /**
+     * Todas las funciones NotSeen... hacen una búsqueda para comprobar si el usuario logueado tiene
+     * información sin ver. Usada para saber si poner o no los puntos de notificación
+     *
+     * @return {En caso de que tengan algún dato sin ver} true
+     *         {En caso de que no tenga datos sin ver} false
+     */
     private function NotSeenReportRequest(){
         $ret_cantidad = 0;
         if (Auth::user()->USER_TYPE == 3){
@@ -1834,6 +1956,13 @@ class UsersController extends Controller
         return false;
     }
 
+    /**
+     * Todas las funciones ...Saw actualiza el dato que marca de si una tupla está vista o no a 1 para indicar
+     * que está visualizada.
+     *
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Si hay usuario logueado devolvemos true en caso de que la tupla se actualice correctamente}
+     */
     public function ReportRequestSaw(Request $request){
         if (!Auth::check()){
             return view('users.close');
@@ -1861,6 +1990,9 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * @param {Identificador de la sala de estudios sobre la que tenemos que realizar el cambio} id_user
+     */
     private function SynchronousMessagesSaw($id_user){
         if (!Auth::check()){
             return view('users.close');
@@ -1895,6 +2027,9 @@ class UsersController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * @param {Identificador de la tarea sobre la que queremos modificar el marcador de visualización} request->id_tarea
+     */
     public function TutoringModificationsNotification(Request $request){
         if (!Auth::check()){
             return view('users.close');
