@@ -6,14 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-use App\Models\User;
-use App\Models\Student;
-use App\Models\Mentor;
 use App\Models\Answer;
-use App\Models\Study_room;
 use App\Models\Synchronous_message;
-use App\Models\Study_room_acces;
-use App\Models\Task;
 use App\Models\Tutoring;
 use App\Models\Friend_request;
 use App\Models\Seen_task;
@@ -304,5 +298,55 @@ class BrowseController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+//--Tutorías y novedades----------------------------------------------------------------------------
+    /**
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado devolveremos la vista de tutorial para el tipo de usuario administrador}
+     */
+    public function admin_tut(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('admins.tutorial');
+    }
+
+    /**
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un usuario logueado devolveremos la vista de novedades para el tipo de usuario administrador}
+     */
+    public function admin_news(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('admins.news');
+    }
+
+    /**
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Si hay usuario logueado devolvemos la vista de los tutoriales}
+     */
+    public function tutorial(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('users.tutorial');
+    }
+
+    /**
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
+     *         {Si hay usuario logueado devolvemos la vista de las novedades}
+     */
+    public function news(){
+        if (!Auth::check()){
+            return view('users.close');
+        }
+
+        return view('users.news');
+    }
 //--------------------------------------------------------------------------------------------------
+
 }
