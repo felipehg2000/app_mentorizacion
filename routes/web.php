@@ -1,17 +1,14 @@
 <?php
 
-use App\Events\NewMessageEvent;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsersController;
-use App\Http\Controllers\MentorsController;
-use App\Http\Controllers\StudentsController;
 /*
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:03:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-02 16:04:42
+ * @Last Modified time: 2024-06-20 19:23:11
  * @Description: De este archivo se leerán las rutas a las que el usuario pueda acceder, es decir, el usuario solo puede acceder a las rutas que especifiquemos aquí.
  *               Como buena práctica hay que darle nombre a cada una de las rutas, para que si una de estas cambie no haya que cambiar todos los lugares donde las referenciemos,
  *               para esto usaremos la función name.
@@ -24,7 +21,6 @@ use App\Http\Controllers\StudentsController;
 
 Route::get('/', HomeController::class)->name('home');
 
-//(*)
 Route::controller(UsersController::class)->group(function(){
     Route::get  ('users'                , [UsersController::class, 'index'                  ])->name('users.index'                  );
     Route::post ('users'                , [UsersController::class, 'store'                  ])->name('users.store'                  );
@@ -65,9 +61,11 @@ Route::controller(UsersController::class)->group(function(){
     Route::post ('users/upload_img_tuto', [UsersController::class, 'upload_img_tuto_store'  ])->name('users.upload_img_tuto.store'  );
     Route::post ('users/decrypt_info'   , [UsersController::class, 'decrypt_info_store'     ])->name('users.decrypt_info.store'     );
 
-    Route::get  ('users/friendship'     , [UsersController::class, 'friendship'             ])->name('users.friendship'             );
-    Route::get  ('users/actual_friends' , [UsersController::class, 'actual_friends'         ])->name('users.actual_friends'         );
-    Route::post ('users/create_report'  , [UsersController::class, 'create_report'          ])->name('users.create_repot'           );
+    Route::get  ('users/friendship'             , [UsersController::class, 'friendship'             ])->name('users.friendship'             );
+    Route::post ('users/friendship_store'       , [UsersController::class, 'friendship_store'       ])->name('users.friendship.store'       );
+    Route::get  ('users/actual_friends'         , [UsersController::class, 'actual_friends'         ])->name('users.actual_friends'         );
+    Route::post ('users/actual_frineds_store'   , [UsersController::class, 'actual_friends_store'   ])->name('users.actual_friends.store'   );
+    Route::post ('users/create_report'          , [UsersController::class, 'create_report'          ])->name('users.create_repot'           );
 
     Route::get  ('users/tutorial'       , [UsersController::class, 'tutorial'               ])->name('users.tutorial'               );
     Route::get  ('users/news'           , [UsersController::class, 'news'                   ])->name('users.news'                   );
@@ -108,18 +106,3 @@ Route::controller(UsersController::class)->group(function(){
 
     Route::get  ('users/close'          , [UsersController::class, 'close'                  ])->name('users.close'                  );
 });
-
-Route::controller(MentorsController::class)->group(function(){
-    Route::get  ('mentors/friendship'    , [MentorsController::class, 'friendship'          ])->name('mentors.friendship'          );
-    Route::post ('mentors/friendship'    , [MentorsController::class, 'friendship_store'    ])->name('mentors.friendship.store'    );
-    Route::get  ('mentors/actual_friends', [MentorsController::class, 'actual_friends'      ])->name('mentors.actual_fruends'      );
-    Route::post ('mentors/actual_friends', [MentorsController::class, 'actual_friends_store'])->name('mentors.actual_fruends.store');
-});
-
-Route::controller(StudentsController::class)->group(function(){
-    Route::get  ('students/friendship'    , [StudentsController::class, 'friendship'          ])->name('students.friendship'          );
-    Route::post ('students/friendship'    , [StudentsController::class, 'friendship_store'    ])->name('students.friendship.store'    );
-    Route::get  ('students/actual_friends', [StudentsController::class, 'actual_friends'      ])->name('students.actual_fruends'      );
-    Route::post ('students/actual_friends', [StudentsController::class, 'actual_friends_store'])->name('students.actual_fruends.store');
-});
-

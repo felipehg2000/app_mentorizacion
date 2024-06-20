@@ -13,7 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use DateTime;
 
-use App\Http\Controllers\StudentsController;
+
 use App\Http\Controllers\MentorsController;
 
 use App\Models\User;
@@ -22,6 +22,7 @@ use App\Models\Mentor;
 use App\Models\Answer;
 use App\Models\Study_room;
 use App\Models\Synchronous_message;
+use App\Models\Study_room_acces;
 use App\Models\Task;
 use App\Models\Tutoring;
 use App\Models\Friend_request;
@@ -41,7 +42,7 @@ use App\Events\TutUpdateEvent;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-22 00:33:53
+ * @Last Modified time: 2024-06-20 19:44:28
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -1310,17 +1311,155 @@ class UsersController extends Controller
         if (Auth::check()){
             $user_type = Auth::user()->USER_TYPE;
             if ($user_type == 1) {
-                $controlador = new StudentsController();
-                return($controlador->friendship());
+                $tipo_usu = 2;
+                $users     = User::where('STUDY_AREA', Auth::user()->STUDY_AREA)
+                                ->where('USER_TYPE' , $tipo_usu              )
+                                ->get();
+
+                $titulo = '';
+                if (!$users->isEmpty()){
+                    $titulo = 'Solicitudes de amistad:';
+                }
+
             } else if($user_type == 2) {
-                $controlador = new MentorsController();
-                return($controlador->friendship());
+                $users = DB::table('USERS')
+                         ->join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.STUDENT_ID', '=', 'USERS.ID')
+                         ->where('FRIEND_REQUESTS.MENTOR_ID', '=', Auth::user()->id)
+                         ->where('FRIEND_REQUESTS.STATUS', '=', 1)
+                         ->select('USERS.*')
+                         ->get();
+
+
+                $titulo = '';
+
+                if (!$users->isEmpty()){
+                    $titulo = 'Solicitudes de amistad:';
+                }
             }
+
+            return view ('users.friendship', compact('users', 'titulo', 'user_type'));
         }else {
             return view('users.close');
         }
 
     }
+
+    public function friendship_store(Request $request){
+        if (!Auth::check()) {
+            return view('users.close');
+        }
+
+        if (Auth::user()->USER_TYPE == 1){
+            $this->frinedship_store_student($request);
+        } else if (Auth::user()->USER_TYPE == 2){
+            $this->frinedship_store_mentor($request);
+        }
+
+        return redirect()->back();
+    }
+
+    private function frinedship_store_student(Request $request) {
+        if(!Auth::check()){
+            return view('user.close');
+        }
+        /**Dar de alta la entrada para que los usuarios y los mentroes queden conectados. */
+        $student_id = Auth::user()->id;
+        $mentor_id  = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
+
+        $resultado = Friend_request::where('MENTOR_ID' , $mentor_id)
+                                   ->where('STUDENT_ID', $student_id)
+                                   ->first();
+
+        if ($resultado == NULL){
+            $friendRequest = new Friend_request();
+            $friendRequest->mentor_id  = $mentor_id ;
+            $friendRequest->student_id = $student_id;
+            $friendRequest->status     = 1          ;
+
+            $friendRequest->save();
+        } else{
+
+            DB::table('friend_requests')
+            ->where('mentor_id', $mentor_id)
+            ->where('student_id', $student_id)
+            ->update([
+                'status' => 1,
+                'seen_by_mentor' => 0,
+                'updated_at' => now()
+            ]);
+        }
+    }
+
+    private function frinedship_store_mentor(Request $request) {
+        $mentor_id  = Auth::user()->id;
+        $student_id = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
+        if ($request->respuesta == "ACEPTAR"){
+            //Aceptar petición
+            DB::table('FRIEND_REQUESTS')
+              ->where('STUDENT_ID', $student_id)
+              ->where('MENTOR_ID', $mentor_id)
+              ->update(['STATUS' => 2]);
+
+              $this->CreateStudyRoomAcces($student_id, $mentor_id);
+              $this->CreateSeenTasks($student_id);
+
+        }else if ($request->respuesta == "DENEGAR"){
+            //Borrar petición
+            DB::table('FRIEND_REQUESTS')
+              ->where('STUDENT_ID', '=', $student_id)
+              ->where('MENTOR_ID', $mentor_id)
+              ->delete();
+        }
+    }
+
+    private function CreateStudyRoomAcces($param_student_id, $param_mentor_id) {
+        if(!Auth::check()){
+            return view('user.close');
+        }
+
+        $studyRoomAccess = Study_room_acces::where('STUDENT_ID', '=', $param_student_id)
+                                            ->where('STUDY_ROOM_ID', '=', $param_mentor_id)
+                                            ->first();
+
+        if ($studyRoomAccess == NULL) {
+            $new_node = new Study_room_acces();
+            $new_node->student_id    = $param_student_id ;
+            $new_node->study_room_id = $param_mentor_id;
+            $new_node->logic_cancel  = '0'               ;
+
+            $new_node->save();
+        } else {
+
+            DB::table('study_room_access')
+            ->where('STUDENT_ID', $param_student_id)
+            ->where('STUDY_ROOM_ID', $param_mentor_id)
+            ->update([
+                'logic_cancel' => 0,
+                'updated_at' => now()
+            ]);
+        }
+    }
+
+    private function CreateSeenTasks($param_student_id){
+        if (Auth::user()->USER_TYPE == 2){
+            //Buscamos los estudiantes de la sala de estudios
+            $tasksIds = DB::table('tasks')
+                           ->where('STUDY_ROOM_ID', '=', Auth::user()->id)
+                           ->select('id')
+                           ->get();
+
+            foreach($tasksIds as $id) {
+                $nuevo_nodo = new Seen_task();
+
+                $nuevo_nodo->task_id = $id->id;
+                $nuevo_nodo->user_id = $param_student_id;
+                $nuevo_nodo->seen_task = 0;
+
+                $nuevo_nodo->save();
+            }
+        }
+    }
+
 //--Gestión de la sala de estudios------------------------------------------------------------------
     /**
      * Manejar amistades actuales
@@ -1331,15 +1470,68 @@ class UsersController extends Controller
         if (Auth::check()){
             $user_type = Auth::user()->USER_TYPE;
             if($user_type == 1){
-                $controlador = new StudentsController();
-                return ($controlador->actual_friends());
+                //Buscar los usuarios relacionados con nosotros
+                $result_users = DB::table('users')
+                ->join('study_room_access', 'users.id', '=', 'study_room_access.STUDY_ROOM_ID')
+                ->where('study_room_access.STUDENT_ID', '=', Auth::user()->id)
+                ->where('study_room_access.LOGIC_CANCEL', '=', 0)
+                ->select('users.*')
+                ->get();
+
             }else if ($user_type == 2){
-                $controlador = new MentorsController();
-                return($controlador->actual_friends());
+                //Buscar los usuarios relacionados con nosotros
+                $result_users = DB::table('users')
+                                  ->join('study_room_access', 'study_room_access.STUDENT_ID', '=', 'users.id')
+                                  ->where('study_room_access.STUDY_ROOM_ID', '=', Auth::user()->id)
+                                  ->where('study_room_access.LOGIC_CANCEL', '=', 0)
+                                  ->select('users.*')
+                                  ->get();
             }
+            return view('users.actual_friends', compact('result_users', 'user_type'));
         } else {
             return view('users.close');
         }
+    }
+
+    public function actual_friends_store(Request $request){
+        if (!Auth::check()) {
+            return view('users.close');
+        }
+
+        if (Auth::user()->USER_TYPE == 1){
+            $this->actual_friends_store_students($request);
+        } else if (Auth::user()->USER_TYPE == 2){
+            $this->actual_friends_store_mentors($request);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    private function actual_friends_store_students(Request $request){
+        $student_id = Auth::user()->id;
+        $mentor_id  = $request->id_user;
+
+        DB::table('FRIEND_REQUESTS')
+          ->where('STUDENT_ID', '=', $student_id)
+          ->where('MENTOR_ID' , '=', $mentor_id )
+          ->delete();
+
+        DB::table('STUDY_ROOM_ACCESS')
+          ->where('student_id', $student_id)
+          ->update(['logic_cancel' => '1']);
+    }
+
+    private function actual_friends_store_mentors(Request $request){
+        $student_id = $request->id_user;
+        $mentor_id  = Auth::user()->id;
+        DB::table('FRIEND_REQUESTS')
+          ->where('STUDENT_ID', '=', $student_id)
+          ->where('MENTOR_ID' , '=', $mentor_id)
+          ->delete();
+
+        DB::table('STUDY_ROOM_ACCESS')
+          ->where('student_id', $student_id)
+          ->update(['logic_cancel' => '1']);
     }
 
     /**

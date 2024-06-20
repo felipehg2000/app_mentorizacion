@@ -1,6 +1,10 @@
 @extends('layouts.plantillaUsuLogeado')
 
-@section('title', 'Estudiante')
+@if ($user_type == 1)
+    @section('title', 'Estudiante')
+@elseif ($user_type == 2)
+    @section('title', 'Mentor')
+@endif
 
 @section ('style')
     <link href="{{ asset('css/friendshipStyle.css') }}" rel="stylesheet">
@@ -11,7 +15,7 @@
     <script src="{{ asset('js/User/actualFriendsScript.js') }}"></script>
 
     <script>
-        var url_act_friends_store = "{{ route('students.actual_fruends.store') }}";
+        var url_act_friends_store = "{{ route('users.actual_friends.store') }}";
         var url_create_report_req = "{{ route('users.create_repot'           ) }}";
     </script>
 @endsection
