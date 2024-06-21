@@ -1,8 +1,21 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-16 13:20:26
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-05-16 13:24:28
+ * @Description: Controlador de las vistas create y modify de los administradores.
+ */
+//--------------------------------------------------------------------------------------------------
+/**
+ * Hace las comprobaciones de la información muestra los mensajes de error y en caso de que todo esté correcto
+ * llama al controlador para que lo guarde en la base de datos y gestiona la respuesta.
+ */
 function CrearYModificarAdmins() {
     var nombre       = document.getElementById('name'        ).value;
     var apellidos    = document.getElementById('surname'     ).value;
     var email        = document.getElementById('email'       ).value;
-    var usuario      = document.getElementById('user'        ).value;
+    var user         = document.getElementById('user'        ).value;
     var password     = document.getElementById('password'    ).value;
     var rep_password = document.getElementById('rep_password').value;
     var description  = document.getElementById('description' ).value;
@@ -26,14 +39,14 @@ function CrearYModificarAdmins() {
     }
 
     if (!insertar_datos){
-        MostrarMensajeError(mensaje);
+        MostrarMensajeError(mensaje, true);
     } else {
         var data = {
             _token      : csrfToken,
             nombre      : nombre   ,
             apellidos   : apellidos,
             email       : email    ,
-            usuario     : usuario  ,
+            user        : user     ,
             password    : password ,
             description : description
         }
@@ -54,7 +67,7 @@ function CrearYModificarAdmins() {
             data  : data
         }).done(function(respuesta){
             if(respuesta.success){
-                MostrarMensajeError(mensaje_bien)
+                MostrarMensajeError(mensaje_bien, true)
                 if (window.location.href == url_create_admin){
                     document.getElementById('name'        ).value = "";
                     document.getElementById('surname'     ).value = "";
@@ -65,13 +78,20 @@ function CrearYModificarAdmins() {
                     document.getElementById('description' ).value = "";
                 }
             } else {
-                texto = 'No se han encontrado los datos a modificar';
-                MostrarMensajeError(param_texto);
+                if (!respuesta.validate){
+                    texto = 'El email o usuario ya está registrado, modifiquelo'
+                }else{
+                    texto = 'No se han encontrado los datos a modificar';
+                }
+                MostrarMensajeError(texto, true);
             }
         });
     }
 }
-
+//--------------------------------------------------------------------------------------------------
+/**
+ * Funciones para mostrar y ocultar la contraseña cuando el botón de visualización esté pulsado o no
+ */
 function MouseDownPassword(){
     document.getElementById('password').type = 'text';
 }
@@ -88,15 +108,3 @@ function MouseUpRep(){
     document.getElementById('rep_password').type = 'password';
 }
 //--------------------------------------------------------------------------------------------------
-/**
- * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
- *
- * @param {Texto que saldrá en el mensaje de error} param_texto
- */
-function MostrarMensajeError(param_texto){
-
-    document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
-
-    document.getElementById('pnlOscurecer'           ).style.visibility = 'visible';
-    document.getElementById('pnlRespuestaEmergente'  ).style.visibility = 'visible';
-}

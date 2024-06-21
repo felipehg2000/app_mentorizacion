@@ -1,3 +1,15 @@
+<!--
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-17 14:25:36
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-05-17 14:25:56
+ * @Description: Vista asociada a la opción de menú "Crear administrador" del tipo de usuario adminstrador.
+ *               Crea cuentas de administradores ya que no se pueden crear a sí mismos
+ */
+
+-->
 @extends('layouts.plantillaAdminLoegeado')
 
 @section ('style')

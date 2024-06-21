@@ -242,32 +242,6 @@ div.pnlEmergente{
     z-index: 290;
 }
 
-div.pnlRespuestaEmergente{
-    width : 30%;
-    height: 30%;
-
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    margin: auto;
-
-    position: absolute;
-
-    background-color: white;
-
-    border-radius: 20%;
-    border: solid;
-    border-width: 1px;
-    border-color: red;
-
-    visibility: hidden;
-
-    z-index: 300;
-}
-
-
 div.pnlEmergenteTitulo{
     width : max-content;
     height: 50px;
@@ -378,10 +352,13 @@ div.pnlMensajeNuevo{
 
     position: absolute;
 
-    bottom: 20px;
+    top: 20px;
     right : 20px;
 
+    display: flex;
+
     background-color: #0099cc;
+    padding: 10px;
 
     z-index: 10000;
 
@@ -390,13 +367,28 @@ div.pnlMensajeNuevo{
     visibility: hidden;
 }
 
+.mostrar_animacion{
+    animation: mostrar 1s ease-in-out;
+}
+
+@keyframes mostrar {
+    from {
+        opacity: 0;
+        transform: translateY(-20px); /* Comienza 20px arriba */
+    }
+    to {
+        opacity: 1; /* Termina con opacidad 1 */
+        transform: translateY(0); /* Termina en su posición normal */
+    }
+}
+
 div.pnlMensajeNuevoSuperior{
-    width: 100%;
+    width: auto;
     height: auto;
 
     display        : flex;
     align-items    : center;
-    justify-content: right;
+    justify-content: center;
 
     background-color: #0099cc;
 }
@@ -418,17 +410,17 @@ div.btnCerrar:hover{
 }
 
 div.pnlPrincipalMensajeNuevo{
-    color: black;
+    color: white;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     font-weight: bold;
 
-    background-color: white;
+    background-color: #0099cc;
 
+    margin-right: 100px;
 
-    padding-bottom: 10px;
-    padding-left  : 10px;
-    padding-right : 10px;
-
+    display: flex;
+    flex-direction: center;
+    justify-content: center;
 }
 
 

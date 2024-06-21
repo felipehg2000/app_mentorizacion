@@ -1,4 +1,13 @@
-//Creación de registros
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-15 20:42:20
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-05-16 12:12:05
+ * @Description: Controlador de la vista layout.tasks y sus descendientes. Controla todos los procesos que
+ *               desarrollamos en la vista.
+ */
+
 //--------------------------------------------------------------------------------------------------
 /**
  * Rellena los campos del formulario y en caso de que sea el estudiante deshabilita los campos para que
@@ -83,19 +92,21 @@ function CrearNuevaTarea(){
             FuncionModificarTarea(id_task, titulo, descripcion, fechaForm);
         }
     } else {
-        MostrarMensajeError(texto);
+        MostrarMensajeError(texto, true);
     }
 }
 
 /**
  * Elimina la tarea seleccionada
  *
- * @param {El id de la tarea que queremos eliminar} param_id_tarea
+ * @param {El id de la tarea que queremos eliminarv } param_id_tarea
+ * @param {El valor que tomará el campo logic_cancel} param_logic_cancel
  */
-function BorrarTarea(param_id_tarea){
+function CambiarBajaLogica(param_id_tarea, param_logic_cancel){
     var data = {
         _token : csrfToken,
-        datos  : param_id_tarea
+        datos  : param_id_tarea,
+        logic_cancel : param_logic_cancel
     }
 
     $.ajax({
@@ -107,7 +118,7 @@ function BorrarTarea(param_id_tarea){
             location.reload()
         } else {
             texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
-            MostrarMensajeError(param_texto);
+            MostrarMensajeError(param_texto, true);
         }
     });
 }
@@ -138,7 +149,7 @@ function FuncionCrearNuevaTarea(param_titulo, param_descripcion, param_fechaForm
             location.reload()
         } else {
             texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
-            MostrarMensajeError(param_texto);
+            MostrarMensajeError(param_texto, true);
         }
     });
 }
@@ -171,7 +182,7 @@ function FuncionModificarTarea(param_id, param_titulo, param_descripcion, param_
             location.reload()
         } else {
             texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
-            MostrarMensajeError(param_texto);
+            MostrarMensajeError(param_texto, true);
         }
     });
 }

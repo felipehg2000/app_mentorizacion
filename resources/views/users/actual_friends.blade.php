@@ -1,6 +1,10 @@
 @extends('layouts.plantillaUsuLogeado')
 
-@section('title', 'Estudiante')
+@if ($user_type == 1)
+    @section('title', 'Estudiante')
+@elseif ($user_type == 2)
+    @section('title', 'Mentor')
+@endif
 
 @section ('style')
     <link href="{{ asset('css/friendshipStyle.css') }}" rel="stylesheet">
@@ -11,7 +15,7 @@
     <script src="{{ asset('js/User/actualFriendsScript.js') }}"></script>
 
     <script>
-        var url_act_friends_store = "{{ route('students.actual_fruends.store') }}";
+        var url_act_friends_store = "{{ route('users.actual_friends.store') }}";
         var url_create_report_req = "{{ route('users.create_repot'           ) }}";
     </script>
 @endsection
@@ -61,8 +65,8 @@
                 <input class='radio' type="radio" id="op4" name="reason" value="Nombre ofensivo o inapropiado: Apología del odio, obscenidades u otro tipo de lenguaje ofensivo">
                 <label for="op4">Nombre ofensivo o inapropiado: Apología del odio, obscenidades u otro tipo de lenguaje ofensivo</label><br><br>
 
-                <input class='radio' type="radio" id="op4" name="reason" value="Cuenta falsa: Se hace pasar por otra persona o no es quien dice ser">
-                <label for="op4">Cuenta falsa: Se hace pasar por otra persona o no es quien dice ser</label><br><br><br>
+                <input class='radio' type="radio" id="op5" name="reason" value="Cuenta falsa: Se hace pasar por otra persona o no es quien dice ser">
+                <label for="op5">Cuenta falsa: Se hace pasar por otra persona o no es quien dice ser</label><br><br><br>
             </div>
 
             <div class="PanelBotones">

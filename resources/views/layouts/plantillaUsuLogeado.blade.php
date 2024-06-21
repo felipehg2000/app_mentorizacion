@@ -49,6 +49,8 @@
         var url_tut_mod_not            = "{{ route('users.TutoringModificationsNotification') }}";
         var url_task_saw               = "{{ route('users.TasksSaw'                         ) }}";
         var url_answer_saw             = "{{ route('users.AnswersSaw'                       ) }}";
+
+        var url_decrypt_info = "{{ route('users.decrypt_info.store') }}";
     </script>
 
     @yield('js')
@@ -121,6 +123,7 @@
                 <br>
                 <input class="edtPnlEmergente" id="edtPnlEmergente" type="password" placeholder="Introduzca su contraseña">
             </div>
+            <br>
             <div class="pnlEmergenteBotones">
                 @csrf
                 <button class="btnEmergente" id="btnEmergenteAceptar" type="submit" onclick="aceptarEmergente()">
@@ -132,28 +135,24 @@
             </div>
         </div>
 
-        <div class='pnlRespuestaEmergente' id='pnlRespuestaEmergente'>
-            <div class='pnlEmergenteTitulo'>
-                <i class="fa fa-exclamation-triangle" style="font-size:24px;color:white"></i>
-                <p class="tituloEmergente"> Aviso </p>
+        <div class='pnlMensajeNuevo' id='pnlRespuestaEmergente'>
+            <div class='pnlPrincipalMensajeNuevo' id='textoEmergenteRespuesta'>
+                Nuevo mensaje del chat
             </div>
-            <div class='pnlEmergentePrincipal'>
-                <p class='textoEmergente' id='textoEmergenteRespuesta'>Texto respuesta emergente</p>
-            </div>
-            <div class='pnlEmergenteBotones'>
-                <button class="btnEmergente" id="btnEmergenteAceptar" type="submit" onclick="aceptarPnlRespuestaEmergente()">
-                    Aceptar
-                </button>
+
+            <div class='pnlMensajeNuevoSuperior'>
+                <div class='btnCerrar' onclick="MostrarMensajeError('', false)">x</div>
             </div>
         </div>
 
-        <div class='pnlMensajeNuevo' id='pnlNotificacionMensajeNuevo'>
-            <div class='pnlMensajeNuevoSuperior'>
-                <div class='btnCerrar' onclick="VisibilidadNotificacionNuevoMensaje(false)">x</div>
-            </div>
 
+        <div class='pnlMensajeNuevo' id='pnlNotificacionMensajeNuevo'>
             <div class='pnlPrincipalMensajeNuevo'>
                 Nuevo mensaje del chat
+            </div>
+
+            <div class='pnlMensajeNuevoSuperior'>
+                <div class='btnCerrar' onclick="VisibilidadNotificacionNuevoMensaje(false)">x</div>
             </div>
         </div>
 

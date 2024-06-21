@@ -1,4 +1,18 @@
 
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-17 13:13:45
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-05-17 13:17:36
+ * @Description: Controlador de la vista asociado a change_img_perf de todos los tipos de usuario.
+ */
+
+/**
+ * Función que se ejecuta al estar todos los componentes cargados.
+ * De la imagen que el usuario tnega seleccionada originalmente cambiamos el color del botón para
+ * indicar que está seleccionada
+ */
 document.addEventListener('DOMContentLoaded', function() {
     var img_seleccionada = document.getElementById('tipo_img').textContent;
 
@@ -9,6 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById(img_seleccionada).textContent           = 'Seleccionado';
 })
 
+/**
+ * Llamamos a la función del controlador que actualiza la base de datos pasandole el index que
+ * se ha seleccionado. Recargamos la página.
+ *
+ * @param {Integer asociado a la imagen que el usuario ha seleccionado} index
+ */
 function ImagenSeleccionada(index){
     var img_selecc = 'img_perf_' + index + '.JPG';
 
