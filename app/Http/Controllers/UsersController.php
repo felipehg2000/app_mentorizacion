@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
@@ -79,7 +77,7 @@ class UsersController extends Controller
         $new_admin->surname     = $request->apellidos;
         $new_admin->email       = $request->email    ;
         $new_admin->user        = $request->user     ;
-        $new_admin->password    = self::cifrate_private_key ($request->password);
+        $new_admin->password    = $this->cifrate_private_key ($request->password);
         $new_admin->user_type   = 3;
         $new_admin->study_area  = 0;
         $new_admin->description = $request->description;
@@ -143,7 +141,7 @@ class UsersController extends Controller
             $admin->email       = $request->email    ;
             $admin->user        = $request->user     ;
             if ($request->password != ""){
-                $admin->password    = self::cifrate_private_key ($request->password);
+                $admin->password    = $this->cifrate_private_key ($request->password);
             }
             $admin->description = $request->description;
 
@@ -243,7 +241,7 @@ class UsersController extends Controller
             'password' => [          'required']
         ]);
 
-        $clave_cifrada = self::cifrate_private_key($request->password);
+        $clave_cifrada = $this->cifrate_private_key($request->password);
         $user          = User::where('user', $request->user)->where('password', $clave_cifrada)->first();
 
         if ($user != NULL) {
@@ -660,13 +658,13 @@ class UsersController extends Controller
             return view('users.close');
         }
 
-        if (self::cifrate_private_key($request->actual_pass) !== Auth::user()->PASSWORD){
+        if ($this->cifrate_private_key($request->actual_pass) !== Auth::user()->PASSWORD){
             return response()->json(['success' => false]);
         }
 
         $user = User::find(Auth::user()->id);
 
-        $user->password = self::cifrate_private_key($request->nueva_pass);
+        $user->password = $this->cifrate_private_key($request->nueva_pass);
         $user->save();
 
         return response()->json(['success' => true]);
@@ -778,7 +776,7 @@ class UsersController extends Controller
             $id = Auth::user()->id;
             $usuario_autenticado = User::find($id);
 
-            $clave_cifrada = self::cifrate_private_key($request->password);
+            $clave_cifrada = $this->cifrate_private_key($request->password);
             if ($clave_cifrada == $usuario_autenticado->PASSWORD){
                 $ret_resultado = true;
                 return response()->json(['success' => $ret_resultado]);
@@ -834,7 +832,7 @@ class UsersController extends Controller
         $user->surname     = $request->surname;
         $user->email       = $request->email;
         $user->user        = $request->user;
-        $user->password    = self::cifrate_private_key ($request->password);
+        $user->password    = $this->cifrate_private_key ($request->password);
         $user->user_type   = $_POST["tipousuario"];
         $user->study_area  = $_POST["campoestudio"];
         $user->description = $request->description;
@@ -892,32 +890,6 @@ class UsersController extends Controller
         $study_room->color     = 'Blue';
 
         $study_room->save();
-    }
-
-    /**
-     * @param {Frase o palabra que queremos cifrar} clave
-     * @return {Texto cifrado asociado a la clave que nos han pasado por parametro}
-     */
-    private function cifrate_private_key ($clave){
-        $key  = 'clave_de_cifrado_de_32_caracteres';
-
-        return openssl_encrypt($clave, 'aes-256-ecb', $key);
-    }
-
-    /**
-     * @param {Texto o palabra que queremos descifrar} request->message
-     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
-     *         {Si hay un usuario logueado devolveremos true y el texto descifrado a la petición ajax}
-     */
-    public function decrypt_info_store (Request $request){
-        if (!Auth::check()){
-            return view('users.close');
-        }
-        $key  = 'clave_de_cifrado_de_32_caracteres';
-        $message = openssl_decrypt($request->message, 'aes-256-ecb', $key);
-
-        return response()->json(['success' => true,
-                                 'message'   => $message]);
     }
 //--------------------------------------------------------------------------------------------------
 }

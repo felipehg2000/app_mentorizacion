@@ -3,15 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 use App\Models\Answer;
-use App\Models\Synchronous_message;
 use App\Models\Tutoring;
-use App\Models\Friend_request;
 use App\Models\Seen_task;
+use App\Models\Friend_request;
 use App\Models\Report_request;
+use App\Models\Synchronous_message;
+
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-06-21 16:31:45
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-06-21 16:35:32
+ * @Description: Controlador encargado de que una vez hemos seleccionado una opción la web obtenga toda la información
+ *               necesaria para mostrarse de forma correcta.
+ */
 
 class BrowseController extends Controller
 {

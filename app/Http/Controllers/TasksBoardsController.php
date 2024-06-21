@@ -2,21 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
-use DateTime;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
+use DateTime;
 use Exception;
-
-use Illuminate\Support\Facades\Storage;
 
 use App\Models\Task;
 use App\Models\Answer;
 use App\Models\Seen_task;
 
 use App\DataTables\TaskDataTable;
+
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-06-21 16:24:36
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-06-21 16:35:37
+ * @Description: Controlador encargado de la gestión de tareas. Creación, subida, descarga...
+ */
+
 
 class TasksBoardsController extends Controller
 {

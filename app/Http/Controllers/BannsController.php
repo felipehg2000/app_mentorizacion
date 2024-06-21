@@ -3,20 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
+use Illuminate\Http\Request;
 use Exception;
 
 use App\Models\User;
-
 use App\Models\Report_request;
 
 use App\DataTables\Report_requestDataTable;
 use App\DataTables\UsersDataTable;
 
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-06-21 16:23:23
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-06-21 16:35:36
+ * @Description: Controlador encargado de las funcionalidades asociadas al reporte y banneo de usaurio.
+ */
+
 class BannsController extends Controller
 {
+//--Mostrar las vistas de bloqueo-------------------------------------------------------------------
     /**
      * Devuelve la vista de reportes de los usuarios para el tipo de usuario administrador
      * con la consulta del data table cargada.
@@ -145,6 +154,7 @@ class BannsController extends Controller
         return $dataTable->render('admins.block_users');
     }
 
+//--Función para bloequear usuarios-----------------------------------------------------------------
     /**
      * Actualizamos la base de datos para poner el dato BANNED del usuario seleccionado a 0 o 1 dependiendo del
      * valor que tenga en el momento actual
@@ -173,6 +183,7 @@ class BannsController extends Controller
         return response()->json(['success' => true]);
     }
 
+//--Función para reportar usuarios------------------------------------------------------------------
     /**
      * @param {Datos necesarios para crear una tupla de reportes (identificador del usuario reportado, razón del reporte)} request
      * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
@@ -199,5 +210,5 @@ class BannsController extends Controller
 
         return response()->json(['success' => true]);
     }
-
+//--------------------------------------------------------------------------------------------------
 }

@@ -2,14 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-
-use App\Events\NewMessageEvent;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 use App\Models\Synchronous_message;
+
+use App\Events\NewMessageEvent;
+
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-06-21 16:30:48
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-06-21 16:31:23
+ * @Description: Controlador encargado de los chats síncronos. Muestra, creación, envío de mensajes...
+ */
 
 class SyncChatController extends Controller
 {
@@ -175,9 +184,8 @@ class SyncChatController extends Controller
 
         return false;
     }
-//--------------------------------------------------------------------------------------------------
 
-/**
+    /**
      * Crea una entrada en la tabla SYNCHRONOUS_MESSAGES
      *
      * @param {Identificador del usuario mentor en la conversación} param_study_room_id
@@ -200,32 +208,7 @@ class SyncChatController extends Controller
 
         $sync_message->save();
     }
-
-    /**
-     * @param {Frase o palabra que queremos cifrar} clave
-     * @return {Texto cifrado asociado a la clave que nos han pasado por parametro}
-     */
-    private function cifrate_private_key ($clave){
-        $key  = 'clave_de_cifrado_de_32_caracteres';
-
-        return openssl_encrypt($clave, 'aes-256-ecb', $key);
-    }
-
-    /**
-     * @param {Texto o palabra que queremos descifrar} request->message
-     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
-     *         {Si hay un usuario logueado devolveremos true y el texto descifrado a la petición ajax}
-     */
-    public function decrypt_info_store (Request $request){
-        if (!Auth::check()){
-            return view('users.close');
-        }
-        $key  = 'clave_de_cifrado_de_32_caracteres';
-        $message = openssl_decrypt($request->message, 'aes-256-ecb', $key);
-
-        return response()->json(['success' => true,
-                                 'message'   => $message]);
-    }
+//--------------------------------------------------------------------------------------------------
 }
 
 
