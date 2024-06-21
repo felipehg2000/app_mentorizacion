@@ -3,7 +3,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2024-05-16 12:21:22
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-16 12:29:12
+ * @Last Modified time: 2024-06-21 17:03:22
  * @Description: Controlador de la vista done_tasks.blade. Que corresponde a las opciones de menú tareas hechas y por hacer.
  *               Formatea las fechas para mostrarlas en los titulos y realiza la funcionalidad de pulsar en el botón de una columna.
  */
@@ -31,6 +31,7 @@ function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entr
         data  : data
     }).done(function(respuesta){
         if(respuesta.success){
+
             document.getElementById('input_name'       ).value = respuesta.tarea.TASK_TITLE;
             document.getElementById('input_description').value = respuesta.tarea.DESCRIPTION;
             document.getElementById('input_last_day'   ).value = FormatearFecha(respuesta.tarea.LAST_DAY);
@@ -53,6 +54,7 @@ function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entr
             }
 
             MostrarPanelFormulario(false);
+            document.getElementById('guardar_tarea_estudiante').style.visibility = 'hidden';
         } else {
             texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
             MostrarMensajeError(texto, true);
