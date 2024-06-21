@@ -3,7 +3,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2024-05-15 20:42:20
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-16 12:12:05
+ * @Last Modified time: 2024-06-21 17:35:42
  * @Description: Controlador de la vista layout.tasks y sus descendientes. Controla todos los procesos que
  *               desarrollamos en la vista.
  */
@@ -45,12 +45,14 @@ function VerDatosEspecíficos(param_tipo_usu, param_task_id){
             document.getElementById('PanelTituloE'    ).style.backgroundColor = '#0099cc';
 
             document.getElementById('titEmergenteShowData').innerText    = 'Añadir o modificar entrega';
+            document.getElementById('guardar_tarea_estudiante').style.visibility = 'visible';
         } else {
             document.getElementById('lbl_input_upload').style.visibility      = 'hidden';
             document.getElementById('input_upload'    ).style.visibility      = 'hidden';
             document.getElementById('PanelTituloE'    ).style.backgroundColor = 'red';
 
             document.getElementById('titEmergenteShowData').innerText = 'Fuera de plazo';
+            document.getElementById('guardar_tarea_estudiante').style.visibility = 'hidden';
         }
     }
 
