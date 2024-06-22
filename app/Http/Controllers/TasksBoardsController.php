@@ -22,7 +22,7 @@ use App\DataTables\TaskDataTable;
  * @Email: felipehg2000@usal.es
  * @Date: 2024-06-21 16:24:36
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-06-21 16:35:37
+ * @Last Modified time: 2024-06-22 19:50:14
  * @Description: Controlador encargado de la gestión de tareas. Creación, subida, descarga...
  */
 
@@ -71,6 +71,10 @@ class TasksBoardsController extends Controller
         }
     }
 
+    /**
+     * Se clona el documento seleccionado y se guarda en el storage del servidor. Se crea una entrada
+     * en la tabla Answers
+     */
     public function task_board_store(Request $request){
         if (!Auth::check()){
             return view('users.close');
@@ -93,6 +97,10 @@ class TasksBoardsController extends Controller
         return response()->json(['success' => true]);
     }
 
+    /**
+     * Se busca en el nombre relacionado a la opción seleccionada y se busca el archivo en el storage
+     * del servidor
+     */
     public function download_task(Request $request){
         if (!Auth::check()){
             return view('users.close');

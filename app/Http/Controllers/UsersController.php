@@ -24,7 +24,7 @@ use App\DataTables\UsersDataTable;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-06-20 20:48:17
+ * @Last Modified time: 2024-06-22 19:46:50
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -268,10 +268,12 @@ class UsersController extends Controller
         }
     }
 //--Gestión de las solicitudes de amistad-----------------------------------------------------------
+
     /**
-     * Manejar solicitudes de amistad
-     * ==============================
-     * Función que comprueba los datos de login del usuario logueado y redirige según el rol del usuario
+     * @return {Si no hay un usuario logueado devolveremos la vista de sesión cerrada}
+     *         {Si hay un mentor logeado devolveremos las solicitudes de amistad que el mentor tiene pendiente}
+     *         {Si hay un estudiante logeado devolveremos la vista de solicitudes de amistad con todos los mentores del campo de estudio del estudiante logeado}
+     *
      */
     public function friendship(){
         if (Auth::check()){
@@ -310,6 +312,15 @@ class UsersController extends Controller
 
     }
 
+    /**
+     * Redirige a la función auxiliar que gestiona la funcionalidad según el usuario que esté logeado
+     *
+     * @param {Si está logeado un estudiante nos pasará el usuario del mentor al que quiere mandar la solicitud  } request
+     *        {Si está logeado un mentor nos devolverá Aceptar o Denegar como respuesta a la solicitud de amistad} request
+     *
+     * @return {Si no hay un usuario logeado devolveremos la  vista de sesión cerrada}
+     *         {Si hay un usuario logeado recargaremos la pagina}
+     */
     public function friendship_store(Request $request){
         if (!Auth::check()) {
             return view('users.close');
@@ -324,113 +335,12 @@ class UsersController extends Controller
         return redirect()->back();
     }
 
-    private function frinedship_store_student(Request $request) {
-        if(!Auth::check()){
-            return view('user.close');
-        }
-        /**Dar de alta la entrada para que los usuarios y los mentroes queden conectados. */
-        $student_id = Auth::user()->id;
-        $mentor_id  = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
-
-        $resultado = Friend_request::where('MENTOR_ID' , $mentor_id)
-                                   ->where('STUDENT_ID', $student_id)
-                                   ->first();
-
-        if ($resultado == NULL){
-            $friendRequest = new Friend_request();
-            $friendRequest->mentor_id  = $mentor_id ;
-            $friendRequest->student_id = $student_id;
-            $friendRequest->status     = 1          ;
-
-            $friendRequest->save();
-        } else{
-
-            DB::table('friend_requests')
-            ->where('mentor_id', $mentor_id)
-            ->where('student_id', $student_id)
-            ->update([
-                'status' => 1,
-                'seen_by_mentor' => 0,
-                'updated_at' => now()
-            ]);
-        }
-    }
-
-    private function frinedship_store_mentor(Request $request) {
-        $mentor_id  = Auth::user()->id;
-        $student_id = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
-        if ($request->respuesta == "ACEPTAR"){
-            //Aceptar petición
-            DB::table('FRIEND_REQUESTS')
-              ->where('STUDENT_ID', $student_id)
-              ->where('MENTOR_ID', $mentor_id)
-              ->update(['STATUS' => 2]);
-
-              $this->CreateStudyRoomAcces($student_id, $mentor_id);
-              $this->CreateSeenTasks($student_id);
-
-        }else if ($request->respuesta == "DENEGAR"){
-            //Borrar petición
-            DB::table('FRIEND_REQUESTS')
-              ->where('STUDENT_ID', '=', $student_id)
-              ->where('MENTOR_ID', $mentor_id)
-              ->delete();
-        }
-    }
-
-    private function CreateStudyRoomAcces($param_student_id, $param_mentor_id) {
-        if(!Auth::check()){
-            return view('user.close');
-        }
-
-        $studyRoomAccess = Study_room_acces::where('STUDENT_ID', '=', $param_student_id)
-                                            ->where('STUDY_ROOM_ID', '=', $param_mentor_id)
-                                            ->first();
-
-        if ($studyRoomAccess == NULL) {
-            $new_node = new Study_room_acces();
-            $new_node->student_id    = $param_student_id ;
-            $new_node->study_room_id = $param_mentor_id;
-            $new_node->logic_cancel  = '0'               ;
-
-            $new_node->save();
-        } else {
-
-            DB::table('study_room_access')
-            ->where('STUDENT_ID', $param_student_id)
-            ->where('STUDY_ROOM_ID', $param_mentor_id)
-            ->update([
-                'logic_cancel' => 0,
-                'updated_at' => now()
-            ]);
-        }
-    }
-
-    private function CreateSeenTasks($param_student_id){
-        if (Auth::user()->USER_TYPE == 2){
-            //Buscamos los estudiantes de la sala de estudios
-            $tasksIds = DB::table('tasks')
-                           ->where('STUDY_ROOM_ID', '=', Auth::user()->id)
-                           ->select('id')
-                           ->get();
-
-            foreach($tasksIds as $id) {
-                $nuevo_nodo = new Seen_task();
-
-                $nuevo_nodo->task_id = $id->id;
-                $nuevo_nodo->user_id = $param_student_id;
-                $nuevo_nodo->seen_task = 0;
-
-                $nuevo_nodo->save();
-            }
-        }
-    }
-
 //--Gestión de la sala de estudios------------------------------------------------------------------
+
     /**
-     * Manejar amistades actuales
-     * ==========================
-     * Función que comprueba los datos de login del usuario logueado y redirige según el rol del usuario
+     * @return {Si no hay un usuario logeado devolvemos la vista de sesión cerrada}
+     *         {Si hay un mentor logeado devolvemos la lista de los estudiantes que están en su sala de estudio}
+     *         {Si hay un estudiante logeado devolvemos los datos del mentor al que el usuario sigue}
      */
     public function actual_friends(){
         if (Auth::check()){
@@ -459,6 +369,14 @@ class UsersController extends Controller
         }
     }
 
+    /**
+     * Redirige a la función auxiliar que sgestiona la funcionalidad según el usuario que está logeado
+     *
+     * @param {Identificador del usuario seleccionado} request
+     *
+     * @return {Si no hay un usuario logeado devolvemos la vista de sesión cerrada}
+     *         {Si hay un usuario logeado devolvemos true como respuesta ajax}
+     */
     public function actual_friends_store(Request $request){
         if (!Auth::check()) {
             return view('users.close');
@@ -471,33 +389,6 @@ class UsersController extends Controller
         }
 
         return response()->json(['success' => true]);
-    }
-
-    private function actual_friends_store_students(Request $request){
-        $student_id = Auth::user()->id;
-        $mentor_id  = $request->id_user;
-
-        DB::table('FRIEND_REQUESTS')
-          ->where('STUDENT_ID', '=', $student_id)
-          ->where('MENTOR_ID' , '=', $mentor_id )
-          ->delete();
-
-        DB::table('STUDY_ROOM_ACCESS')
-          ->where('student_id', $student_id)
-          ->update(['logic_cancel' => '1']);
-    }
-
-    private function actual_friends_store_mentors(Request $request){
-        $student_id = $request->id_user;
-        $mentor_id  = Auth::user()->id;
-        DB::table('FRIEND_REQUESTS')
-          ->where('STUDENT_ID', '=', $student_id)
-          ->where('MENTOR_ID' , '=', $mentor_id)
-          ->delete();
-
-        DB::table('STUDY_ROOM_ACCESS')
-          ->where('student_id', $student_id)
-          ->update(['logic_cancel' => '1']);
     }
 
 //--Gestión de la creación de usuarios--------------------------------------------------------------
@@ -881,7 +772,7 @@ class UsersController extends Controller
     /**
      * Crea una entrada en la tabla STUDY_ROOMS
      *
-     * @param {Identificador del usuario mentor} param_mentor_idç
+     * @param {Identificador del usuario mentor} param_mentor_id
      */
     private function CreateStudyRoom($param_mentor_id) {
         $study_room = new Study_room();
@@ -890,6 +781,168 @@ class UsersController extends Controller
         $study_room->color     = 'Blue';
 
         $study_room->save();
+    }
+
+    /**
+     * Crea una entrada en la tabala StudyRoomAccess
+     *
+     * @param {Identificador del usuario estudiante} param_student_id
+     *        {Identificador del usuario mentor    } param_mentor_id
+     */
+    private function CreateStudyRoomAcces($param_student_id, $param_mentor_id) {
+        if(!Auth::check()){
+            return view('user.close');
+        }
+
+        $studyRoomAccess = Study_room_acces::where('STUDENT_ID', '=', $param_student_id)
+                                            ->where('STUDY_ROOM_ID', '=', $param_mentor_id)
+                                            ->first();
+
+        if ($studyRoomAccess == NULL) {
+            $new_node = new Study_room_acces();
+            $new_node->student_id    = $param_student_id ;
+            $new_node->study_room_id = $param_mentor_id;
+            $new_node->logic_cancel  = '0'               ;
+
+            $new_node->save();
+        } else {
+
+            DB::table('study_room_access')
+            ->where('STUDENT_ID', $param_student_id)
+            ->where('STUDY_ROOM_ID', $param_mentor_id)
+            ->update([
+                'logic_cancel' => 0,
+                'updated_at' => now()
+            ]);
+        }
+    }
+
+    /**
+     * Crea una entrada en la tabla SeenTasks para cada tarea que haya en la
+     * sala de estudios a la que el estudiante pertenezca
+     *
+     * @param {Identificador del usuario estudiante} param_student_id
+     */
+    private function CreateSeenTasks($param_student_id){
+        if (Auth::user()->USER_TYPE == 2){
+            //Buscamos los estudiantes de la sala de estudios
+            $tasksIds = DB::table('tasks')
+                           ->where('STUDY_ROOM_ID', '=', Auth::user()->id)
+                           ->select('id')
+                           ->get();
+
+            foreach($tasksIds as $id) {
+                $nuevo_nodo = new Seen_task();
+
+                $nuevo_nodo->task_id = $id->id;
+                $nuevo_nodo->user_id = $param_student_id;
+                $nuevo_nodo->seen_task = 0;
+
+                $nuevo_nodo->save();
+            }
+        }
+    }
+
+    /**
+     * Crea o modifica, en caso de existir una solicitud de amistad
+     *
+     * @param {Usuario del mentor que se ha seleccionado para enviar la solicitud de amistad} request
+     */
+    private function frinedship_store_student(Request $request) {
+        if(!Auth::check()){
+            return view('user.close');
+        }
+        /**Dar de alta la entrada para que los usuarios y los mentroes queden conectados. */
+        $student_id = Auth::user()->id;
+        $mentor_id  = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
+
+        $resultado = Friend_request::where('MENTOR_ID' , $mentor_id)
+                                   ->where('STUDENT_ID', $student_id)
+                                   ->first();
+
+        if ($resultado == NULL){
+            $friendRequest = new Friend_request();
+            $friendRequest->mentor_id  = $mentor_id ;
+            $friendRequest->student_id = $student_id;
+            $friendRequest->status     = 1          ;
+
+            $friendRequest->save();
+        } else{
+
+            DB::table('friend_requests')
+            ->where('mentor_id', $mentor_id)
+            ->where('student_id', $student_id)
+            ->update([
+                'status' => 1,
+                'seen_by_mentor' => 0,
+                'updated_at' => now()
+            ]);
+        }
+    }
+
+    /**
+     * Elimina o modifica una solicitud de amistad. Si la modifica crea una entrada en study_room_access y varias en seen_tasks
+     *
+     * @param {Aceptar o Denegar según la opción que ha seleccionado el mentor}
+     *        {Usuario del estudiante que el mentor ha seleccionado}
+     */
+    private function frinedship_store_mentor(Request $request) {
+        $mentor_id  = Auth::user()->id;
+        $student_id = DB::table('USERS')->select('ID')->where('user', $request->user_user)->get()->first()->ID;
+        if ($request->respuesta == "ACEPTAR"){
+            //Aceptar petición
+            DB::table('FRIEND_REQUESTS')
+              ->where('STUDENT_ID', $student_id)
+              ->where('MENTOR_ID', $mentor_id)
+              ->update(['STATUS' => 2]);
+
+              $this->CreateStudyRoomAcces($student_id, $mentor_id);
+              $this->CreateSeenTasks($student_id);
+
+        }else if ($request->respuesta == "DENEGAR"){
+            //Borrar petición
+            DB::table('FRIEND_REQUESTS')
+              ->where('STUDENT_ID', '=', $student_id)
+              ->where('MENTOR_ID', $mentor_id)
+              ->delete();
+        }
+    }
+
+    /**
+     * Modificamos una tupla de la tabla STUDY_ROOM_ACCESS para ponerla como baja lógica
+     *
+     * @param {Identificador del mentor de la sala de estudios}
+     */
+    private function actual_friends_store_students(Request $request){
+        $student_id = Auth::user()->id;
+        $mentor_id  = $request->id_user;
+
+        DB::table('FRIEND_REQUESTS')
+          ->where('STUDENT_ID', '=', $student_id)
+          ->where('MENTOR_ID' , '=', $mentor_id )
+          ->delete();
+
+        DB::table('STUDY_ROOM_ACCESS')
+          ->where('student_id', $student_id)
+          ->update(['logic_cancel' => '1']);
+    }
+
+    /**
+     * Modificamos una tupla de la tabla STUDY_ROOM_ACCESS para ponerla como baja lógica
+     *
+     * @param {Identificador del estudiante de la sala de estudios}
+     */
+    private function actual_friends_store_mentors(Request $request){
+        $student_id = $request->id_user;
+        $mentor_id  = Auth::user()->id;
+        DB::table('FRIEND_REQUESTS')
+          ->where('STUDENT_ID', '=', $student_id)
+          ->where('MENTOR_ID' , '=', $mentor_id)
+          ->delete();
+
+        DB::table('STUDY_ROOM_ACCESS')
+          ->where('student_id', $student_id)
+          ->update(['logic_cancel' => '1']);
     }
 //--------------------------------------------------------------------------------------------------
 }
