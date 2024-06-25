@@ -3,7 +3,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2024-05-16 12:53:51
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-16 12:57:27
+ * @Last Modified time: 2024-06-25 09:21:46
  * @Description: Controlador padre de las funcionalidades más generales de todas las opciones de la aplicación para usuarios de tipo estudiante y mentor.
  */
 
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('notification_6').style.visibility = 'visible';
             }
 
-            CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.num_alumnos, respuesta.solicitud_mandada);
+            CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.numero_alumnos, respuesta.solicitud_mandada);
         } else {
             window.location.href = url_close;
         }

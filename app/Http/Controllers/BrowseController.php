@@ -18,7 +18,7 @@ use App\Models\Synchronous_message;
  * @Email: felipehg2000@usal.es
  * @Date: 2024-06-21 16:31:45
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-06-21 16:35:32
+ * @Last Modified time: 2024-06-25 09:31:47
  * @Description: Controlador encargado de que una vez hemos seleccionado una opción la web obtenga toda la información
  *               necesaria para mostrarse de forma correcta.
  */
@@ -74,6 +74,23 @@ class BrowseController extends Controller
             } else {
                 $tiene_sala_estudio = true;
             }
+
+            if ($num_estudiantes == 5){
+                $users = DB::table('USERS')
+                         ->join('FRIEND_REQUESTS', 'FRIEND_REQUESTS.STUDENT_ID', '=', 'USERS.ID')
+                         ->where('FRIEND_REQUESTS.MENTOR_ID', '=', Auth::user()->id)
+                         ->where('FRIEND_REQUESTS.STATUS', '=', 1)
+                         ->select('USERS.*')
+                         ->get();
+
+                foreach ($users as $user){
+                    DB::table('FRIEND_REQUESTS')
+                      ->where('STUDENT_ID', '=', $user->id)
+                      ->where('MENTOR_ID', Auth::user()->id)
+                      ->delete();
+                }
+            }
+
         } else if (Auth::user()->USER_TYPE == 3){
             return response()->json(['success'            => true,
                                      'admin_id'           => Auth::user()->id,
