@@ -1,7 +1,22 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-16 12:21:22
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-06-21 17:39:11
+ * @Description: Controlador de la vista done_tasks.blade. Que corresponde a las opciones de menú tareas hechas y por hacer.
+ *               Formatea las fechas para mostrarlas en los titulos y realiza la funcionalidad de pulsar en el botón de una columna.
+ */
+
 $(document).ready(function(){
         let dataTable = new DataTable('data_table_name');
     });
 //--------------------------------------------------------------------------------------------------
+/**
+ *
+ * @param {Identificador de la tarea que hemos seleccionado                    } param_id_tarea
+ * @param {Booleano que determina si se muestra el botón para subir tareas o no} param_posibilidad_hacer_entrega
+ */
 function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entrega){
     document.getElementById('id_task').innerText = param_id_tarea;
 
@@ -16,6 +31,7 @@ function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entr
         data  : data
     }).done(function(respuesta){
         if(respuesta.success){
+
             document.getElementById('input_name'       ).value = respuesta.tarea.TASK_TITLE;
             document.getElementById('input_description').value = respuesta.tarea.DESCRIPTION;
             document.getElementById('input_last_day'   ).value = FormatearFecha(respuesta.tarea.LAST_DAY);
@@ -30,21 +46,30 @@ function StudentClickColumnToDoTask(param_id_tarea, param_posibilidad_hacer_entr
                     document.getElementById('PanelTituloE'    ).style.backgroundColor = 'red';
                     document.getElementById('titEmergenteShowData').innerText = 'Fuera de plazo';
                 }
+
+                document.getElementById('guardar_tarea_estudiante').style.visibility = 'hidden';
             } else {
                 document.getElementById('lbl_input_upload').style.visibility = 'visible';
                 document.getElementById('input_upload'    ).style.visibility = 'visible';
                 document.getElementById('PanelTituloE'    ).style.backgroundColor = '#0099cc';
                 document.getElementById('titEmergenteShowData').innerText = 'Añadir o modificar entrega';
+                document.getElementById('guardar_tarea_estudiante').style.visibility = 'visible';
             }
 
             MostrarPanelFormulario(false);
+
         } else {
             texto = 'Ha ocurrido un error, algo ha ido mal al guardar los datos';
-            MostrarMensajeError(texto);
+            MostrarMensajeError(texto, true);
         }
     });
 }
 //--------------------------------------------------------------------------------------------------
+/**
+ *
+ * @param {Fecha que tenemos que formatear, viene con el formato de la base de datos} param_fecha
+ * @returns Fecha con formato yyyy-mm-dd para que el imput date la procese
+ */
 function FormatearFecha(param_fecha) {
     var fechaOriginal = param_fecha;
     var fechaCompleta = new Date(fechaOriginal);

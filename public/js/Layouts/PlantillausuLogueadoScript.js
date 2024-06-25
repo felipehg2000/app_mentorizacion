@@ -1,12 +1,29 @@
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-16 12:53:51
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-06-25 09:21:46
+ * @Description: Controlador padre de las funcionalidades más generales de todas las opciones de la aplicación para usuarios de tipo estudiante y mentor.
+ */
+
 var channel;
 
-// Enable pusher logging - don't include this in production
-Pusher.logToConsole = true;
+Pusher.logToConsole = false; //Mensajes de consola del pusher, ponerlo en true para debuguear si no en false
 
+/**
+ * Creamos la variable pusher para recivir mensajes en vivo.
+ */
 var pusher = new Pusher('7b7c6d7f8ba7188308b6', {
     cluster: 'eu'
 });
 
+/**
+ * Constructor de la vista. Una vez todo está cargado se ejecuta esta función. Llama a una función del controlador para
+ * recibir datos generales que necesita para terminar de construir la vista. Muestra los puntos de notificación y da funcionalidad
+ * a la llegada y envio de mensajes del chat sincrono para poder hacer la sincronía, montando el canal y controlando que se muestre
+ * en caso de que llegue el mensaje cuando se está dentro del chat.
+ */
 document.addEventListener('DOMContentLoaded', function() {
     var data = {
         _token : csrfToken,
@@ -22,13 +39,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
             channel.bind('App\\Events\\NewMessageEvent', function(data) {
                 if(window.location.href == url_chats_privados){
-                    var id_usuario_seleccionado = document.getElementById('lblIdChatSeleccionado').textContent;
 
-                    if (respuesta.user_type == 1 && id_usuario_seleccionado == data.data.mi_id){ //Estudiante
-                        PushMessage(data.data.message_id, data.data.mensaje, 'pnlMensajeContacto', 'mensajeContacto');
-                    } else if (respuesta.user_type == 2 && id_usuario_seleccionado == data.data.mi_id) {
-                        PushMessage(data.data.message_id, data.data.mensaje, 'pnlMensajeContacto', 'mensajeContacto');
+                    var datos_decrypt = {
+                        _token : csrfToken  ,
+                        message: data.data.mensaje
                     }
+
+                    $.ajax({
+                        url   : url_decrypt_info,
+                        method: 'POST'          ,
+                        data  : datos_decrypt
+                    }).done(function(respuesta2){
+                        if (respuesta2.success){
+                            var id_usuario_seleccionado = document.getElementById('lblIdChatSeleccionado').textContent;
+
+                            if (respuesta.user_type == 1 && id_usuario_seleccionado == data.data.mi_id){ //Estudiante
+                                PushMessage(data.data.message_id, respuesta2.message, 'pnlMensajeContacto', 'mensajeContacto');
+                            } else if (respuesta.user_type == 2 && id_usuario_seleccionado == data.data.mi_id) {
+                                PushMessage(data.data.message_id, respuesta2.message, 'pnlMensajeContacto', 'mensajeContacto');
+                            }
+                        }
+                    });
                 }
 
                 VisibilidadNotificacionNuevoMensaje(true);
@@ -55,13 +86,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('notification_6').style.visibility = 'visible';
             }
 
-            CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.num_alumnos, respuesta.solicitud_mandada);
+            CambiarOpcionDeColoresYMostrarCubierta(respuesta.user_type, respuesta.tiene_sala_estudio, respuesta.numero_alumnos, respuesta.solicitud_mandada);
         } else {
             window.location.href = url_close;
         }
     });
 })
 
+/**
+ * Redirigimos la localización de la url a la seleccionada en el menú.
+ *
+ * @param {Índice que corresponde con la opción de menú seleccionada} index
+ */
 function redirection(index) {
     switch(index){
         case 1:
@@ -103,6 +139,12 @@ function redirection(index) {
         case 13:
             window.location.href = url_novedades;
             break;
+        case 14:
+            window.location.href = url_change_password;
+            break;
+        case 15:
+            window.location.href = url_change_porfile_img;
+            break;
     }
 }
 
@@ -112,14 +154,16 @@ function cerrarEmergetne(){
     document.getElementById("edtPnlEmergente").style.visibility = "hidden";
 }
 
-function aceptarPnlRespuestaEmergente(){
-    document.getElementById("pnlOscurecer"            ).style.visibility = "hidden" ;
-    document.getElementById("pnlRespuestaEmergente"   ).style.visibility = "hidden" ;
-    document.getElementById('btnAceptarEmergente'     ).style.visibility = "visible";
-
-    document.getElementById('btnCancelarEmergente').innerText = "Cancelar" ;
-}
-
+/**
+ * Modificamos el color de la opción de menú que estamos mostrando.
+ * Mostramos una cubierta si el usuario no puede acceder a esa opción de menú con un mensaje dando una explicación de por qué no puede acceder.
+ * Ocultamos los puntos de notificación y llamamos a la función que decide si estos puntos se muestran o no.
+ *
+ * @param {Tipo de usuario que está logeado, mentor 2 o estudiante 1} param_user_type
+ * @param {Booleano que nos dice si el estudiante tiene o no una sala de estudio asignada} param_tiene_sala_estudio
+ * @param {Integer que nos dice el número de alumnos que hay en una sala de estudios} param_num_alumnos
+ * @param {Booleano que nos dice si el estudiante ha mandado alguna solicitud de amistad o no} param_solicitud_mandada
+ */
 function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sala_estudio, param_num_alumnos, param_solicitud_mandada){
     var url_actual              = window.location.href;
     var id_elemento             = ''   ;
@@ -135,7 +179,12 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
 
     if (url_actual == url_tablon_completo){
         id_elemento = "submenu_1";
-        url_opcion_seleccionada = url_task_saw;
+        if(param_user_type == 1){
+            url_opcion_seleccionada = url_task_saw;
+        }else if (param_user_type == 2){
+            url_opcion_seleccionada = url_answer_saw;
+        }
+
         id_div_notificacion = "notification_1";
         if (param_user_type == 1 && !param_tiene_sala_estudio){
             mostrarCubierta = true;
@@ -166,7 +215,7 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         }
     }else if (url_actual == url_acceso_a_tutoria){
         id_elemento = "submenu_7";
-        if ((param_user_type == 1 && !param_tiene_sala_estudio) || (param_user_type == 2 && !param_tiene_sala_estudio)){
+        if ((param_user_type == 1 && !param_tiene_sala_estudio) || (param_user_type == 2 && !param_tiene_sala_estudio) || (param_user_type == 3 && !param_tiene_sala_estudio)){
             mostrarCubierta = true;
         } else if (document.getElementById('tit_tut_access').innerText == ''){
             mostrarCubierta = true;
@@ -204,7 +253,13 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
         id_elemento = "submenu_11";
     }else if (url_actual == url_novedades){
         id_elemento = "submenu_13";
+    }else if (url_actual == url_change_password){
+        id_elemento = "submenu_14";
+    }else if (url_actual == url_change_porfile_img){
+        id_elemento = "submenu_15";
     }
+
+
 
     if (id_elemento != '') {
         document.getElementById(id_elemento).style.backgroundColor= "white";
@@ -271,24 +326,45 @@ function CambiarOpcionDeColoresYMostrarCubierta(param_user_type, param_tiene_sal
     document.getElementById('pnlCarga').style.visibility = 'hidden';
 }
 
+/**
+ *
+ * @param {Booleano que determina si hacemos visible u ocultamos el panel} param_hacer_visible
+ */
 function VisibilidadNotificacionNuevoMensaje(param_hacer_visible) {
     if (param_hacer_visible) {
         document.getElementById('pnlNotificacionMensajeNuevo').style.visibility= 'visible';
+        document.getElementById('pnlNotificacionMensajeNuevo').classList.add('mostrar_animacion');
     } else {
         document.getElementById('pnlNotificacionMensajeNuevo').style.visibility= 'hidden';
+        document.getElementById('pnlNotificacionMensajeNuevo').classList.remove('mostrar_animacion');
     }
 }
 
+/**
+ * Inicializamos temporizador y llamamos a la función que tiene que ejecutarse al finalizar el tiempo de espera
+ */
 function InicializarTemporizador(){
     setTimeout(function() {
         VisibilidadNotificacionNuevoMensaje(false);
     }, 4000); //Se ejecuta después de 4 segundos
 }
 
+/**
+ * Inicializamos temporizador y llamamos a la función que tiene que ejecutarse al finalizar el tiempo de espera
+ */
 function InicializarTemporizadorTutoria(){
     setTimeout(function() {
         VisibilidadNotificacionNuevoMensaje(false);
     }, 500); //Se ejecuta medio segundo después
+}
+
+/**
+ * Inicializamos temporizador y llamamos a la función que tiene que ejecutarse al finalizar el tiempo de espera
+ */
+function InicializarTemporizadorMensajeAviso(){
+    setTimeout(function() {
+        MostrarMensajeError('', false);
+    }, 4000); //Se ejecuta medio segundo después
 }
 
 /**
@@ -316,9 +392,33 @@ function PushMessage(param_id_chat, param_message, param_name_pnl, param_name_lb
     scrollAlFinal();
 }
 
+/**
+ * Ponemos el scroll del panel del chat en lo más bajo.
+ */
 function scrollAlFinal() {
     if (document.getElementById('pnlSobreponerChatDcha').style.visibility == 'hidden'){
         var panel = $('#pnlMensajes')[0]; // Obtenemos el elemento DOM
         panel.scrollTop = panel.scrollHeight; // Hacemos scroll al final
+    }
+}
+
+/**
+ * Muestra el panel del mensaje de error con el texto que se le pasa por parametro
+ *
+ * @param {Texto que saldrá en el mensaje de error} param_texto
+ */
+function MostrarMensajeError(param_texto, param_hacer_visible){
+
+    document.getElementById('textoEmergenteRespuesta').textContent = param_texto;
+
+    if (param_hacer_visible) {
+        document.getElementById('pnlRespuestaEmergente').style.top = '80px';
+        document.getElementById('pnlRespuestaEmergente').style.visibility= 'visible';
+        document.getElementById('pnlRespuestaEmergente').classList.add('mostrar_animacion');
+        InicializarTemporizadorMensajeAviso();
+    } else {
+        document.getElementById('pnlOscurecer').style.visibility = 'hidden';
+        document.getElementById('pnlRespuestaEmergente').style.visibility= 'hidden';
+        document.getElementById('pnlRespuestaEmergente').classList.remove('mostrar_animacion');
     }
 }

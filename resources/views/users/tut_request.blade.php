@@ -55,11 +55,12 @@
             <option value="0">En tratmite</option>
             <option value="1">Aceptada   </option>
             <option value="2">Denegada   </option>
+            <option value="3">Finalizada </option>
         </select>
     </div>
 
     <div class='PanelBotones'>
-        <button class='btn_create_multiple' type="submit" onclick="CrearOModificarNuevaTutoria()">Guardar</button>
+        <button id='btn_guardar' class='btn_create_multiple' type="submit" onclick="CrearOModificarNuevaTutoria()">Guardar</button>
         <button class='btnEmergenteAceptarDelete' type="submit" onclick="MostrarTabla()">Cancelar</button>
     </div>
 </div>

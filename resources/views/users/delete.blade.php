@@ -1,6 +1,6 @@
 @extends('layouts.plantillaUsuLogeado')
 @section('style')
-    <link rel="stylesheet" href="{{ asset('css/formsSimpleStyle.css') }}"
+    <link rel="stylesheet" href="{{ asset('css/formsSimpleStyle.css') }}">
 @endsection
 @section('title', 'Borrar datos')
 
@@ -77,7 +77,7 @@
             </div>
         </form>
 
-        <div class="pnlInferiorEspecifico">
+        <div class="PanelBotones">
             <button type="submit" class="btn_create" onclick="abrirPnlEmergente()">Borrar datos</button> <br>
         </div>
 
@@ -93,12 +93,12 @@
         <div class="pnlEmergentePrincipal">
             <p class="textoEmergente" id="textoEmergenteEspecifico">¿Está seguro de que quiere eliminar su cuenta?</p>
         </div>
-        <div class="pnlEmergenteBotones">
+        <div class="PanelBotones">
             @csrf
-            <button class="btnEmergenteAceptarDelete" id="btnEmergenteAceptarDelete" type="submit" onclick="aceptarEmergenteEspecifico()">
+            <button class="btn_create_multiple" id="btnEmergenteAceptarDelete" type="submit" onclick="aceptarEmergenteEspecifico()">
                 Aceptar
             </button>
-            <button class="btnEmergente" id="btnEmergenteCancelar" type="submit" onclick="cerrarEmergetneEspecifico()">
+            <button class="btnEmergenteAceptarDelete" id="btnEmergenteCancelar" type="submit" onclick="cerrarEmergenteEspecifico()">
                 Cancelar
             </button>
         </div>

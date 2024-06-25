@@ -1,3 +1,15 @@
+<!--
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-16 12:43:18
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-05-16 12:44:30
+ * @Description: Vista relacionada con las opciones de menú tareas completadas y tareas a completar
+ *               mostramos la tabla de yarja.
+ */
+
+-->
 @extends('layouts.plantillaTasks')
 
 @section ('style2')

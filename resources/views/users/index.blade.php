@@ -14,6 +14,7 @@
 <html>
 <head>
 	<title>Inicio de sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link href="{{ asset('css/loginUserStyle.css') }}" rel="stylesheet">
     <script src="{{ asset('js/User/loginUserScript.js') }}"></script>
 </head>
@@ -29,7 +30,8 @@
                     <label for="user" id="lbl_user" class="center"></label><br>
                     <input type="text" id="user" name="user" class="center" placeholder="Usuario" onfocus="createLabel(1)" onblur="deleteLabel(1)"><br>
                     <label for="password" id="lbl_password" class="center"></label><br>
-                    <input type="password" id="password" name="password" class="center" placeholder="Contraseña" onfocus="createLabel(2)" onblur="deleteLabel(2)"><br><br>
+                    <input type="password" id="password" name="password" class="center" placeholder="Contraseña" onfocus="createLabel(2)" onblur="deleteLabel(2)">
+                    <a onmousedown='MouseDownPassword()' onmouseup='MouseUpPassword()'><i class="fa fa-eye" style="font-size:16px;color:blue;margin-left: -2px"></i></a><br><br>
                 </div>
             </div>
 

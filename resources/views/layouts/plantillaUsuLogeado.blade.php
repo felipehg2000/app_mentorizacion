@@ -26,20 +26,22 @@
     <!--YAJRA STYLE-->
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js"></script>
     <script>
-        var csrfToken                  = '{{ csrf_token()                  }}';
-        var url_tablon_completo        = "{{ route('users.task_board'    ) }}";
-        var url_tareas_completadas     = "{{ route('users.done_tasks'    ) }}";
-        var url_tareas_a_completar     = "{{ route('users.to_do_tasks'   ) }}";
-        var url_chats_privados         = "{{ route('users.sync_chat'     ) }}";
-        var url_solicitudes            = "{{ route('users.tut_request'   ) }}";
-        var url_acceso_a_tutoria       = "{{ route('users.tut_access'    ) }}";
-        var url_amigos_actuales        = "{{ route('users.actual_friends') }}";
-        var url_solicitudes_de_amistad = "{{ route('users.friendship'    ) }}";
-        var url_informacion            = "{{ route('users.tutorial'      ) }}";
-        var url_novedades              = "{{ route('users.news'          ) }}";
-        var url_modificar_mis_datos    = "{{ route('users.modify'        ) }}";
-        var url_eliminar_mi_cuenta     = "{{ route('users.delete'        ) }}";
-        var url_cerrar_sesion          = "{{ route('users.close'         ) }}";
+        var csrfToken                  = '{{ csrf_token()                   }}';
+        var url_tablon_completo        = "{{ route('users.task_board'     ) }}";
+        var url_tareas_completadas     = "{{ route('users.done_tasks'     ) }}";
+        var url_tareas_a_completar     = "{{ route('users.to_do_tasks'    ) }}";
+        var url_chats_privados         = "{{ route('users.sync_chat'      ) }}";
+        var url_solicitudes            = "{{ route('users.tut_request'    ) }}";
+        var url_acceso_a_tutoria       = "{{ route('users.tut_access'     ) }}";
+        var url_amigos_actuales        = "{{ route('users.actual_friends' ) }}";
+        var url_solicitudes_de_amistad = "{{ route('users.friendship'     ) }}";
+        var url_informacion            = "{{ route('users.tutorial'       ) }}";
+        var url_novedades              = "{{ route('users.news'           ) }}";
+        var url_modificar_mis_datos    = "{{ route('users.modify'         ) }}";
+        var url_change_password        = "{{ route('users.modify_password') }}";
+        var url_change_porfile_img     = "{{ route('users.modify_img_perf') }}";
+        var url_eliminar_mi_cuenta     = "{{ route('users.delete'         ) }}";
+        var url_cerrar_sesion          = "{{ route('users.close'          ) }}";
 
         var url_datos_inicio           = "{{ route('users.info_inicial.store'               ) }}";
         var url_friend_req_saw         = "{{ route('users.FriendRequestsSaw'                ) }}";
@@ -47,6 +49,8 @@
         var url_tut_mod_not            = "{{ route('users.TutoringModificationsNotification') }}";
         var url_task_saw               = "{{ route('users.TasksSaw'                         ) }}";
         var url_answer_saw             = "{{ route('users.AnswersSaw'                       ) }}";
+
+        var url_decrypt_info = "{{ route('users.decrypt_info.store') }}";
     </script>
 
     @yield('js')
@@ -56,7 +60,8 @@
     <!--Parte de la navegación-->
     <nav>
         <img src = " {{ asset('photos/logo_blanco.JPG') }}" class="logo">
-        <img src = " {{ asset('photos/my_image.png') }} " class="perfil_image">
+        <!--Ponemos el time() para que no cargue la que tiene en caché-->
+        <img src = " {{ asset('photos/my_image.JPG') }} ? {{ time() }}" class="perfil_image">
     </nav>
     <!--Pantalla sin la parte de la navegación-->
     <div class="pnlMain">
@@ -86,6 +91,8 @@
 
                 <div class="menu">Gestión de usuario        </div>
                     <div class="submenu" id="submenu_10" onclick="redirection(10)">Modificar mis datos <div class='notification' id='notification_10'></div></div>
+                    <div class="submenu" id="submenu_14" onclick="redirection(14)">Modificar contraseña<div class='notification' id='notification_14'></div></div>
+                    <div class="submenu" id="submenu_15" onclick="redirection(15)">Modificar imagen    <div class='notification' id='notification_15'></div></div>
                     <div class="submenu" id="submenu_11" onclick="redirection(11)">Eliminar mi cuenta  <div class='notification' id='notification_11'></div></div>
                     <div class="submenu" id="submenu_12" onclick="redirection(12)">Cerrar sesión       <div class='notification' id='notification_12'></div></div>
             </div>
@@ -116,6 +123,7 @@
                 <br>
                 <input class="edtPnlEmergente" id="edtPnlEmergente" type="password" placeholder="Introduzca su contraseña">
             </div>
+            <br>
             <div class="pnlEmergenteBotones">
                 @csrf
                 <button class="btnEmergente" id="btnEmergenteAceptar" type="submit" onclick="aceptarEmergente()">
@@ -127,28 +135,24 @@
             </div>
         </div>
 
-        <div class='pnlRespuestaEmergente' id='pnlRespuestaEmergente'>
-            <div class='pnlEmergenteTitulo'>
-                <i class="fa fa-exclamation-triangle" style="font-size:24px;color:white"></i>
-                <p class="tituloEmergente"> Aviso </p>
+        <div class='pnlMensajeNuevo' id='pnlRespuestaEmergente'>
+            <div class='pnlPrincipalMensajeNuevo' id='textoEmergenteRespuesta'>
+                Nuevo mensaje del chat
             </div>
-            <div class='pnlEmergentePrincipal'>
-                <p class='textoEmergente' id='textoEmergenteRespuesta'>Texto respuesta emergente</p>
-            </div>
-            <div class='pnlEmergenteBotones'>
-                <button class="btnEmergente" id="btnEmergenteAceptar" type="submit" onclick="aceptarPnlRespuestaEmergente()">
-                    Aceptar
-                </button>
+
+            <div class='pnlMensajeNuevoSuperior'>
+                <div class='btnCerrar' onclick="MostrarMensajeError('', false)">x</div>
             </div>
         </div>
 
-        <div class='pnlMensajeNuevo' id='pnlNotificacionMensajeNuevo'>
-            <div class='pnlMensajeNuevoSuperior'>
-                <div class='btnCerrar' onclick="VisibilidadNotificacionNuevoMensaje(false)">x</div>
-            </div>
 
+        <div class='pnlMensajeNuevo' id='pnlNotificacionMensajeNuevo'>
             <div class='pnlPrincipalMensajeNuevo'>
                 Nuevo mensaje del chat
+            </div>
+
+            <div class='pnlMensajeNuevoSuperior'>
+                <div class='btnCerrar' onclick="VisibilidadNotificacionNuevoMensaje(false)">x</div>
             </div>
         </div>
 

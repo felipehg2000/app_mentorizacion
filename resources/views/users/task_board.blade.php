@@ -1,3 +1,16 @@
+<!--
+/*
+ * @Author: Felipe Hernández González
+ * @Email: felipehg2000@usal.es
+ * @Date: 2024-05-15 20:38:35
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-05-16 12:09:17
+ * @Description: Vista descendiente de layout.plantillaTasks, muestra todas las tareas en paneles y permite:
+ *                  1.- Mentor: Crear, modificar, eliminar y ver las respuestas de sus alumnos.
+ *                  2.- Alumnos: Subir sus tareas.
+ */
+-->
+
 @extends('layouts.plantillaTasks')
 
 @if ($tipo_usu == 1)
@@ -41,17 +54,23 @@
             @if($tasks != NULL)
             @foreach ($tasks as $task)
                 <div class='PanelNewTask'>
-                    @if(\Carbon\Carbon::parse($task->LAST_DAY)->gt(\Carbon\Carbon::now()))
-                        <!--Fecha es mayor que hoy-->
-                        <div class='TaskTitulo_Azul'>
-                    @else
-                        <!--Fecha es menor o igual que hoy-->
+                    @if ($task->LOGIC_CANCEL == 1)
                         <div class='TaskTitulo_Rojo'>
+                            <!--Hacemos el cast a data table y lo formateamos para que salga solo la fecha y no salga fecha y hora-->
+                            <p id='fecha_tarea_{{ $task->id }}' class='tituloEmergente'>Tarea oculta</p>
+                        </div>
+                    @elseif($task->LOGIC_CANCEL == 0)
+                        @if(\Carbon\Carbon::parse($task->LAST_DAY)->gt(\Carbon\Carbon::now()))
+                            <!--Fecha es mayor que hoy-->
+                            <div class='TaskTitulo_Azul'>
+                        @else
+                            <!--Fecha es menor o igual que hoy-->
+                            <div class='TaskTitulo_Rojo'>
+                        @endif
+                            <!--Hacemos el cast a data table y lo formateamos para que salga solo la fecha y no salga fecha y hora-->
+                            <p id='fecha_tarea_{{ $task->id }}' class='tituloEmergente'>{{ \Carbon\Carbon::parse($task->LAST_DAY)->format('d-m-Y')}}</p>
+                        </div>
                     @endif
-                        <!--Hacemos el cast a data table y lo formateamos para que salga solo la fecha y no salga fecha y hora-->
-                        <p id='fecha_tarea_{{ $task->id }}' class='tituloEmergente'>{{ \Carbon\Carbon::parse($task->LAST_DAY)->format('d-m-Y')}}</p>
-                    </div>
-
                     <div class='PanelFormNewTask'>
                         <p class='TaskTitulo'>Titulo de la tarea:</p>
                         <p id='titulo_tarea_{{ $task->id }}' class='TaskInfo'>{{ $task->TASK_TITLE }}</p><br>
@@ -65,7 +84,11 @@
                         @elseif($tipo_usu == 2)<!--Mentor-->
                             <button class='btn_create_multiple' type="submit" onclick="VerDatosEspecíficos({{ $tipo_usu }}, {{ $task->id }})">Modificar</button>
                             <button class='btn_create_multiple' type="submit" onclick="MentorClickColumnDataTableTask({{ $task->id }})">Respuestas</button>
-                            <button class='btnEmergenteAceptarDelete' type="submit" onclick="BorrarTarea({{ $task->id }})">Eliminar</button>
+                            @if ($task->LOGIC_CANCEL == 0)
+                                <button class='btnEmergenteAceptarDelete' type="submit" onclick="CambiarBajaLogica({{ $task->id }}, 1)">Ocultar</button>
+                            @elseif($task->LOGIC_CANCEL == 1)
+                                <button class='btnEmergenteAceptarDelete' type="submit" onclick="CambiarBajaLogica({{ $task->id }}, 0)">Mostrar</button>
+                            @endif
                         @endif
                     </div>
                 </div>

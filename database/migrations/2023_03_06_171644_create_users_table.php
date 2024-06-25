@@ -4,7 +4,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-14 20:19:30
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-04-15 11:35:49
+ * @Last Modified time: 2024-05-15 21:06:18
  * @Description: Migración completa para la base de datos de la primera versión de la aplicación mentoring, en la primera modificación añadiremos
  *               los datos respectivos al usuario.
  */
@@ -38,7 +38,7 @@ return new class extends Migration{
             $table->boolean      ('USER_TYPE'           );
             $table->integer      ('STUDY_AREA'          )->default(0);
             $table->text         ('DESCRIPTION'         )->nullable();
-            $table->binary       ('IMAGE'               )->default($this->imageToBinary('photos/default_user_image.png'));
+            $table->string       ('IMAGE'               )->default('img_perf_1.JPG');
             $table->boolean      ('BANNED'              )->default(0);
             $table->rememberToken(                      );//en caso de que el usuario decida tener la sesión abierta se guardará un token
             $table->timestamps   (                      );
@@ -197,6 +197,7 @@ return new class extends Migration{
             $table->string              ('TASK_TITLE'   );
             $table->text                ('DESCRIPTION'  );
             $table->dateTime            ('LAST_DAY'     );
+            $table->boolean             ('LOGIC_CANCEL' )->default(0);
             $table->timestamps          ();
 
             $table->foreign('STUDY_ROOM_ID')->references('MENTOR_ID')->on('STUDY_ROOMS')->onDelete('CASCADE');
@@ -229,7 +230,7 @@ return new class extends Migration{
             $table->unsignedBigInteger('TASK_ID'            );
             $table->unsignedBigInteger('STUDY_ROOM_ACCES_ID');
             $table->text              ('NAME'               );
-            $table->boolean           ('SEEN_BY_MENTOR'     )->defaulet(0);
+            $table->boolean           ('SEEN_BY_MENTOR'     )->default(0);
             $table->timestamps        ();
 
             $table->primary('TASK_ID', 'STUDY_ROOM_ACCES_ID');
@@ -279,14 +280,4 @@ return new class extends Migration{
         Schema::dropIfExists('STUDENTS'             );
         Schema::dropIfExists('USERS'                );
     }
-
-    /**
-     * Función para subir los datos de las imagenes en binario
-     */
-    private function imageToBinary(String $path){
-        $image_path = public_path($path);
-        $image_data = file_get_contents($image_path);
-        return base64_encode($image_data);
-    }
-
 };

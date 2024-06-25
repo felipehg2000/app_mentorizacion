@@ -48,7 +48,7 @@
 
         <div class="PanelBotones">
             @if ($tipo_usu == 1) <!--ESTUDIANTE-->
-                <button class='btn_create_multiple' type="submit" onclick="CrearNuevaRespuesta()">Guardar</button>
+                <button id='guardar_tarea_estudiante' class='btn_create_multiple' type="submit" onclick="CrearNuevaRespuesta()">Guardar</button>
             @elseif($tipo_usu == 2) <!--MENTOR-->
                 <button class='btn_create_multiple' type="submit" onclick="CrearNuevaTarea()">Guardar</button>
             @endif

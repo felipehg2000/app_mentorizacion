@@ -28,16 +28,17 @@
     <script>
         var csrfToken                  = '{{ csrf_token()                  }}';
 
-        var url_reports                = "{{ route('admin.rep_requests'  ) }}";
-        var url_bloquear_mentores      = "{{ route('admin.block_mentores') }}";
-        var url_bloquear_estudiantes   = "{{ route('admin.block_students') }}";
-        var url_bloquear_admins        = "{{ route('admin.block_admins'  ) }}";
-        var url_primeros_pasos         = "{{ route('admin.tutorial'      ) }}";
-        var url_novedades              = "{{ route('admin.news'          ) }}";
-        var url_create_admin           = "{{ route('admin.create'        ) }}";
-        var url_modificar_mis_datos    = "{{ route('admin.modify'        ) }}";
-        var url_eliminar_mi_cuenta     = "{{ route('admin.delete'        ) }}";
-        var url_cerrar_sesion          = "{{ route('users.close'         ) }}";
+        var url_reports                = "{{ route('admin.rep_requests'   ) }}";
+        var url_bloquear_mentores      = "{{ route('admin.block_mentores' ) }}";
+        var url_bloquear_estudiantes   = "{{ route('admin.block_students' ) }}";
+        var url_bloquear_admins        = "{{ route('admin.block_admins'   ) }}";
+        var url_primeros_pasos         = "{{ route('admin.tutorial'       ) }}";
+        var url_novedades              = "{{ route('admin.news'           ) }}";
+        var url_create_admin           = "{{ route('admin.create'         ) }}";
+        var url_modificar_mis_datos    = "{{ route('admin.modify'         ) }}";
+        var url_change_porfile_img     = "{{ route('users.modify_img_perf') }}";
+        var url_eliminar_mi_cuenta     = "{{ route('admin.delete'         ) }}";
+        var url_cerrar_sesion          = "{{ route('users.close'          ) }}";
 
         var url_datos_inicio           = "{{ route('users.info_inicial.store') }}";
         var url_report_saw             = "{{ route('admin.ReportRequestSaw'  ) }}";
@@ -50,7 +51,7 @@
     <!--Parte de la navegación-->
     <nav>
         <img src = " {{ asset('photos/logo_blanco.JPG') }}" class="logo">
-        <img src = " {{ asset('photos/my_image.png') }} " class="perfil_image">
+        <img src = " {{ asset('photos/my_image.JPG') }} ? {{ time() }}" class="perfil_image">
     </nav>
     <!--Pantalla sin la parte de la navegación-->
     <div class="pnlMain">
@@ -71,10 +72,11 @@
                     <div class="submenu" id="submenu_4" onclick="redirection(4)">Novedades     </div>
 
                 <div class="menu">Gestión de usuario        </div>
-                    <div class="submenu" id="submenu_8" onclick="redirection(8)">Crear administrador </div>
-                    <div class="submenu" id="submenu_5" onclick="redirection(5)">Modificar mis datos </div>
-                    <div class="submenu" id="submenu_6" onclick="redirection(6)">Eliminar cuentas    </div>
-                    <div class="submenu" id="submenu_7" onclick="redirection(7)">Cerrar sesión       </div>
+                    <div class="submenu" id="submenu_8"  onclick="redirection(8 )">Crear administrador </div>
+                    <div class="submenu" id="submenu_5"  onclick="redirection(5 )">Modificar mis datos </div>
+                    <div class="submenu" id="submenu_11" onclick="redirection(11)">Modificar imagen    </div>
+                    <div class="submenu" id="submenu_6"  onclick="redirection(6 )">Eliminar cuentas    </div>
+                    <div class="submenu" id="submenu_7"  onclick="redirection(7 )">Cerrar sesión       </div>
             </div>
             <!--Apartado del resto de la pantalla-->
             <div class="pnlRight">
@@ -114,18 +116,13 @@
             </div>
         </div>
 
-        <div class='pnlRespuestaEmergente' id='pnlRespuestaEmergente'>
-            <div class='pnlEmergenteTitulo'>
-                <i class="fa fa-exclamation-triangle" style="font-size:24px;color:white"></i>
-                <p class="tituloEmergente"> Aviso </p>
+        <div class='pnlMensajeNuevo' id='pnlRespuestaEmergente'>
+            <div class='pnlPrincipalMensajeNuevo' id='textoEmergenteRespuesta'>
+                Nuevo mensaje del chat
             </div>
-            <div class='pnlEmergentePrincipal'>
-                <p class='textoEmergente' id='textoEmergenteRespuesta'>Texto respuesta emergente</p>
-            </div>
-            <div class='pnlEmergenteBotones'>
-                <button class="btnEmergente" id="btnEmergenteAceptar" type="submit" onclick="aceptarPnlRespuestaEmergente()">
-                    Aceptar
-                </button>
+
+            <div class='pnlMensajeNuevoSuperior'>
+                <div class='btnCerrar' onclick="MostrarMensajeError('', false)">x</div>
             </div>
         </div>
 
