@@ -60,7 +60,7 @@
     </div>
 
     <div class='PanelBotones'>
-        <button class='btn_create_multiple' type="submit" onclick="CrearOModificarNuevaTutoria()">Guardar</button>
+        <button id='btn_guardar' class='btn_create_multiple' type="submit" onclick="CrearOModificarNuevaTutoria()">Guardar</button>
         <button class='btnEmergenteAceptarDelete' type="submit" onclick="MostrarTabla()">Cancelar</button>
     </div>
 </div>

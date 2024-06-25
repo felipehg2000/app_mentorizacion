@@ -3,7 +3,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2024-05-17 14:06:37
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-06-25 08:53:53
+ * @Last Modified time: 2024-06-25 09:04:18
  * @Description: Controlador de la vista tut_request.blade.php
  */
 
@@ -18,9 +18,11 @@ $(document).ready(function(){
  */
 function MostrarNewTutoring(param_tipo_usuario){
     if (param_tipo_usuario == 1) {
+        document.getElementById('btn_guardar').style.visibility = 'visible';
         MostrarPanel(false, true);
     } else if (param_tipo_usuario == 2) {
         LimpiarPnlNewTutoring()
+        document.getElementById('btn_guardar').style.visibility = 'hidden';
         MostrarPanel(true, false);
     }
 }
@@ -54,6 +56,7 @@ function MostrarPanel(param_readOnly_fecha_hora, param_readOnly_estado){
  * Oculatmos el panel de los datos específicos de las tareas y mostramos la tabla con todas las tareas creadas.
  */
 function MostrarTabla(){
+    document.getElementById('btn_guardar').style.visibility  = 'hidden';
     document.getElementById('pnlOscurecer').style.visibility = 'hidden';
     document.getElementById('new_tutoring').style.visibility = 'hidden';
 }
@@ -83,9 +86,11 @@ function ClickDataTable(param_id_tut){
             document.getElementById('input_estado').value = respuesta.tut_data.STATUS
 
             if (respuesta.user_type == 1){
-                MostrarPanel(true, true)
+                MostrarPanel(true, true);
+                document.getElementById('btn_guardar').style.visibility = 'hidden';
             } else if (respuesta.user_type == 2){
                 MostrarPanel(true, false);
+                document.getElementById('btn_guardar').style.visibility = 'visible';
             }
 
         } else {
