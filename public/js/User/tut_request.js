@@ -3,7 +3,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2024-05-17 14:06:37
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-05-17 14:17:02
+ * @Last Modified time: 2024-06-25 08:53:53
  * @Description: Controlador de la vista tut_request.blade.php
  */
 
@@ -149,7 +149,7 @@ function CrearNuevaTutoria() {
         if (respuesta.success){
             location.reload();
         } else {
-            window.location.href = url_close;
+            MostrarMensajeError('Tu mentor ya tiene una tutoría concertada ese día. Seleccione otro día', true);
         }
     });
 }

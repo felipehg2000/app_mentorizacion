@@ -20,8 +20,8 @@ use App\Events\TutUpdateEvent;
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2024-06-21 16:28:02
- * @Last Modified by:   Felipe Hernández González
- * @Last Modified time: 2024-06-21 16:35:38
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-06-25 08:53:23
  * @Description: Controlador encargado de la gestión de las tutorías, solicitud, acceso y mensajería.
  */
 
@@ -95,12 +95,13 @@ class TutorshipsController extends Controller
      * @param {Fecha de la tutoría que queremos crear} request->fecha
      *        {Hora de la tutoría que queremos crear} request->hora
      *        {Estado de la tutoría que queremos crear} request->status
-     * @return {Si no hay usuario logueado devolvemos false como respuesta ajax}
+     * @return {Si no hay usuario logueado devolvemos la vista de sesión cerrada}
      *         {Si hay un usuario logueado y se crea el registro correctamente devolvemos ture como respuesta ajax}
+     *         {Si hay un usuario logueado y el registro no se puede crear devolvemos false como respeusta ajax}
      */
     public function add_tuto_store(Request $request){
         if (!Auth::check()){
-            return response()->json(['success' => false]);
+            return view('users.close');
         }
 
         //Insertar registro en la base de datos
@@ -115,14 +116,23 @@ class TutorshipsController extends Controller
                        ->select('STUDY_ROOM_ID')
                        ->first();
 
+        $count = DB::table('tutoring')
+                   ->whereDate('DATE', $date)
+                   ->where('STUDY_ROOM_ID', $consulta->STUDY_ROOM_ID)
+                   ->count();
 
-        $dateTime = $date . ' ' . $hour;
+        if ($count > 0){
+            return response()->json(['success' => false]);
+        } else if ($count == 0){
 
-        $datetime = new DateTime($dateTime);
+            $dateTime = $date . ' ' . $hour;
 
-        $this->CreateTutoring($consulta->STUDY_ROOM_ID, $study_room_access_id, $datetime, $status);
+            $datetime = new DateTime($dateTime);
 
-        return response()->json(['success' => true]);
+            $this->CreateTutoring($consulta->STUDY_ROOM_ID, $study_room_access_id, $datetime, $status);
+
+            return response()->json(['success' => true]);
+        }
     }
 
     /**
