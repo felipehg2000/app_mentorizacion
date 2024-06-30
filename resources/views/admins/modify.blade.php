@@ -3,8 +3,8 @@
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2024-05-17 14:23:23
- * @Last Modified by:   Felipe Hernández González
- * @Last Modified time: 2024-05-17 14:23:55
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-06-30 12:26:58
  * @Description: Vista asociada a la opción de menú "Modificar mis Datos" del tipo de usuario adminstrador
  */
 -->
@@ -35,7 +35,7 @@
     <label for="email">Email:* </label><br>
     <input type="text" id="email" name="email" value='{{ $admin['email'] }}'><br>
 
-    <label for="user">Usuario: </label><br>
+    <label for="user">Usuario:* </label><br>
     <input type="text" id="user" name="user" value='{{ $admin['user'] }}'><br>
 
     <label for="password">Nueva contraseña:</label><br>

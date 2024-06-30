@@ -2,8 +2,8 @@
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2024-05-17 13:40:27
- * @Last Modified by:   Felipe Hernández González
- * @Last Modified time: 2024-05-17 13:41:53
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-06-30 12:21:16
  * @Description: Controlador asociado a la vista modify_password
  */
 
@@ -17,8 +17,13 @@ function ModifyPassword(){
     var nueva_p     = document.getElementById('password'       ).value;
     var nueva_p_rep = document.getElementById('rep_password'   ).value;
 
+    if (nueva_p.length < 5){
+        MostrarMensajeError('ERROR: la contraseña debe tener como mínimo 5 caracteres', true);
+        return;
+    }
+
     if (actual_p == '' || nueva_p == '' || nueva_p_rep == ''){
-        MostrarMensajeError('Error: no puede dejar campos en blanco', true);
+        MostrarMensajeError('ERROR: no puede dejar campos en blanco', true);
         return;
     }
 

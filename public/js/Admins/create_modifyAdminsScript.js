@@ -2,8 +2,8 @@
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2024-05-16 13:20:26
- * @Last Modified by:   Felipe Hernández González
- * @Last Modified time: 2024-05-16 13:24:28
+ * @Last Modified by: Felipe Hernández González
+ * @Last Modified time: 2024-06-30 12:25:56
  * @Description: Controlador de las vistas create y modify de los administradores.
  */
 //--------------------------------------------------------------------------------------------------
@@ -24,12 +24,12 @@ function CrearYModificarAdmins() {
     var mensaje = "";
 
     if (window.location.href == url_create_admin){
-        if (nombre == "" || email == "" || password == "" || rep_password == ""){
+        if (nombre == "" || email == "" || password == "" || rep_password == "" || user == ""){
             insertar_datos = false;
             mensaje = "ERROR: todos los campos con * deben estar rellenos";
         }
     } else if (window.location.href == url_modificar_mis_datos) {
-        if (nombre == "" || email == ""){
+        if (nombre == "" || email == "" || user == ""){
             insertar_datos = false;
             mensaje = "ERROR: todos los campos con * deben estar rellenos";
         }

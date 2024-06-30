@@ -24,7 +24,7 @@ use App\DataTables\UsersDataTable;
  * @Email: felipehg2000@usal.es
  * @Date: 2023-03-06 23:13:31
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-06-22 19:46:50
+ * @Last Modified time: 2024-06-30 12:18:33
  * @Description: En este controlador nos encargaremos de gestionar las diferentes rutas de la parte de usuarios. Las funciones simples se encargarán de mostrar las vistas principales y
  *               las funciones acabadas en store se encargarán de la gestión de datos, tanto del alta, como consulta o modificación de los datos. Tendremos que gestionar las contraseñas,
  *               encriptandolas y gestionando hashes para controlar que no se hayan corrompido las tuplas.
@@ -125,16 +125,6 @@ class UsersController extends Controller
         $admin = User::find(Auth::user()->id);
 
         if ($admin){
-
-            try {
-                $validacion = $request->validate([
-                    'email'           => ['max:255', 'required', 'unique:users'],
-                    'user'         => ['max:30' , 'required', 'unique:users']
-                ]);
-            }catch(Exception $e){
-                return response()->json(['success'  => false,
-                                         'validate' => false]);
-            }
 
             $admin->name        = $request->nombre   ;
             $admin->surname     = $request->apellidos;
