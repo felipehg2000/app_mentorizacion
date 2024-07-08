@@ -11,6 +11,7 @@ use App\Models\Study_room;
 use App\Models\Task;
 use App\Models\Study_room_acces;
 use App\Models\Friend_request;
+use App\Models\Report_request;
 use App\Models\Synchronous_message;
 
 class DatabaseSeeder extends Seeder
@@ -43,6 +44,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->RellenarChats();
+        $this->RellenarReports($users);
     }
 
     private function RellenarChats(){
@@ -92,5 +94,17 @@ class DatabaseSeeder extends Seeder
         }
 
         return false;
+    }
+
+    private function RellenarReports($param_users){
+        foreach($param_users as $user) {
+            if ($user->user_type != 3){
+                $se_reporta = rand(1, 5); //Solo reportamos al usuario si sale un 1
+
+                if ($se_reporta == 1){
+                    Report_request::factory()->count(rand(1, 3))->withParams($user->id)->create();
+                }
+            }
+        }
     }
 }
