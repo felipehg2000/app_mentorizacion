@@ -3,7 +3,7 @@
  * @Email: felipehg2000@usal.es
  * @Date: 2024-05-16 12:25:21
  * @Last Modified by: Felipe Hernández González
- * @Last Modified time: 2024-06-21 17:38:54
+ * @Last Modified time: 2024-07-08 16:37:41
  * @Description: Controlador padre de todas las vistas relacionadas con la gestión de tareas, contiene
  *               las funciones genéricas sobre estas gestiones, como mostrar paneles o realizar y descargar
  *               las tareas
@@ -28,18 +28,18 @@ function MostrarPanelFormulario(param_limpiar_campos){
  * Muestra el tablón de tareas
  */
 function MostrarPanelTareas(){
-    document.getElementById('id_task'      ).textContent      = 'Texto oculto';
-    document.getElementById('PanelShowData').style.visibility = 'hidden'      ;
-    document.getElementById('pnlOscurecer' ).style.visibility = 'hidden'      ;
-
-    document.getElementById('guardar_tarea_estudiante').style.visibility = 'hidden';
-
+    document.getElementById('id_task'         ).textContent      = 'Texto oculto';
+    document.getElementById('PanelShowData'   ).style.visibility = 'hidden'      ;
+    document.getElementById('pnlOscurecer'    ).style.visibility = 'hidden'      ;
     document.getElementById('PanelShowAnswers').style.visibility = 'hidden';
 
     if (document.getElementById('lbl_input_upload') != null){
         document.getElementById('lbl_input_upload').style.visibility = 'hidden';
         document.getElementById('input_upload'    ).style.visibility = 'hidden';
     }
+
+    document.getElementById('guardar_tarea_estudiante').style.visibility = 'hidden';
+
 }
 //--------------------------------------------------------------------------------------------------
 /**

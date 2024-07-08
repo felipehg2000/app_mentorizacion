@@ -4,8 +4,8 @@
  * @Author: Felipe Hernández González
  * @Email: felipehg2000@usal.es
  * @Date: 2024-05-15 21:00:43
- * @Last Modified by:   undefined
- * @Last Modified time: 2024-05-15 21:00:43
+ * @Last Modified by:   Felipe Hernández González
+ * @Last Modified time: 2024-07-08 13:15:35
  * @Description: Modelo representativo de la tabla "MENTORS" de la base de datos.
  */
 
